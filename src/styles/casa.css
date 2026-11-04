@@ -1,0 +1,420 @@
+/* Web 1, Modo Origen. Fotografía y puntos comparten lienzo: los % son de la imagen. */
+.casa .escenario {
+  /* Tope de 780 px: en monitores grandes el frasco manda sobre el cuenco. */
+  --alto-frasco: min(calc(64 * var(--cqh)), 780px);
+  --eje-frasco: max(calc(20 * var(--cqw)), calc(var(--alto-frasco) * 0.283 + var(--e-3)));
+  --ficha-alto: var(--alto-frasco);
+  --hundido: calc(var(--alto-frasco) * -0.055);
+  --cacahuete-a: clamp(4.25rem, calc(11 * var(--cqw)), 7.5rem);
+  --cacahuete-b: clamp(3rem, calc(7.5 * var(--cqw)), 5.25rem);
+  background: var(--c-mantequilla);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Lienzo cuadrado que cubre el escenario, con holgura para que el parallax no enseñe borde. */
+.casa__lienzo {
+  --holgura: 16px;
+  --zoom: 1.12;
+  --lado: max(calc(calc(100 * var(--cqw)) * var(--zoom) + var(--holgura) * 2), calc(calc(100 * var(--cqh)) + var(--holgura) * 2));
+  position: absolute;
+  left: calc(var(--holgura) * -1);
+  top: calc((calc(100 * var(--cqh)) - var(--lado)) * 0.58);
+  width: var(--lado);
+  height: var(--lado);
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+
+.casa__lienzo img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* En un escenario muy ancho la foto ya va ampliada: sin zoom extra. */
+@container (min-width: 1500px) {
+  .casa__lienzo { --zoom: 1; }
+}
+
+/* Reflejo desenfocado que continúa la mesa hacia la izquierda: solo en panorámico. */
+.casa__reflejo { display: none; }
+
+/* Panorámico: la foto no crece con el ancho. Se ancla a la derecha con el alto justo y el
+   frasco no pierde protagonismo frente al cuenco. */
+@container (min-aspect-ratio: 3/2) and (min-width: 900px) {
+  .casa__lienzo {
+    --lado: calc(calc(118 * var(--cqh)) + var(--holgura) * 2);
+    left: calc(calc(100 * var(--cqw)) - var(--lado) + var(--holgura));
+    top: calc((calc(100 * var(--cqh)) - var(--lado)) * 0.58);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 13%);
+    mask-image: linear-gradient(to right, transparent 0, #000 13%);
+  }
+
+  .casa__lienzo--puntos {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  /* Tela de la propia foto, muy ampliada y desenfocada: continúa la mesa sin repetir objetos. */
+  .casa__reflejo {
+    display: block;
+    position: absolute;
+    left: -16px;
+    top: -16px;
+    bottom: -16px;
+    width: calc(calc(100 * var(--cqw)) - calc(90 * var(--cqh)));
+    overflow: hidden;
+    will-change: transform;
+  }
+
+  .casa__reflejo img {
+    position: absolute;
+    left: calc(-38 * var(--cqh));
+    top: calc(-100 * var(--cqh));
+    width: calc(520 * var(--cqh));
+    max-width: none;
+    height: auto;
+    filter: blur(16px) saturate(0.92);
+  }
+}
+
+.casa__lienzo--puntos {
+  z-index: var(--z-puntos);
+  pointer-events: none;
+}
+
+.casa__luz {
+  position: absolute;
+  inset: -12%;
+  z-index: 1;
+  background:
+    radial-gradient(52% 58% at 18% 12%, rgb(255 226 170 / 0.44), transparent 72%),
+    radial-gradient(46% 42% at 16% 96%, rgb(96 60 24 / 0.5), transparent 76%),
+    radial-gradient(70% 60% at 100% 100%, rgb(112 69 26 / 0.3), transparent 74%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.casa__plano {
+  position: absolute;
+  left: var(--eje-frasco);
+  bottom: 0;
+  width: 0;
+  height: var(--alto-frasco);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.casa__plano--sombra { z-index: 2; }
+.casa__plano--frasco { z-index: 3; }
+.casa__plano--lino { z-index: 3; }
+
+/* Lino en primer plano: el frasco se apoya en él y su pliegue tapa la base (regla del apoyo).
+   Sale desde el borde izquierdo de la mesa y se pierde antes de llegar al cuenco. */
+.casa__lino {
+  --ancho-lino: calc(var(--eje-frasco) + var(--alto-frasco) * 1.34);
+  position: absolute;
+  left: calc(var(--eje-frasco) * -1 - calc(2 * var(--cqw)));
+  bottom: -2px;
+  width: calc(var(--ancho-lino) + calc(4 * var(--cqw)));
+  max-width: none;
+  height: calc(var(--alto-frasco) * 0.2);
+  filter: drop-shadow(0 -7px 9px rgb(70 44 18 / 0.34));
+  -webkit-mask-image: linear-gradient(to right, #000 70%, transparent 98%);
+  mask-image: linear-gradient(to right, #000 70%, transparent 98%);
+}
+
+/* El mismo paño más atrás y desenfocado: es el plano de mesa que recibe la sombra. */
+.casa__lino--fondo {
+  bottom: calc(var(--alto-frasco) * 0.075);
+  filter: blur(3px) brightness(0.86) drop-shadow(0 -4px 12px rgb(70 44 18 / 0.3));
+}
+
+.casa__plano--cacahuetes {
+  z-index: 4;
+  left: auto;
+  right: calc(3 * var(--cqw));
+  bottom: calc(2 * var(--cqh));
+  width: calc(var(--cacahuete-a) * 1.9);
+  height: calc(var(--cacahuete-a) * 1.3);
+}
+
+.casa__aparicion,
+.casa__escala {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 0;
+}
+
+.casa__aparicion { bottom: calc(var(--hundido) * -1); }
+
+.casa__escala {
+  display: flex;
+  justify-content: center;
+  transform-origin: 0 100%;
+}
+
+/* Temperatura de la foto: el frasco de estudio se calienta y baja un punto de contraste. */
+.casa__escala img {
+  filter:
+    sepia(0.1) saturate(1.04) contrast(0.97) brightness(1.01)
+    drop-shadow(14px 10px 16px rgb(58 36 14 / 0.3));
+}
+
+.casa__frasco-caja {
+  position: relative;
+  flex: none;
+  height: 100%;
+  aspect-ratio: 0.566;
+}
+
+/* Sombra de contacto: muy densa y corta justo bajo el pie. */
+.casa__contacto {
+  position: absolute;
+  left: -14%;
+  right: -22%;
+  bottom: calc(var(--hundido) - var(--alto-frasco) * 0.05);
+  height: 15%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(44 26 8 / 0.74), rgb(44 26 8 / 0.34) 58%, rgb(44 26 8 / 0));
+  filter: blur(5px);
+}
+
+/* Modelado: la luz de la ventana entra por arriba a la izquierda y cae hacia la derecha. */
+.casa__frasco-luz,
+.casa__frasco-borde {
+  position: absolute;
+  left: 50%;
+  bottom: calc(-100% * var(--f-base) / var(--f-altura));
+  height: calc(100% / var(--f-altura));
+  aspect-ratio: var(--f-aspecto);
+  transform: translateX(calc(-100% * var(--f-eje)));
+  -webkit-mask-image: var(--recorte);
+  mask-image: var(--recorte);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.casa__frasco-luz {
+  background:
+    linear-gradient(100deg, rgb(255 232 188 / 0.34), rgb(255 232 188 / 0) 40%, rgb(58 32 10 / 0) 58%, rgb(58 32 10 / 0.42)),
+    linear-gradient(to top, rgb(70 42 16 / 0.34), rgb(70 42 16 / 0) 26%);
+  mix-blend-mode: soft-light;
+}
+
+/* Borde cálido del vidrio, del lado de la luz. */
+.casa__frasco-borde {
+  --d: calc(var(--alto-frasco) * 0.009);
+  -webkit-mask-image: var(--recorte), var(--recorte);
+  mask-image: var(--recorte), var(--recorte);
+  -webkit-mask-position: 0 0, var(--d) var(--d);
+  mask-position: 0 0, var(--d) var(--d);
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
+  background: linear-gradient(100deg, rgb(255 226 170 / 0.9), rgb(255 226 170 / 0) 56%);
+  filter: blur(0.5px);
+  mix-blend-mode: screen;
+}
+
+/* Sombra arrojada sobre el plano de mesa, hacia la derecha y abajo. */
+.casa__sombra {
+  position: absolute;
+  left: calc(var(--alto-frasco) * -0.1);
+  bottom: calc(var(--alto-frasco) * -0.02);
+  width: calc(var(--alto-frasco) * 1.15);
+  height: calc(var(--alto-frasco) * 0.34);
+  background: radial-gradient(closest-side, rgb(62 38 16 / 0.56), rgb(62 38 16 / 0.2) 62%, transparent);
+  transform-origin: 18% 100%;
+  filter: blur(6px);
+}
+
+/* Caja de la ficha: mide el frasco a 300 g y no escala con él. */
+.casa__ficha {
+  position: absolute;
+  left: calc(var(--alto-frasco) * -0.283);
+  bottom: 0;
+  width: calc(var(--alto-frasco) * 0.566);
+  height: var(--alto-frasco);
+}
+
+.casa__cacahuete {
+  position: absolute;
+  max-width: 130px;
+  height: auto;
+  filter: drop-shadow(3px 7px 6px rgb(46 42 31 / 0.42));
+}
+
+/* ---------- Punto interactivo: área de 44 px, punto visible de 14 px ---------- */
+.casa__punto {
+  position: absolute;
+  /* La taza queda al borde: en móvil el punto no debe salirse del escenario. */
+  left: max(calc(var(--x) * 1%), calc(var(--holgura) + 28px + env(safe-area-inset-left, 0px)));
+  width: var(--tactil);
+  height: var(--tactil);
+  margin: calc(var(--tactil) / -2) 0 0 calc(var(--tactil) / -2);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-punto);
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.casa__punto::before,
+.casa__punto::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: var(--r-punto);
+}
+
+.casa__punto::before {
+  z-index: 1;
+  background: var(--c-crema);
+  box-shadow: 0 0 0 2px var(--c-tinta), 0 2px 6px 2px rgb(46 42 31 / 0.35);
+  transition:
+    background-color var(--d-rapido) var(--m-salida),
+    box-shadow var(--d-rapido) var(--m-salida),
+    transform var(--d-rapido) var(--m-salida);
+}
+
+.casa__punto::after {
+  background: rgb(247 243 234 / 0.75);
+  animation: casa-pulso 2.4s var(--m-marea) infinite;
+}
+
+.casa__punto[data-visto]::after,
+.casa__punto[aria-expanded='true']::after {
+  animation: none;
+  opacity: 0;
+}
+
+.casa__punto[data-visto]::before,
+.casa__punto[aria-expanded='true']::before { background: var(--c-tostado); }
+
+.casa__punto[aria-expanded='true']::before {
+  box-shadow: 0 0 0 2px var(--c-crema), 0 0 0 4px var(--c-tinta);
+}
+
+/* Pulso inicial: los tres a la vez, con un paso corto, cuando aparece la instrucción. */
+.casa__lienzo--puntos[data-ola] .casa__punto:not([data-visto])::after {
+  animation: casa-ola 1.05s var(--m-salida) calc(var(--i) * 120ms + 0.85s) 2 both;
+}
+
+@keyframes casa-ola {
+  0% { transform: scale(1); opacity: 0.95; }
+  100% { transform: scale(3.4); opacity: 0; }
+}
+
+/* Instrucción: la misma nota que en Atacama, sobre la mesa y fuera de los puntos. */
+.casa__instruccion {
+  position: absolute;
+  z-index: 25;
+  right: calc(16 * var(--cqw));
+  bottom: calc(3.6 * var(--cqh));
+  width: max-content;
+  max-width: calc(62 * var(--cqw));
+  pointer-events: none;
+}
+
+@keyframes casa-pulso {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(2.3); opacity: 0; }
+}
+
+@media (hover: hover) {
+  .casa__punto:hover::before { transform: scale(1.3); }
+}
+
+.casa__anotacion {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.casa__hilo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.casa__hilo path {
+  fill: none;
+  stroke: var(--c-tinta);
+  stroke-width: 1;
+}
+
+.casa__nota {
+  position: absolute;
+  width: max-content;
+  max-width: min(24ch, calc(62 * var(--cqw)));
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* ---------- Folio: papel mantequilla con grano ---------- */
+.casa .folio::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: var(--grano);
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.casa .folio__grabado { overflow: visible; }
+.casa .folio__grabado .ilu { will-change: transform; }
+
+/* ---------- Apilado: la foto se ancla a la izquierda para que quepan taza y cuenco ---------- */
+@media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+  .casa .escenario {
+    --alto-frasco: min(calc(54 * var(--cqh)), calc(78 * var(--cqw)), 700px);
+    --eje-frasco: max(calc(22 * var(--cqw)), calc(var(--alto-frasco) * 0.283 + var(--e-3)));
+  }
+
+  .casa__lienzo { --zoom: 1; }
+
+  .casa__instruccion { font-size: var(--t-etiqueta); bottom: calc(2.4 * var(--cqh)); right: var(--e-3); }
+}
+
+@media (max-width: 699px) {
+  .casa .escenario { --alto-frasco: min(calc(46 * var(--cqh)), calc(58 * var(--cqw))); }
+}
+
+/* ---------- Móvil horizontal ---------- */
+@media (orientation: landscape) and (max-height: 559px) {
+  .casa .escenario { --alto-frasco: calc(62 * var(--cqh)); }
+  .casa__lienzo { --zoom: 1.04; }
+  .casa__instruccion { font-size: var(--t-etiqueta); bottom: calc(2.4 * var(--cqh)); right: var(--e-3); }
+}
+
+/* ---------- Reducir movimiento: nada en bucle ---------- */
+[data-motion='reducido'] .casa__punto::after {
+  animation: none;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .casa__punto::after {
+    animation: none;
+    opacity: 0;
+  }
+}

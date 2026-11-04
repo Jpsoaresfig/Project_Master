@@ -1,0 +1,465 @@
+/* ==========================================================================
+   Un viaje en cada cucharada · Tokens del sistema visual
+   Uso y reglas en src/DESIGN.md. Este archivo solo define variables.
+
+   El tema se fija en <html data-theme="inicio|casa|ubud|atacama|vip|final">.
+   Sin data-theme (documentación) rige :root.
+   «Reducir movimiento» se fija en <html data-motion="reducido">.
+
+   Los pares de texto y fondo de este archivo cumplen AA (4.5:1). Si añades uno
+   nuevo, compruébalo. No uses --c-rosa, --c-verde, --c-flor ni --c-cacahuete como
+   color de texto pequeño sobre claro: para eso están los tokens --acento-texto.
+   ========================================================================== */
+
+/* Ejes de Fraunces registrados para que se puedan interpolar entre temas. */
+@property --f-opsz { syntax: '<number>'; inherits: true; initial-value: 144; }
+@property --f-soft { syntax: '<number>'; inherits: true; initial-value: 50; }
+@property --f-wonk { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --f-peso { syntax: '<number>'; inherits: true; initial-value: 400; }
+/* Intensidad de la fogata (0 a 1): la escribe Atacama con JavaScript. */
+@property --intensidad { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+/* Unidades de contenedor con red para Safari 15 y 16: en vez de 58cqh, calc(58 * var(--cqh)).
+   Sin `cq*`, un min() o un calc() enteros serían inválidos y los frascos medirían 0 × 0.
+   Son variables sin registrar: `cqw` se resuelve en el elemento que las usa. */
+:root {
+  --cqw: 1vw;
+  --cqh: 1vh;
+  --cqi: 1vw;
+}
+
+@supports (width: 1cqw) {
+  :root {
+    --cqw: 1cqw;
+    --cqh: 1cqh;
+    --cqi: 1cqi;
+  }
+}
+
+:root {
+  --intensidad: 0;
+
+  /* ---------- Paleta de la presentación (no modificar) ---------- */
+  --c-crema: #F7F3EA;
+  --c-tinta: #2E2A1F;
+  --c-oliva-osc: #3F4322;
+  --c-oliva: #A3A56A;
+  --c-cacahuete: #B07A3E;
+  --c-pitaya: #C2185B;
+  --c-rosa: #F06A9E;
+  --c-verde: #6E8C4A;
+  --c-flor: #8E5FA6;
+
+  /* ---------- Derivados de la paleta ---------- */
+  --c-pared: #A59C64;         /* entre --c-oliva y la pared real de las fotos de producto */
+  --c-madera: #6B4E37;        /* balda de la pared, tomada de la mesa de las fotos */
+  --c-mantequilla: #EFDCB4;   /* papel de Casa: cacahuete muy aclarado, no crema */
+  --c-tostado: #70451A;       /* cacahuete apto para texto sobre mantequilla y crema */
+  --c-oliva-clara: #D8DAB0;   /* oliva apto para texto sobre oliva oscuro */
+  --c-pitaya-osc: #8A0F40;    /* pitaya sobre crema en botones invertidos */
+  --c-rosa-pale: #FCE3EC;     /* texto secundario sobre pitaya */
+  --c-noche: #0D0F1E;         /* cielo alto de noche.webp */
+  --c-noche-media: #181E30;   /* cielo bajo de noche.webp */
+  --c-noche-tinta: #1E2133;   /* pestañas y fichas en Atacama */
+  --c-flor-clara: #D2BBE3;    /* flor apto para texto sobre noche */
+  --c-estrella: #E9E6F2;
+  --c-ascua: #F2A23A;         /* fuego, solo como luz o partícula, nunca como texto pequeño */
+  --c-llama: #FFD27A;
+  --c-oro: #F2C94C;           /* cacahuete dorado de la Web F */
+
+  /* ---------- Tipografía: familias ---------- */
+  --f-display: 'Fraunces Variable', 'Fraunces Respaldo', Georgia, 'Times New Roman', serif;
+  --f-texto: 'Instrument Sans Variable', 'Instrument Respaldo', 'Segoe UI', Arial, sans-serif;
+  /* Instrument Sans NO tiene el glifo ′ (U+2032). Toda coordenada va en Fraunces. */
+  --f-coordenada: var(--f-display);
+
+  /* ---------- Clima tipográfico: lo que cada destino le hace a Fraunces ----------
+     Aplicar a los títulos:
+       font-family: var(--f-display);
+       font-style: var(--f-estilo);
+       font-weight: var(--f-peso);
+       font-variation-settings: 'opsz' var(--f-opsz), 'SOFT' var(--f-soft), 'WONK' var(--f-wonk);
+       font-optical-sizing: none;
+     Escribe esa línea tal cual en cada título: así un --f-soft local funciona.
+     No usar el atajo `font:` después: reinicia font-variation-settings. */
+  --f-opsz: 144;
+  --f-soft: 40;
+  --f-wonk: 0;
+  --f-peso: 420;
+  --f-estilo: normal;
+  /* Notas a mano: letra pequeña, blanda y torcida. */
+  --f-ejes-nota: 'opsz' 12, 'SOFT' 100, 'WONK' 1;
+  /* Coordenadas y números de ficha. */
+  --f-ejes-dato: 'opsz' 14, 'SOFT' 0, 'WONK' 0;
+  /* Etiquetas en Instrument Sans estrechada: font-stretch: var(--ancho-etiqueta). */
+  --ancho-etiqueta: 78%;
+
+  /* ---------- Escala fluida (360 a 1600 px) ---------- */
+  --t-nota: clamp(0.875rem, 0.84rem + 0.15vw, 1rem);
+  --t-etiqueta: clamp(0.75rem, 0.73rem + 0.09vw, 0.8125rem);
+  --t-dato: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+  --t-cuerpo: clamp(1rem, 0.97rem + 0.14vw, 1.125rem);
+  --t-entrada: clamp(1.25rem, 1.15rem + 0.44vw, 1.625rem);
+  --t-h3: clamp(1.375rem, 1.26rem + 0.5vw, 1.75rem);
+  --t-h2: clamp(1.875rem, 1.6rem + 1.2vw, 2.875rem);
+  --t-h1: clamp(2.625rem, 2.05rem + 2.5vw, 4.625rem);
+  /* Requieren `container-type: inline-size` en el escenario. */
+  --t-portada: clamp(3.25rem, calc(13.2 * var(--cqi)), 11rem);
+  --t-numeral: clamp(9rem, calc(42 * var(--cqi)), 30rem);
+
+  --i-ajustado: 0.96;
+  --i-titulo: 1.04;
+  --i-cuerpo: 1.55;
+  --i-nota: 1.3;
+  --e-display: -0.022em;
+  --e-etiqueta: 0.09em;
+  --medida: 34ch;
+  --medida-larga: 68ch;
+
+  /* ---------- Espaciado (base 4 px) ---------- */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-5: 1.5rem;
+  --e-6: 2rem;
+  --e-7: 3rem;
+  --e-8: 4.5rem;
+  --e-9: 7rem;
+  --margen: clamp(1rem, 0.6rem + 1.8vw, 2.5rem);
+
+  /* ---------- Estructura ---------- */
+  --col-visual: 2fr;
+  --col-folio: 1fr;
+  --alto-pestana: 2.75rem;
+  --alto-ruta: 4rem;
+  --tactil: 2.75rem;          /* objetivo táctil mínimo: 44 px */
+
+  /* ---------- Formas: el sistema es recto; la curva se reserva al remolino ---------- */
+  --r-0: 0;
+  --r-papel: 1px;
+  --r-punto: 50%;
+  --muesca: 7px;              /* radio de las muescas del billete */
+
+  /* ---------- Líneas ---------- */
+  --l-fina: 1px;
+  --l-media: 1.5px;
+  --l-foco: 2px;
+  --l-trazo: 6px 5px;         /* guiones de la ruta sin recorrer: stroke-dasharray */
+
+  /* ---------- Sombras: entintadas, nunca grises ---------- */
+  --s-papel: 2px 3px 0 rgb(46 42 31 / 0.22);
+  --s-papel-alzado: 4px 7px 0 rgb(46 42 31 / 0.2);
+  --s-flotante: 0 14px 32px -12px rgb(46 42 31 / 0.5);
+  --s-frasco: 0 6px 8px rgb(46 42 31 / 0.34), 0 22px 34px -8px rgb(46 42 31 / 0.34);
+
+  /* ---------- Textura ----------
+     Grano de papel: capa ::after, opacity 0.5, mix-blend-mode: multiply, pointer-events: none. */
+  --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .16 0 0 0 0 .12 0 0 0 .3 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+
+  /* Madera y revoco, para la balda y la pared de Inicio y Final (.balda y .pared en app.css). */
+  --veta: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='260'%3E%3Cfilter id='v' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0045 .19' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .13 0 0 0 0 .07 0 0 0 0 .03 3.1 0 0 0 -1.2'/%3E%3C/filter%3E%3Crect width='900' height='260' filter='url(%23v)'/%3E%3C/svg%3E");
+  --revoco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640'%3E%3Cfilter id='r' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0125 .0175' numOctaves='5' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .08 0 0 0 .62 -.2'/%3E%3C/filter%3E%3Crect width='640' height='640' filter='url(%23r)'/%3E%3C/svg%3E");
+
+  /* ---------- Movimiento ---------- */
+  --d-instante: 90ms;
+  --d-rapido: 160ms;
+  --d-medio: 280ms;
+  --d-lento: 520ms;
+  --d-pliegue: 900ms;
+  --d-remolino-cubre: 700ms;
+  --d-remolino-revela: 620ms;
+  --d-clima: 1100ms;          /* cambio de ejes tipográficos entre pantallas */
+
+  --m-salida: cubic-bezier(0.22, 0.9, 0.3, 1);      /* entra y frena */
+  --m-entrada: cubic-bezier(0.6, 0, 0.9, 0.4);      /* acelera y sale */
+  --m-giro: cubic-bezier(0.76, 0, 0.24, 1);         /* remolino: arranque y frenada lentos */
+  --m-cuchara: cubic-bezier(0.3, 1.45, 0.5, 1);     /* rebote corto al soltar */
+  --m-sello: cubic-bezier(0.5, 0, 0.1, 1);          /* golpe seco, sin rebote */
+  --m-marea: cubic-bezier(0.45, 0.05, 0.55, 0.95);  /* vaivén continuo */
+
+  /* ---------- Capas ---------- */
+  --z-escena: 0;
+  --z-particulas: 10;
+  --z-puntos: 20;
+  --z-folio: 30;
+  --z-ruta: 40;
+  --z-cabecera: 50;
+  --z-web-f: 60;
+  --z-remolino: 70;
+  --z-aviso: 80;
+
+  /* ---------- Roles de color. Por defecto: documentación ---------- */
+  --fondo: var(--c-crema);
+  --texto: var(--c-tinta);
+  --folio: var(--c-crema);
+  --folio-texto: var(--c-tinta);
+  --folio-tenue: #5A5443;
+  --folio-velo: none;
+  --folio-pie: var(--folio);        /* color opaco tras las salidas fijas del folio */
+  --acento: var(--c-pitaya);        /* relleno */
+  --sobre-acento: var(--c-crema);   /* texto sobre el relleno */
+  --acento-texto: #AD1250;          /* acento usado como texto sobre --folio */
+  --linea: #8A8460;                 /* filetes y controles: 3:1 sobre --folio */
+  /* Foco de doble anillo: outline --foco + box-shadow --foco-halo. Así se distingue
+     igual sobre papel, sobre foto y sobre pitaya. */
+  --foco: var(--c-pitaya);
+  --foco-halo: var(--c-crema);
+
+  --ficha: var(--c-crema);          /* pestañas de cabecera y notas sobre imagen */
+  --ficha-texto: var(--c-tinta);
+  --ficha-tenue: #5A5443;
+
+  --ruta-fondo: var(--c-tinta);
+  --ruta-texto: var(--c-crema);
+  --ruta-tenue: #CFCAB8;
+  --ruta-acento: var(--c-oliva);
+  --ruta-sobre-acento: var(--c-tinta);
+  --ruta-linea: #8F8A76;
+
+  --remolino-a: var(--c-cacahuete);
+  --remolino-b: var(--c-oliva-osc);
+  --ilu-tinta: var(--c-tinta);
+  --ilu-mancha: none;
+  --ilu-papel: var(--c-crema);
+  --sello-tinta: var(--c-pitaya);
+}
+
+/* ---------- Inicio: la pared de las fotos de producto ---------- */
+[data-theme='inicio'] {
+  --f-soft: 60;
+  --f-wonk: 1;
+  --f-peso: 380;
+
+  --fondo: var(--c-pared);
+  --texto: var(--c-tinta);
+  --folio: var(--c-oliva-osc);
+  --folio-texto: var(--c-crema);
+  --folio-tenue: var(--c-oliva-clara);
+  --acento: var(--c-crema);
+  --sobre-acento: var(--c-pitaya-osc);
+  --acento-texto: var(--c-oliva-clara);
+  --linea: #A3A56A;
+  --foco: var(--c-crema);
+  --foco-halo: var(--c-oliva-osc);
+
+  --ruta-acento: var(--c-oliva);
+  --remolino-a: var(--c-rosa);
+  --remolino-b: var(--c-oliva);
+  --ilu-tinta: var(--c-oliva-osc);
+  --ilu-mancha: rgb(247 243 234 / 0.28);
+  --ilu-papel: var(--c-pared);
+  --sello-tinta: var(--c-oliva-osc);
+}
+
+/* ---------- Casa · Modo Origen: cremoso, lleno, redondo ---------- */
+[data-theme='casa'] {
+  --f-opsz: 96;
+  --f-soft: 100;
+  --f-wonk: 0;
+  --f-peso: 640;
+
+  --fondo: var(--c-mantequilla);
+  --texto: var(--c-tinta);
+  --folio: var(--c-mantequilla);
+  --folio-texto: var(--c-tinta);
+  --folio-tenue: #574629;
+  --acento: var(--c-tostado);
+  --sobre-acento: var(--c-crema);
+  --acento-texto: var(--c-tostado);
+  --linea: #8B6A38;
+  --foco: var(--c-pitaya-osc);
+  --foco-halo: var(--c-mantequilla);
+
+  --ruta-acento: #E4B67C;
+  --remolino-a: var(--c-cacahuete);
+  --remolino-b: var(--c-tostado);
+  --ilu-tinta: var(--c-tostado);
+  --ilu-mancha: rgb(176 122 62 / 0.28);
+  --ilu-papel: var(--c-mantequilla);
+  --sello-tinta: var(--c-tostado);
+}
+
+/* ---------- Ubud · Modo Selva: húmedo, inclinado, ligero ---------- */
+[data-theme='ubud'] {
+  --f-opsz: 144;
+  --f-soft: 70;
+  --f-wonk: 1;
+  --f-peso: 330;
+  --f-estilo: italic;
+
+  --fondo: var(--c-pitaya);
+  --texto: var(--c-crema);
+  --folio: var(--c-pitaya);
+  --folio-texto: var(--c-crema);
+  --folio-tenue: var(--c-rosa-pale);
+  --acento: var(--c-crema);
+  --sobre-acento: var(--c-pitaya-osc);
+  --acento-texto: var(--c-crema);
+  --linea: var(--c-rosa-pale);
+  --foco: var(--c-crema);
+  --foco-halo: var(--c-pitaya-osc);
+
+  --ruta-acento: var(--c-rosa);
+  --remolino-a: var(--c-pitaya);
+  --remolino-b: var(--c-rosa);
+  --ilu-tinta: var(--c-crema);
+  --ilu-mancha: rgb(240 106 158 / 0.45);
+  --ilu-papel: var(--c-pitaya);
+  --sello-tinta: var(--c-crema);
+}
+
+/* ---------- Atacama · Modo Noche: seco, afilado, finísimo. La fogata lo ablanda ---------- */
+[data-theme='atacama'] {
+  --f-opsz: 144;
+  --f-soft: calc(100 * var(--intensidad));
+  --f-wonk: 1;
+  --f-peso: calc(210 + 230 * var(--intensidad));
+
+  --fondo: var(--c-noche);
+  --texto: var(--c-crema);
+  --folio: transparent;             /* el texto va sobre --folio-velo, nunca sobre estrellas */
+  --folio-velo: radial-gradient(
+    115% 62% at 100% 26%,
+    rgb(13 15 30 / 0.92) 0%,
+    rgb(13 15 30 / 0.88) 58%,
+    rgb(13 15 30 / 0) 100%
+  );
+  --folio-pie: var(--c-noche);
+  --folio-texto: var(--c-crema);
+  --folio-tenue: #C9C6D6;
+  --acento: var(--c-flor-clara);
+  --sobre-acento: var(--c-noche);
+  --acento-texto: var(--c-flor-clara);
+  --linea: #7E7B96;
+  --foco: var(--c-rosa);
+  --foco-halo: var(--c-noche);
+
+  --ficha: var(--c-noche-tinta);
+  --ficha-texto: var(--c-crema);
+  --ficha-tenue: #C9C6D6;
+
+  --ruta-fondo: var(--c-noche);
+  --ruta-acento: var(--c-flor-clara);
+  --ruta-sobre-acento: var(--c-noche);
+  --ruta-tenue: #C9C6D6;
+  --ruta-linea: #7E7B96;
+
+  --remolino-a: var(--c-flor);
+  --remolino-b: var(--c-verde);
+  --ilu-tinta: var(--c-flor-clara);
+  --ilu-mancha: rgb(142 95 166 / 0.4);
+  --ilu-papel: var(--c-noche);
+  --sello-tinta: var(--c-flor-clara);
+}
+
+/* ---------- VIP: el cuaderno abierto ---------- */
+[data-theme='vip'] {
+  --f-opsz: 72;
+  --f-soft: 100;
+  --f-wonk: 1;
+  --f-peso: 500;
+  --f-estilo: italic;
+
+  --fondo: var(--c-crema);
+  --texto: var(--c-tinta);
+  --folio: var(--c-oliva-osc);
+  --folio-texto: var(--c-crema);
+  --folio-tenue: var(--c-oliva-clara);
+  --acento: var(--c-crema);
+  --sobre-acento: var(--c-pitaya-osc);
+  --acento-texto: var(--c-oliva-clara);
+  --linea: #A3A56A;
+  --foco: var(--c-pitaya);          /* en el folio: redefinir --foco y --foco-halo con los -folio */
+  --foco-halo: var(--c-crema);
+  --foco-folio: var(--c-crema);
+  --foco-halo-folio: var(--c-oliva-osc);
+
+  /* La página del cuaderno es crema; --acento es para el folio oscuro. */
+  --pagina-acento: var(--c-pitaya);
+  --pagina-sobre-acento: var(--c-crema);
+  --pagina-acento-texto: #AD1250;
+
+  /* Rayado de la página: líneas al 100 % de altura, solo decoración. */
+  --pauta: rgb(63 67 34 / 0.14);
+  --pauta-paso: 2.25rem;
+
+  --ruta-acento: var(--c-oliva);
+  --remolino-a: var(--c-pitaya);
+  --remolino-b: var(--c-verde);
+  --ilu-tinta: var(--c-tinta);
+  --ilu-mancha: rgb(240 106 158 / 0.26);
+  --ilu-papel: var(--c-crema);
+  --sello-tinta: var(--c-pitaya);
+}
+
+/* ---------- Final: la misma pared de Inicio, ya con los tres frascos ---------- */
+[data-theme='final'] {
+  --f-opsz: 144;
+  --f-soft: 100;
+  --f-wonk: 1;
+  --f-peso: 300;
+
+  --fondo: var(--c-pared);
+  --texto: var(--c-tinta);
+  --folio: var(--c-oliva-osc);
+  --folio-texto: var(--c-crema);
+  --folio-tenue: var(--c-oliva-clara);
+  --acento: var(--c-crema);
+  --sobre-acento: var(--c-pitaya-osc);
+  --acento-texto: var(--c-oliva-clara);
+  --linea: #A3A56A;
+  --foco: var(--c-crema);
+  --foco-halo: var(--c-oliva-osc);
+
+  --ruta-acento: var(--c-rosa);
+  --remolino-a: var(--c-rosa);
+  --remolino-b: var(--c-oliva);
+  --ilu-tinta: var(--c-crema);
+  --ilu-mancha: rgb(240 106 158 / 0.3);
+  --ilu-papel: var(--c-oliva-osc);
+  --sello-tinta: var(--c-oliva-clara);
+}
+
+/* Web F es una capa, no un tema: se aplica dentro de la capa con data-capa="web-f". */
+[data-capa='web-f'] {
+  --fondo: var(--c-tinta);
+  --texto: var(--c-crema);
+  --folio: var(--c-tinta);
+  --folio-texto: var(--c-crema);
+  --folio-tenue: #CFCAB8;
+  --acento: var(--c-crema);
+  --sobre-acento: var(--c-tinta);
+  --acento-texto: var(--c-crema);
+  --foco: var(--c-rosa);
+  --foco-halo: var(--c-tinta);
+  --ficha: var(--c-crema);
+  --ficha-texto: var(--c-tinta);
+  --ilu-tinta: var(--c-crema);
+  --ilu-papel: var(--c-tinta);
+}
+
+/* Reducción de movimiento: el sistema operativo y el botón hacen lo mismo. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --d-instante: 0.01ms;
+    --d-rapido: 0.01ms;
+    --d-medio: 0.01ms;
+    --d-lento: 0.01ms;
+    --d-pliegue: 0.01ms;
+    --d-remolino-cubre: 160ms;
+    --d-remolino-revela: 160ms;
+    --d-clima: 0.01ms;
+  }
+}
+
+[data-motion='reducido'] {
+  --d-instante: 0.01ms;
+  --d-rapido: 0.01ms;
+  --d-medio: 0.01ms;
+  --d-lento: 0.01ms;
+  --d-pliegue: 0.01ms;
+  --d-remolino-cubre: 160ms;
+  --d-remolino-revela: 160ms;
+  --d-clima: 0.01ms;
+}

@@ -1,0 +1,26 @@
+/* Ficha de gramos, común a los tres destinos. La caja envuelve el frasco a tamaño completo y
+   cada pantalla le da su alto en --ficha-alto. */
+.ficha-peso {
+  /* Anclada al hombro derecho: sigue a un frasco que escala desde su pie. */
+  --hombro-x: calc(var(--ficha-alto) * 0.566 * 0.34 * var(--k));
+  --hombro-y: calc(var(--ficha-alto) * (1 - var(--k) * 0.95));
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.ficha-peso__nota {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  max-width: none;
+  padding: var(--e-1) var(--e-2);
+  font-style: normal;
+  font-size: var(--t-dato);
+  font-variation-settings: var(--f-ejes-dato);
+  line-height: 1.2;
+  white-space: nowrap;
+  translate: var(--hombro-x) var(--hombro-y);
+  transition: translate var(--d-lento) var(--m-salida);
+}

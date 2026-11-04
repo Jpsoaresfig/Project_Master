@@ -1,0 +1,30 @@
+.fallo {
+  --acento: var(--c-crema);
+  --sobre-acento: var(--c-pitaya-osc);
+  --remolino-a: var(--c-rosa);
+  --remolino-b: var(--c-oliva);
+  --foco: var(--c-crema);
+  --foco-halo: var(--c-oliva-osc);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--e-4);
+  min-height: var(--vista);
+  padding: var(--e-8) max(var(--margen), env(safe-area-inset-left, 0px));
+  background-color: var(--c-oliva-osc);
+  background-image: var(--grano);
+  color: var(--c-crema);
+}
+
+.fallo__marca { color: var(--c-oliva-clara); }
+
+.fallo__titulo {
+  max-width: 14ch;
+  font-size: var(--t-h1);
+}
+
+.fallo__texto {
+  max-width: var(--medida);
+  color: var(--c-oliva-clara);
+}

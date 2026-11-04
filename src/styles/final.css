@@ -1,0 +1,381 @@
+/* De vuelta a casa. La misma pared y balda de Inicio; los tres frascos, juntos. */
+.final .escenario {
+  --alto-balda: calc(11 * var(--cqh));
+  --hundido: calc(3.5 * var(--cqh));
+  --portada: min(var(--t-portada), calc(9.4 * var(--cqi)), calc(15.5 * var(--cqh)));
+  --tope-titular: calc(var(--alto-pestana) + env(safe-area-inset-top, 0px) + var(--e-5));
+  --alto-frasco: min(
+    calc(34 * var(--cqw)),
+    620px,
+    calc(calc(100 * var(--cqh)) - var(--alto-balda) + var(--hundido) - var(--tope-titular) - 1.98 * var(--portada))
+  );
+  --hueco: calc(var(--alto-frasco) * 0.3);
+  --z-balda-plano: 2;
+  --z-balda-canto: 40;
+  background: var(--c-pared);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---------- Remolino de tres sabores ---------- */
+/* Las hebras se trazan en píxeles reales desde Final.jsx: boca de cada frasco y hueco libre. */
+.final__giro {
+  --tope-giro: 56;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.final__remolino {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(3px 5px 4px rgb(46 42 31 / 0.16));
+}
+
+.final__hebra { transition: opacity var(--d-medio) var(--m-salida); }
+
+.final__remolino[data-resaltado] .final__hebra { opacity: 0.26; }
+
+.final__remolino[data-resaltado='casa'] [data-sabor='casa'],
+.final__remolino[data-resaltado='ubud'] [data-sabor='ubud'],
+.final__remolino[data-resaltado='atacama'] [data-sabor='atacama'] { opacity: 1; }
+
+/* ---------- Titular: en el mismo sitio que el de Inicio ---------- */
+.final__titular {
+  position: absolute;
+  z-index: 4;
+  left: max(var(--margen), env(safe-area-inset-left, 0px));
+  top: var(--tope-titular);
+  font-size: var(--portada);
+  color: var(--c-tinta);
+}
+
+.final__linea {
+  display: block;
+  white-space: nowrap;
+}
+
+/* Cada palabra se ablanda en cascada: un --f-soft local sobre su propio eje. */
+.final__palabra {
+  --f-soft: 0;
+  font-variation-settings: 'opsz' var(--f-opsz), 'SOFT' var(--f-soft), 'WONK' var(--f-wonk);
+  transition: --f-soft var(--d-pliegue) var(--m-giro) calc(var(--i) * var(--d-rapido));
+}
+
+.final__titular[data-listo] .final__palabra { --f-soft: 100; }
+
+/* ---------- Los frascos ---------- */
+.final__fila {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--hueco);
+  padding-bottom: calc(var(--alto-balda) - var(--hundido));
+  pointer-events: none;
+}
+
+.final__enlace {
+  position: relative;
+  display: block;
+  flex: none;
+  /* El área activa baja hasta el rótulo de la balda. */
+  margin-bottom: calc((var(--alto-balda) - var(--hundido)) * -1);
+  padding-bottom: calc(var(--alto-balda) - var(--hundido));
+  color: inherit;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.final__vuelo,
+.final__llegada { position: relative; display: block; }
+
+/* Sombra de contacto sobre el plano de la balda, un punto hacia la derecha: luz de la izquierda. */
+.final__sombra {
+  left: 56%;
+  bottom: calc(var(--hundido) * 0.4);
+  width: calc(var(--alto-frasco) * 0.98);
+  transform: translate(-50%, 0);
+}
+
+/* Llega cruzando la pared y frena con --m-salida; aterriza con el rebote de cuchara. */
+.final__vuelo {
+  transform: translate3d(calc(110 * var(--cqw)), 0, 0);
+  transition: transform var(--d-lento) var(--m-salida);
+  transition-delay: calc(var(--i) * var(--d-lento) * 0.8077);
+}
+
+.final__llegada {
+  transform: rotate(5deg);
+  transform-origin: 50% 100%;
+  transition: transform var(--d-lento) var(--m-cuchara);
+  transition-delay: calc(var(--i) * var(--d-lento) * 0.8077 + var(--d-medio));
+}
+
+.final__fila[data-listo] .final__vuelo,
+.final__fila[data-listo] .final__llegada { transform: none; }
+
+.final__llegada img {
+  filter: drop-shadow(10px 10px 12px rgb(46 42 31 / 0.3));
+  transition: translate var(--d-medio) var(--m-salida);
+}
+
+@media (hover: hover) {
+  .final__enlace:hover img { translate: 0 -6px; }
+}
+
+.final__enlace:focus-visible { outline-offset: 4px; }
+
+.final__rotulos {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 41;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hueco);
+  height: var(--alto-balda);
+  color: var(--c-crema);
+  pointer-events: none;
+}
+
+.final__rotulos span {
+  width: calc(var(--alto-frasco) * 0.56);
+  text-align: center;
+  text-underline-offset: 0.3em;
+}
+
+.final__rotulos span {
+  transition: color var(--d-medio) var(--m-salida);
+}
+
+.final__rotulos span[data-activo] {
+  color: var(--c-mantequilla);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- Folio ---------- */
+.final__folio .folio__hoja {
+  gap: var(--e-5);
+  /* Ritmo: tres bloques con el mismo aire entre ellos, y el billete en su sitio de siempre. */
+  justify-content: space-between;
+}
+
+.final__folio .folio__ficha { flex: none; }
+
+.final__etapa { color: var(--folio-tenue); }
+
+.final__eslogan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-2);
+  margin-top: var(--e-3);
+}
+
+.final__eslogan .titulo {
+  font-size: var(--t-h1);
+  color: var(--folio-texto);
+}
+
+.final__eslogan .cita {
+  max-width: 24ch;
+  color: var(--folio-texto);
+}
+
+.final__recorrido {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-5);
+  width: 100%;
+}
+
+/* Los sellos crecen con el folio: tercio del ancho disponible, sin pasar de 13 rem. */
+.final__sellos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(var(--e-3), calc(4 * var(--cqi)), var(--e-6));
+  width: 100%;
+  max-width: 42rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.final__sello {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e-2);
+  min-width: 0;
+  text-align: center;
+}
+
+.final__sello-caja {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+/* El sello es una marca completa: tinta del destino, motivo grabado y número pequeño. */
+.final__sello-marca {
+  position: absolute;
+  inset: 0;
+  display: block;
+  --sello-tinta: var(--c-crema);
+}
+
+.final__sello-motivo {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 40%;
+  translate: -50% -50%;
+  color: var(--c-crema);
+  --ilu-mancha: transparent;
+  pointer-events: none;
+}
+
+.final__sello-motivo .grabado { display: none; }
+.final__sello-motivo .mancha { display: none; }
+.final__sello-motivo svg { overflow: visible; }
+
+.final__sello-motivo .contorno,
+.final__sello-motivo path {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1.5px;
+}
+
+.final__sello-motivo[data-sabor='ubud'],
+.final__sello-motivo[data-sabor='atacama'] { width: 28%; top: 43%; }
+
+.final__sello-numero {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  translate: -50% 0;
+  color: var(--c-crema);
+  font-family: var(--f-display);
+  font-size: clamp(0.8rem, 1.05vw, 1.25rem);
+  font-style: italic;
+  font-variation-settings: var(--f-ejes-nota);
+  font-optical-sizing: none;
+  line-height: 1;
+}
+
+.final__sello-vacio {
+  position: absolute;
+  inset: 7%;
+  display: grid;
+  place-items: center;
+  border: var(--l-media) dashed var(--linea);
+  border-radius: var(--r-punto);
+  color: var(--folio-tenue);
+  font-family: var(--f-display);
+  font-size: var(--t-h3);
+  font-style: italic;
+  font-variation-settings: var(--f-ejes-nota);
+  font-optical-sizing: none;
+  line-height: 1;
+}
+
+.final__sello[data-hecho] .final__sello-vacio { opacity: 0; }
+
+.final__sello-nombre { color: var(--folio-texto); }
+
+.final__sello-estado {
+  display: block;
+  margin-top: 2px;
+  color: var(--folio-tenue);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.final__pendiente {
+  max-width: var(--medida);
+  color: var(--folio-texto);
+  font-size: var(--t-cuerpo);
+  line-height: var(--i-cuerpo);
+}
+
+.final__pendiente a {
+  display: inline-block;
+  min-height: var(--tactil);
+  padding-block: calc((var(--tactil) - 1.5em) / 2);
+  color: inherit;
+  text-underline-offset: 0.25em;
+}
+
+.final__folio .folio__salidas {
+  position: relative;
+  margin-top: 0;
+}
+
+.final__folio .boton--billete {
+  flex: 1 1 100%;
+  max-width: 24rem;
+  padding-block: var(--e-2);
+  line-height: 1.25;
+}
+
+/* Poco alto en escritorio: el folio se compacta antes de hacer scroll. */
+@media (min-width: 700px) and (max-height: 799px) and (min-height: 560px) {
+  .final__folio .folio__hoja { gap: var(--e-4); }
+  .final__eslogan .titulo { font-size: var(--t-h2); }
+  .final__sellos { max-width: 21rem; }
+}
+
+/* ---------- Apilado ---------- */
+@media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+  .final .escenario {
+    --alto-balda: max(calc(11 * var(--cqh)), 3.5rem);
+    --portada: min(calc(9.4 * var(--cqi)), calc(12 * var(--cqh)));
+    --tope-titular: calc(var(--alto-pestana) + env(safe-area-inset-top, 0px) + var(--e-4));
+    --alto-frasco: min(
+      calc(39 * var(--cqw)),
+      calc(calc(100 * var(--cqh)) - var(--alto-balda) + var(--hundido) - var(--tope-titular) - 2.2 * var(--portada))
+    );
+    min-height: 26rem;
+  }
+
+  .final__folio .folio__hoja { justify-content: flex-start; }
+}
+
+@media (orientation: portrait) and (min-width: 700px) and (max-width: 1099px) {
+  .final__folio .folio__ficha { grid-row: 1 / span 2; }
+  .final__recorrido,
+  .final__folio .folio__salidas { grid-column: 2; }
+}
+
+/* ---------- Móvil horizontal ---------- */
+@media (orientation: landscape) and (max-height: 559px) {
+  .final .escenario {
+    --hundido: calc(2 * var(--cqh));
+    --portada: min(calc(13 * var(--cqh)), calc(7.6 * var(--cqi)));
+    --tope-titular: calc(var(--alto-pestana) + var(--e-2));
+    --alto-frasco: min(
+      calc(30 * var(--cqw)),
+      calc(calc(100 * var(--cqh)) - var(--alto-balda) + var(--hundido) - var(--tope-titular) - 2 * var(--portada))
+    );
+  }
+
+  .final__folio .folio__hoja { gap: var(--e-3); }
+  .final__eslogan { margin-top: 0; }
+  .final__eslogan .titulo { font-size: var(--t-h3); }
+  .final__eslogan .cita { font-size: var(--t-cuerpo); }
+  .final__sellos { max-width: 15rem; }
+  .final__recorrido { gap: var(--e-3); }
+  .final__folio .folio__hoja { justify-content: flex-start; }
+  .final__sello-estado { display: none; }
+  .final__sello-vacio { font-size: var(--t-cuerpo); }
+}

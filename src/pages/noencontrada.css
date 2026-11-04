@@ -1,0 +1,17 @@
+.perdido .escenario { background: var(--c-pared); }
+
+.perdido__escena {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.perdido__escena .remolino {
+  width: min(calc(44 * var(--cqi)), calc(50 * var(--cqh)));
+  height: auto;
+}
+
+.perdido__marca { color: var(--folio-tenue); }
+
+.perdido .folio__cita { max-width: 22ch; }

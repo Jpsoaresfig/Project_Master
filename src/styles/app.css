@@ -1,0 +1,394 @@
+/* Base común. Valores en tokens.css; reglas en src/DESIGN.md.
+   Disposiciones (mismas consultas que hooks.js):
+   - ancho:   2/3 + 1/3
+   - apilado: (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px)
+   - bajo:    (orientation: landscape) and (max-height: 559px) */
+
+:root {
+  --vista: 100vh;
+  --vista-s: 100vh;
+  --ruta-total: calc(var(--alto-ruta) + env(safe-area-inset-bottom, 0px));
+  --folio-ancho: clamp(18.5rem, 33.333vw, 72rem);
+  /* Modo ultrapanorámico: 1 con 2:1 o más. Multiplícalo en un calc() para ajustar a mano. */
+  --ultra: 0;
+  /* Una centésima del alto útil: la unidad para escalar con el alto. */
+  --alto-u: calc((var(--vista) - var(--ruta-total)) / 100);
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --vista: 100dvh;
+    --vista-s: 100svh;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 559px) {
+  :root { --alto-ruta: 3.25rem; --alto-pestana: 2.75rem; }
+}
+
+/* Pantallas grandes: todo lo que va en rem (texto, controles, márgenes) crece con el alto. */
+@media (orientation: landscape) and (min-height: 1143px) {
+  html { font-size: clamp(100%, 1.4vh, 170%); }
+}
+
+/* Ultrapanorámico: el folio conserva su tercio y el texto respira con él. */
+@media (min-aspect-ratio: 2/1) and (min-height: 560px) {
+  :root {
+    --ultra: 1;
+    --folio-ancho: 33.333vw;
+    --medida: 44ch;
+    --t-portada: clamp(3.25rem, calc(21 * var(--alto-u)), 16rem);
+    --t-numeral: clamp(9rem, calc(42 * var(--alto-u)), 34rem);
+    --t-h1: clamp(2.625rem, calc(8.2 * var(--alto-u)), 6.5rem);
+    --t-h2: clamp(1.875rem, calc(5.2 * var(--alto-u)), 4.25rem);
+    --t-h3: clamp(1.375rem, calc(3.2 * var(--alto-u)), 2.5rem);
+    --t-entrada: clamp(1.25rem, calc(2.8 * var(--alto-u)), 2.25rem);
+    --t-cuerpo: clamp(1rem, calc(1.9 * var(--alto-u)), 1.375rem);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--fondo);
+  transition:
+    --f-soft var(--d-clima) var(--m-giro),
+    --f-peso var(--d-clima) var(--m-giro),
+    --f-opsz var(--d-clima) var(--m-giro);
+}
+
+html[data-clima='fijo'] { transition: none; }
+
+body {
+  margin: 0;
+  min-height: var(--vista);
+  overflow-x: hidden; /* Safari 15 no conoce clip. */
+  overflow-x: clip;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--f-texto);
+  font-size: var(--t-cuerpo);
+  line-height: var(--i-cuerpo);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1, h2, h3, p, dl, dd { margin: 0; }
+
+img, svg { display: block; }
+
+img { max-width: 100%; }
+
+button { font: inherit; }
+
+/* El h1 recibe foco al navegar: no es un control. */
+[tabindex='-1']:focus { outline: 0; box-shadow: none; }
+
+/* Doble anillo: se ve igual sobre papel, foto y pitaya. */
+:focus-visible {
+  outline: var(--l-foco) solid var(--foco);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--foco-halo);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.saltar {
+  position: fixed;
+  z-index: var(--z-aviso);
+  top: var(--e-2);
+  left: var(--e-2);
+  padding: var(--e-3) var(--e-4);
+  background: var(--ficha);
+  color: var(--ficha-texto);
+  transform: translateY(-300%);
+}
+
+.saltar:focus-visible { transform: none; }
+
+/* ---------- Tipografía ---------- */
+.titulo {
+  font-family: var(--f-display);
+  font-style: var(--f-estilo);
+  font-weight: var(--f-peso);
+  font-variation-settings: 'opsz' var(--f-opsz), 'SOFT' var(--f-soft), 'WONK' var(--f-wonk);
+  font-optical-sizing: none;
+  letter-spacing: var(--e-display);
+  line-height: var(--i-ajustado);
+  text-wrap: balance;
+}
+
+.cita {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--t-entrada);
+  font-variation-settings: 'opsz' 36, 'SOFT' 100, 'WONK' 1;
+  font-optical-sizing: none;
+  line-height: var(--i-titulo);
+  text-wrap: balance;
+}
+
+.etiqueta {
+  font-family: var(--f-texto);
+  font-size: var(--t-etiqueta);
+  font-weight: 600;
+  font-stretch: var(--ancho-etiqueta);
+  letter-spacing: var(--e-etiqueta);
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.dato {
+  font-family: var(--f-coordenada);
+  font-size: var(--t-dato);
+  font-variation-settings: var(--f-ejes-dato);
+  font-optical-sizing: none;
+}
+
+.nota {
+  width: fit-content;
+  max-width: 24ch;
+  padding: var(--e-2) var(--e-3);
+  background: var(--ficha);
+  color: var(--ficha-texto);
+  box-shadow: var(--s-papel);
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-nota);
+  font-variation-settings: var(--f-ejes-nota);
+  font-optical-sizing: none;
+  line-height: var(--i-nota);
+  rotate: -1.2deg;
+}
+
+.nota--derecha { rotate: 1.2deg; }
+
+/* ---------- Pantalla: regla de los 2/3 ---------- */
+.pantalla {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, var(--col-visual)) var(--folio-ancho);
+  height: calc(var(--vista) - var(--ruta-total));
+  overflow: hidden;
+}
+
+.pantalla__fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.pantalla[data-noche] .escenario { background: transparent; }
+
+.pantalla[data-invertida] {
+  grid-template-columns: var(--folio-ancho) minmax(0, var(--col-visual));
+}
+
+.pantalla[data-invertida] .folio { order: -1; }
+
+.escenario {
+  position: relative;
+  container-type: size;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--fondo);
+}
+
+/* Apilado: la regla de los 2/3 pasa a vertical y la página hace scroll. */
+@media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+  body { padding-bottom: var(--ruta-total); }
+
+  .pantalla,
+  .pantalla[data-invertida] {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: calc(var(--vista) - var(--ruta-total));
+    overflow: visible;
+  }
+
+  .pantalla > .folio { flex: none; }
+
+  .pantalla[data-invertida] .folio { order: 0; }
+
+  .escenario { flex: 1 0 auto; height: calc(var(--vista-s) * 0.62); min-height: 22rem; }
+}
+
+@media (orientation: portrait) and (min-width: 700px) and (max-width: 1099px) {
+  .escenario { height: calc(var(--vista-s) * 0.52); }
+}
+
+/* Bajo: 3/5 + 2/5, folio con scroll propio. */
+@media (orientation: landscape) and (max-height: 559px) {
+  .pantalla { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  .pantalla[data-invertida] { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+}
+
+/* Safari 15 y 16: sin contenedores, las medidas salen del propio esquema de la pantalla. */
+@supports not (width: 1cqw) {
+  .escenario {
+    --cqw: calc((100vw - var(--folio-ancho)) / 100);
+    --cqi: var(--cqw);
+    --cqh: calc((var(--vista) - var(--ruta-total)) / 100);
+  }
+
+  @media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+    .escenario {
+      --cqw: 1vw;
+      --cqh: calc(var(--vista-s) * 0.0062);
+    }
+  }
+
+  @media (orientation: portrait) and (min-width: 700px) and (max-width: 1099px) {
+    .escenario { --cqh: calc(var(--vista-s) * 0.0052); }
+  }
+
+  @media (orientation: landscape) and (max-height: 559px) {
+    .escenario { --cqw: 0.6vw; }
+  }
+
+  /* .pantalla: vip.css carga después y, a igual peso, ganaría. */
+  .pantalla .tarro { width: auto; height: 100%; max-width: 100%; }
+
+  /* Atacama pide estas medidas en la pantalla, por encima del escenario. */
+  .atacama {
+    --cqw: calc((100vw - var(--folio-ancho)) / 100);
+    --cqh: calc((var(--vista) - var(--ruta-total)) / 100);
+  }
+
+  @media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+    .atacama {
+      --cqw: 1vw;
+      --cqh: calc(var(--vista-s) * 0.0062);
+    }
+  }
+
+  @media (orientation: portrait) and (min-width: 700px) and (max-width: 1099px) {
+    .atacama { --cqh: calc(var(--vista-s) * 0.0052); }
+  }
+
+  @media (orientation: landscape) and (max-height: 559px) {
+    .atacama { --cqw: 0.6vw; }
+  }
+}
+
+/* ---------- Pared y balda: comunes a Inicio y Final ----------
+   <div className="pared" /> al fondo del escenario y <div className="balda" /> tras los frascos.
+   La balda no crea contexto de apilado: su plano superior queda detrás de los frascos
+   (--z-balda-plano) y su canto, delante (--z-balda-canto). Los frascos van entre ambos.
+   Necesita --alto-balda en el escenario. */
+.pared {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(85% 70% at 62% 30%, rgb(247 243 234 / 0.26), transparent 72%),
+    linear-gradient(transparent 58%, rgb(46 42 31 / 0.16)),
+    var(--c-pared);
+  pointer-events: none;
+}
+
+.pared::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--revoco), var(--grano);
+  mix-blend-mode: multiply;
+  opacity: 0.62;
+}
+
+.balda {
+  --balda-plano: calc(var(--alto-balda) * 0.62);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--alto-balda);
+  pointer-events: none;
+}
+
+/* Plano superior: la veta fuga hacia la pared y oscurece al llegar a ella. */
+.balda::before {
+  content: '';
+  position: absolute;
+  left: -8%;
+  right: -8%;
+  bottom: calc(100% - 1px);
+  z-index: var(--z-balda-plano, 5);
+  height: calc(var(--balda-plano) * 2.2);
+  transform-origin: 50% 100%;
+  transform: perspective(calc(var(--balda-plano) * 16)) rotateX(63deg);
+  background:
+    linear-gradient(to top, rgb(255 234 200 / 0.2), rgb(255 234 200 / 0) 34%, rgb(26 15 6 / 0.72)),
+    var(--veta) 40px 0 / 900px 260px,
+    #80604A;
+}
+
+/* Canto: tapa la base de los frascos y cierra el escenario. */
+.balda::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-balda-canto, 40);
+  background:
+    linear-gradient(rgb(255 236 206 / 0.34), rgb(255 236 206 / 0) 3px),
+    linear-gradient(rgb(46 42 31 / 0) 42%, rgb(30 18 8 / 0.46)),
+    var(--veta) 0 -40px / 900px 260px,
+    var(--c-madera);
+  box-shadow: inset 0 1px 0 rgb(255 236 206 / 0.2);
+}
+
+/* Sombra de contacto: va dentro del eje del frasco, antes de él. */
+.frasco-sombra {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: calc(var(--alto-frasco) * 0.82);
+  height: calc(var(--alto-frasco) * 0.13);
+  transform: translate(-50%, 28%);
+  background: radial-gradient(closest-side, rgb(24 14 6 / 0.62), rgb(24 14 6 / 0.3) 52%, rgb(24 14 6 / 0));
+  pointer-events: none;
+}
+
+/* ---------- Carga diferida ---------- */
+.cargando {
+  display: grid;
+  place-items: center;
+  min-height: var(--vista);
+  background: var(--c-crema);
+  color: var(--c-tinta);
+}
+
+/* ---------- Reducir movimiento: nada en bucle, el estado final siempre se ve ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { transition: none; }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+[data-motion='reducido'], [data-motion='reducido'] body { transition: none; }
+
+[data-motion='reducido'] *,
+[data-motion='reducido'] *::before,
+[data-motion='reducido'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0ms !important;
+}

@@ -1,0 +1,508 @@
+/* Web 3 · Modo Noche. La escena vive en `.pantalla__fondo` para pasar bajo el folio transparente.
+   --ew y --eh: ancho y alto del escenario medidos desde la escena.
+   Las capas iluminadas se animan solo con `opacity`: el parpadeo no repinta nada. */
+
+.atacama { --frasco-alto: min(calc(52 * var(--cqh)), 620px); }
+
+/* `clip` y no `hidden`: el foco de un botón no debe poder desplazar la composición. */
+.pantalla.atacama,
+.atacama .escenario { overflow: hidden; overflow: clip; }
+
+.atacama__escena {
+  --ew: calc(calc(100 * var(--cqw)) - var(--folio-ancho));
+  --eh: calc(100 * var(--cqh));
+  --fx: calc(36 * var(--cqw));
+  --fy: calc(80 * var(--cqh));
+  --u: 1;
+  --horizonte: calc(40 * var(--cqh));              /* alto del suelo desde abajo */
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+  background: linear-gradient(to bottom, #070914 0%, var(--c-noche) 34%, #141a30 calc(100% - var(--horizonte) - calc(4 * var(--cqh))), #1c2340 calc(100% - var(--horizonte) + calc(4 * var(--cqh))), #0c0f1c 100%);
+}
+
+.atacama__lienzo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* El fuego fuerte apaga las estrellas: se nota en el cielo que hay luz cerca. */
+.atacama__titila { opacity: calc(1 - 0.38 * var(--intensidad)); }
+
+.atacama__fuego { will-change: transform; }
+
+/* Último resplandor del horizonte y fuego sobre el aire. */
+.atacama__horizonte {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      calc(calc(38 * var(--cqw)) + calc(24 * var(--cqw)) * var(--intensidad)) calc(calc(46 * var(--cqh)) + calc(22 * var(--cqh)) * var(--intensidad)) at var(--fx) var(--fy),
+      rgb(242 140 58 / calc(0.05 + 0.2 * var(--intensidad))),
+      rgb(242 140 58 / 0) 100%
+    ),
+    linear-gradient(to top, rgb(70 84 128 / 0) var(--horizonte), rgb(78 92 138 / 0.3) calc(var(--horizonte) + calc(6 * var(--cqh))), rgb(70 84 128 / 0) calc(var(--horizonte) + calc(34 * var(--cqh))));
+}
+
+.atacama__plano {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.atacama__lejos,
+.atacama__medio {
+  position: absolute;
+  max-width: none;
+  height: auto;
+}
+
+/* La cordillera es la de la foto, a la derecha de la llama: se pierde por el pie en la bruma. */
+.atacama__lejos {
+  --an: max(calc(120 * var(--cqw)), calc(calc(36 * var(--cqh)) * 6.39));
+  left: calc(var(--ew) * 0.5);
+  bottom: calc(var(--horizonte) - var(--an) / 6.39 * 0.08);
+  width: var(--an);
+  translate: -41% 0;
+  filter: brightness(0.76);
+}
+
+/* Las colinas de la izquierda de la foto, un plano más cerca y más oscuras. */
+.atacama__medio {
+  --an: max(calc(46 * var(--cqw)), calc(calc(27 * var(--cqh)) * 3.67));
+  left: calc(var(--an) * -0.16);
+  bottom: calc(var(--horizonte) - var(--an) / 3.67 * 0.06);
+  width: var(--an);
+}
+
+.atacama__medio--der {
+  left: auto;
+  right: calc(var(--an) * -0.34);
+  width: calc(var(--an) * 0.8);
+  bottom: calc(var(--horizonte) - var(--an) / 3.67 * 0.05);
+  scale: -1 1;
+  filter: brightness(0.82);
+}
+
+/* Bruma al pie de la cordillera: separa los planos. */
+.atacama__bruma {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--horizonte) - calc(3 * var(--cqh)));
+  height: calc(15 * var(--cqh));
+  background: linear-gradient(to top, rgb(38 46 78 / 0.78), rgb(38 46 78 / 0));
+}
+
+.atacama__suelo {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  bottom: 0;
+  height: var(--horizonte);
+  overflow: visible;
+}
+
+.atacama__suelo-img {
+  position: absolute;
+  top: calc(-2 * var(--cqh));
+  left: 50%;
+  width: max(calc(112 * var(--cqw)), calc(calc(52 * var(--cqh)) * 3.95));
+  max-width: none;
+  height: auto;
+  translate: -50% 0;
+}
+
+/* Luz del suelo: mascaras fijas centradas en el fuego; el --intensidad solo cambia la opacidad. */
+.atacama__luz {
+  position: absolute;
+  inset: calc(-2 * var(--cqh)) 0 0;
+  overflow: hidden;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.atacama__luz .atacama__suelo-img { top: 0; }
+
+.atacama__luz-mascara { position: absolute; inset: 0; }
+
+.atacama__luz--amplia {
+  --cy: calc(var(--fy) - calc(100 * var(--cqh)) + var(--horizonte) + calc(2 * var(--cqh)));
+  opacity: calc(0.14 + 0.72 * var(--intensidad));
+  -webkit-mask-image: radial-gradient(ellipse calc(var(--u) * 760px) calc(var(--u) * 210px) at calc(var(--fx) + calc(4 * var(--cqw))) var(--cy), rgb(0 0 0 / 0.75), rgb(0 0 0 / 0.26) 52%, transparent 100%);
+  mask-image: radial-gradient(ellipse calc(var(--u) * 760px) calc(var(--u) * 210px) at calc(var(--fx) + calc(4 * var(--cqw))) var(--cy), rgb(0 0 0 / 0.75), rgb(0 0 0 / 0.26) 52%, transparent 100%);
+}
+
+.atacama__luz--cerca {
+  --cy: calc(var(--fy) - calc(100 * var(--cqh)) + var(--horizonte) + calc(2 * var(--cqh)));
+  opacity: calc(0.28 + 0.72 * var(--intensidad));
+  -webkit-mask-image: radial-gradient(ellipse calc(var(--u) * 390px) calc(var(--u) * 116px) at calc(var(--fx) + calc(4 * var(--cqw))) var(--cy), #000, rgb(0 0 0 / 0.55) 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse calc(var(--u) * 390px) calc(var(--u) * 116px) at calc(var(--fx) + calc(4 * var(--cqw))) var(--cy), #000, rgb(0 0 0 / 0.55) 40%, transparent 100%);
+}
+
+/* ---------- Cactus ---------- */
+.atacama__cactus {
+  position: absolute;
+  aspect-ratio: var(--ar, 0.47);
+  translate: -50% 0;
+}
+
+.atacama__cactus img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  -webkit-mask-image: linear-gradient(to top, transparent 0, #000 7%);
+  mask-image: linear-gradient(to top, transparent 0, #000 7%);
+}
+
+.atacama__cactus[data-voltear] img { scale: -1 1; }
+
+.atacama__cactus-luz {
+  position: absolute;
+  inset: 0;
+  opacity: calc(0.02 + 0.42 * var(--intensidad));
+}
+
+.atacama__cactus--der {
+  left: calc(var(--ew) * 0.87);
+  bottom: calc(27 * var(--cqh));
+  height: calc(20 * var(--cqh));
+}
+
+.atacama__cactus--izq {
+  --ar: 0.43;
+  left: calc(var(--ew) * 0.1);
+  bottom: calc(31 * var(--cqh));
+  height: calc(13 * var(--cqh));
+}
+
+.atacama__cactus--lejos {
+  --ar: 0.43;
+  left: calc(var(--ew) * 0.75);
+  bottom: calc(35 * var(--cqh));
+  height: calc(6 * var(--cqh));
+}
+
+.atacama__cactus--lejos .atacama__cactus-luz { opacity: calc(0.02 + 0.2 * var(--intensidad)); }
+
+/* ---------- Frasco: una copia en la noche y otra, encima, con la luz del fuego ---------- */
+.atacama__frasco {
+  position: absolute;
+  left: calc(var(--ew) * 0.61);
+  bottom: calc(6.5 * var(--cqh));
+  height: var(--frasco-alto);
+  aspect-ratio: 0.544;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+}
+
+/* Misma caja que el frasco, sin su escala: la ficha de gramos sigue su hombro sin encoger. */
+.atacama__frasco-ficha {
+  --ficha-alto: var(--frasco-alto);
+  position: absolute;
+  left: calc(var(--ew) * 0.61);
+  bottom: calc(6.5 * var(--cqh));
+  height: var(--frasco-alto);
+  aspect-ratio: 0.544;
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.atacama__frasco-noche .frasco__lienzo {
+  /* Noche de luna: el vidrio toma el azul del suelo, no un gris bajado de brillo. */
+  filter: brightness(0.34) saturate(0.42) contrast(1.06) hue-rotate(-6deg);
+}
+
+.atacama__frasco-luz {
+  position: absolute;
+  inset: 0;
+  opacity: calc(0.04 + 0.92 * var(--intensidad));
+}
+
+.atacama__frasco-parpadeo { position: absolute; inset: 0; }
+
+.atacama__frasco-luz .frasco__lienzo {
+  filter: sepia(0.3) saturate(1.3) brightness(1.08);
+  -webkit-mask-image: linear-gradient(96deg, #000 30%, rgb(0 0 0 / 0.66) 52%, rgb(0 0 0 / 0.16) 76%, transparent 96%);
+  mask-image: linear-gradient(96deg, #000 30%, rgb(0 0 0 / 0.66) 52%, rgb(0 0 0 / 0.16) 76%, transparent 96%);
+}
+
+/* Sombra de contacto: el frasco pesa sobre la grava. */
+.atacama__contacto {
+  position: absolute;
+  left: -9%;
+  right: -9%;
+  bottom: 5%;
+  height: 9%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(3 3 7 / 0.86), rgb(3 3 7 / 0.5) 58%, rgb(3 3 7 / 0));
+  filter: blur(3px);
+}
+
+/* Sombra larga en sentido contrario al fuego. */
+.atacama__sombra {
+  position: absolute;
+  left: 44%;
+  bottom: 3%;
+  width: 190%;
+  height: 11%;
+  background: radial-gradient(ellipse at 0% 50%, rgb(5 4 8 / 0.82), rgb(5 4 8 / 0.34) 44%, rgb(5 4 8 / 0) 72%);
+  transform-origin: 0 50%;
+}
+
+/* Borde de luz sobre el vidrio: el propio recorte menos su copia desplazada. */
+.atacama__borde {
+  --d: calc(var(--frasco-alto) * 0.008);
+  position: absolute;
+  left: 50%;
+  bottom: calc(-100% * var(--f-base) / var(--f-altura));
+  height: calc(100% / var(--f-altura));
+  aspect-ratio: var(--f-aspecto);
+  transform: translateX(calc(-100% * var(--f-eje)));
+  -webkit-mask-image: var(--borde-img), var(--borde-img);
+  mask-image: var(--borde-img), var(--borde-img);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.atacama__borde--fuego {
+  -webkit-mask-position: 0 0, var(--d) calc(var(--d) * 0.3);
+  mask-position: 0 0, var(--d) calc(var(--d) * 0.3);
+  background: linear-gradient(98deg, #ffb066 0 30%, rgb(255 140 60 / 0.6) 44%, transparent 56%);
+  opacity: calc(0.1 + 0.8 * var(--intensidad));
+  filter: blur(0.6px);
+}
+
+/* Contraluz frío de luna al otro lado: separa el vidrio del cielo. */
+.atacama__borde--luna {
+  -webkit-mask-position: 0 0, calc(var(--d) * -0.6) calc(var(--d) * 0.4);
+  mask-position: 0 0, calc(var(--d) * -0.6) calc(var(--d) * 0.4);
+  background: linear-gradient(to left, rgb(140 166 226 / 0.24), transparent 40%);
+  filter: blur(0.6px);
+}
+
+/* Reflejo del fuego en el vidrio, del lado de la fogata. */
+.atacama__destello {
+  position: absolute;
+  left: -26%;
+  top: 8%;
+  width: 62%;
+  height: 80%;
+  background: radial-gradient(closest-side, rgb(255 178 90 / 0.24), rgb(255 150 60 / 0));
+  pointer-events: none;
+}
+
+/* ---------- Duna delantera ---------- */
+.atacama__duna {
+  --an: max(calc(114 * var(--cqw)), calc(calc(24 * var(--cqh)) * 7.65));
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--cresta, calc(13 * var(--cqh))) - var(--an) / 7.65 * 0.82);
+  width: var(--an);
+  max-width: none;
+  height: auto;
+  translate: -50% 0;
+}
+
+.atacama__duna-luz {
+  position: absolute;
+  inset: 0 -6% 0;
+  opacity: calc(0.2 + 0.8 * var(--intensidad));
+  -webkit-mask-image: radial-gradient(calc(var(--u) * 520px) calc(var(--u) * 240px) at calc(var(--fx) + calc(6 * var(--cqw))) calc(calc(100 * var(--cqh)) - var(--cresta, calc(13 * var(--cqh)))), #000, rgb(0 0 0 / 0.4) 50%, transparent 100%);
+  mask-image: radial-gradient(calc(var(--u) * 520px) calc(var(--u) * 240px) at calc(var(--fx) + calc(6 * var(--cqw))) calc(calc(100 * var(--cqh)) - var(--cresta, calc(13 * var(--cqh)))), #000, rgb(0 0 0 / 0.4) 50%, transparent 100%);
+}
+
+/* Grano común, por encima de todo: frasco, fuego y fotografía comparten película. */
+.atacama__grano {
+  position: absolute;
+  inset: 0;
+  background-size: 256px 256px;
+  opacity: 0.085;
+  mix-blend-mode: hard-light;
+  pointer-events: none;
+}
+
+@media (hover: none) {
+  .atacama__grano { opacity: 0.045; mix-blend-mode: normal; }
+}
+
+/* ---------- Escenario: lo que se puede tocar ---------- */
+.atacama .escenario { touch-action: pan-y; }
+
+.atacama__fogata {
+  position: absolute;
+  left: calc(36 * var(--cqw));
+  bottom: calc(12 * var(--cqh));
+  translate: -50% 0;
+  width: clamp(7.5rem, calc(30 * var(--cqw)), 20rem);
+  height: clamp(9rem, calc(46 * var(--cqh)), 24rem);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.atacama__pista {
+  position: absolute;
+  left: calc(36 * var(--cqw));
+  bottom: calc(3.6 * var(--cqh));
+  translate: -50% 0;
+  width: max-content;
+  max-width: calc(88 * var(--cqw));
+  pointer-events: none;
+}
+
+.atacama__hallazgo {
+  position: absolute;
+  left: calc(36 * var(--cqw));
+  top: calc(var(--alto-pestana) + env(safe-area-inset-top, 0px) + calc(2.5 * var(--cqh)));
+  width: 1px;
+  height: 9rem;
+}
+
+.atacama__sello {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  width: max-content;
+  translate: -5.3rem 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.atacama__sello .sello { --sello-tinta: var(--c-crema); }
+
+.atacama__sello-nota {
+  display: block;
+  max-width: 22ch;
+  rotate: 1.2deg;
+}
+
+.atacama__sello-nota strong {
+  display: block;
+  margin-top: var(--e-1);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---------- Folio: aire de noche, con velo propio para que el texto se lea siempre ---------- */
+.atacama .folio { background-image: none; }
+
+.atacama .folio::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 -22%;
+  background: linear-gradient(to right, rgb(13 15 30 / 0) 0, rgb(13 15 30 / 0.5) 22%, rgb(13 15 30 / 0.8) 42%, rgb(13 15 30 / 0.84) 100%);
+  pointer-events: none;
+}
+
+.atacama .folio__titulo {
+  max-width: 10.6em;
+  font-size: max(3rem, var(--t-h1));
+  text-shadow: 0 1px 14px rgb(13 15 30 / 0.7);
+}
+
+.atacama .folio__cita,
+.atacama .folio__descripcion,
+.atacama .folio__dato { text-shadow: 0 1px 10px rgb(13 15 30 / 0.8); }
+
+.atacama .tamano[aria-pressed='true'] { color: var(--c-noche); }
+
+/* ---------- Apilado: la escena ocupa el escenario y el folio es noche sólida ---------- */
+@media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+  .atacama__escena {
+    --ew: calc(100 * var(--cqw));
+    --horizonte: calc(36 * var(--cqh));
+    --frasco-alto: min(calc(46 * var(--cqh)), 26rem);
+    bottom: auto;
+    height: var(--alto-escena, calc(var(--vista-s) * 0.62));
+  }
+
+  .atacama { --frasco-alto: min(calc(46 * var(--cqh)), 26rem); }
+
+  .atacama .folio { background: var(--c-noche); }
+
+  .atacama .folio::before { display: none; }
+
+  .atacama__fogata {
+    left: calc(29 * var(--cqw));
+    bottom: calc(9 * var(--cqh));
+    width: clamp(7rem, calc(42 * var(--cqw)), 16rem);
+    height: calc(52 * var(--cqh));
+  }
+
+  .atacama__pista {
+    left: calc(50 * var(--cqw));
+    bottom: calc(1.8 * var(--cqh));
+    font-size: var(--t-etiqueta);
+  }
+
+  .atacama__hallazgo { left: calc(5 * var(--cqw)); width: calc(90 * var(--cqw)); }
+
+  .atacama__sello { translate: 0 0; width: fit-content; max-width: 100%; }
+
+  .atacama__sello-nota { min-width: 0; }
+
+  .atacama__frasco,
+  .atacama__frasco-ficha { left: calc(var(--ew) * 0.7); bottom: calc(7 * var(--cqh)); }
+
+  .atacama__cactus--der { left: calc(var(--ew) * 0.95); height: calc(16 * var(--cqh)); bottom: calc(24 * var(--cqh)); }
+  .atacama__cactus--izq { left: calc(var(--ew) * 0.07); bottom: calc(26 * var(--cqh)); height: calc(11 * var(--cqh)); }
+  .atacama__cactus--lejos { left: calc(var(--ew) * 0.46); bottom: calc(31 * var(--cqh)); height: calc(5 * var(--cqh)); }
+}
+
+/* ---------- Móvil horizontal ---------- */
+@media (orientation: landscape) and (max-height: 559px) {
+  .atacama__escena { --ew: calc(60 * var(--cqw)); }
+
+  .atacama { --frasco-alto: calc(62 * var(--cqh)); }
+
+  .atacama .folio__titulo {
+    font-size: var(--t-h2);
+    --f-peso: calc(320 + 120 * var(--intensidad));
+  }
+
+  /* El frasco se aparta: a la izquierda quedan fogata, sello y nota sin tocarlo. */
+  .atacama__frasco,
+  .atacama__frasco-ficha { left: calc(var(--ew) * 0.79); bottom: calc(7 * var(--cqh)); }
+
+  .atacama__fogata { left: calc(30 * var(--cqw)); height: calc(58 * var(--cqh)); bottom: calc(8 * var(--cqh)); width: clamp(7rem, calc(34 * var(--cqw)), 13rem); }
+  .atacama__pista { left: calc(31 * var(--cqw)); bottom: calc(2.4 * var(--cqh)); max-width: calc(54 * var(--cqw)); font-size: var(--t-etiqueta); }
+  .atacama__hallazgo { left: calc(2.4 * var(--cqw)); top: calc(var(--alto-pestana) + var(--e-2)); width: calc(56 * var(--cqw)); height: auto; }
+  .atacama__sello { translate: 0 0; gap: var(--e-2); max-width: 100%; }
+  .atacama__sello-nota { min-width: 0; max-width: 11ch; padding: var(--e-1) var(--e-2); font-size: var(--t-etiqueta); }
+  /* Aquí solo cabe lo accionable; la frase sigue disponible para el lector de pantalla. */
+  .atacama__sello-frase {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .atacama__sello-nota strong { margin-top: 0; }
+  .atacama__cactus--der { display: none; }
+}
+
+/* Movimiento reducido: la escena ya no se mueve; solo la luz cambia de golpe. */
+[data-motion='reducido'] .atacama__plano,
+[data-motion='reducido'] .atacama__fuego { will-change: auto; }

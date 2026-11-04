@@ -1,0 +1,464 @@
+/* Web 2 · Modo Selva. La foto vive en un lienzo con su proporción; el frasco se coloca con la
+   misma cuenta, de modo que siempre cae sobre el tarro de la foto (x 24-33 %, y 69-82 %). */
+
+/* `clip` y no `hidden`: el foco de un botón no debe poder desplazar la composición. */
+.pantalla.ubud,
+.ubud .escenario { overflow: hidden; overflow: clip; }
+
+.ubud__escena {
+  --ar: 0.8056;
+  --px: 0.5;
+  --py: 0.44;
+  --W: max(calc(104 * var(--cqw)), calc(calc(104 * var(--cqh)) * var(--ar)));
+  --H: calc(var(--W) / var(--ar));
+  --ox: calc((calc(100 * var(--cqw)) - var(--W)) * var(--px));
+  --oy: calc((calc(100 * var(--cqh)) - var(--H)) * var(--py));
+  /* El frasco se mide con la foto, no con la pantalla: el 30 % de su alto lo deja creíble
+     junto a la persona en cualquier encuadre. */
+  --frasco-alto: min(calc(var(--H) * 0.3), calc(60 * var(--cqh)), 620px);
+  --ficha-alto: var(--frasco-alto);
+  --ubud-fundido: 620ms;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  overflow: clip;
+  touch-action: pan-y;
+  background: #dfe6dc;
+}
+
+.ubud__plano {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ubud__plano--frasco { pointer-events: none; }
+
+.ubud__plano--foto {
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+
+.ubud__lienzo,
+.ubud__extension {
+  position: absolute;
+  top: var(--oy);
+  width: var(--W);
+  height: var(--H);
+}
+
+.ubud__lienzo { left: var(--ox); }
+
+/* El desenfoque va en el padre: sobre cada copia dejaría sus bordes transparentes y se vería la junta. */
+.ubud__reflejo {
+  display: none;
+  position: absolute;
+  inset: 0;
+  filter: blur(5px) brightness(1.05) saturate(0.86);
+}
+
+.ubud__extension {
+  left: calc(var(--ox) - var(--W));
+  scale: -1 1;
+}
+
+.ubud__extension img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+.ubud__foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  filter: brightness(1.04) contrast(0.97);
+}
+
+/* Vaivén de la vegetación: copias enmascaradas de la propia foto. Solo se mueve lo que el viento movería. */
+.ubud__foto--techo {
+  -webkit-mask-image: linear-gradient(to bottom, #000 13%, transparent 27%), linear-gradient(to right, #000 52%, transparent 63%);
+  mask-image: linear-gradient(to bottom, #000 13%, transparent 27%), linear-gradient(to right, #000 52%, transparent 63%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  transform-origin: 40% 0;
+  animation: ubud-techo 6.4s var(--m-marea) infinite alternate;
+  will-change: transform;
+}
+
+.ubud__foto--espigas {
+  -webkit-mask-image: radial-gradient(9% 7.6% at 57.5% 44%, #000 42%, transparent 100%);
+  mask-image: radial-gradient(9% 7.6% at 57.5% 44%, #000 42%, transparent 100%);
+  transform-origin: 63% 59%;
+  animation: ubud-espigas 4.8s var(--m-marea) infinite alternate;
+  will-change: transform;
+}
+
+@keyframes ubud-techo {
+  from { transform: rotate(-0.28deg) skewX(0.3deg); }
+  to { transform: rotate(0.28deg) skewX(-0.5deg); }
+}
+
+@keyframes ubud-espigas {
+  from { transform: rotate(-1.1deg); }
+  to { transform: rotate(1.3deg); }
+}
+
+/* Niebla que cruza el valle y luz alta: la pantalla respira. */
+.ubud__niebla {
+  position: absolute;
+  left: -30%;
+  width: 90%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.5), rgb(255 255 255 / 0));
+  will-change: transform;
+}
+
+.ubud__niebla--a {
+  top: 18%;
+  height: 34%;
+  animation: ubud-niebla 26s var(--m-marea) infinite alternate;
+}
+
+.ubud__niebla--b {
+  top: 40%;
+  height: 22%;
+  opacity: 0.7;
+  animation: ubud-niebla 34s var(--m-marea) infinite alternate-reverse;
+}
+
+@keyframes ubud-niebla {
+  from { transform: translate3d(-8%, 0, 0); }
+  to { transform: translate3d(34%, 4%, 0); }
+}
+
+.ubud__sol {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 56% at 14% 8%, rgb(255 250 232 / 0.62), rgb(255 250 232 / 0) 72%),
+    linear-gradient(to bottom, rgb(255 251 240 / 0.1), rgb(255 251 240 / 0) 42%);
+}
+
+/* ---------- Frasco ---------- */
+.ubud__frasco-eje {
+  position: absolute;
+  left: calc(var(--ox) + var(--W) * 0.3);
+  bottom: calc(var(--frasco-alto) * -0.03);
+  height: var(--frasco-alto);
+  aspect-ratio: 0.566;
+  translate: -50% 0;
+}
+
+.ubud__frasco-eje > div:not(.ubud__contacto) { position: relative; height: 100%; }
+
+/* Sombra de contacto sobre la madera: corta bajo el pie y larga hacia la derecha, de la luz alta. */
+.ubud__contacto {
+  position: absolute;
+  left: -36%;
+  right: -74%;
+  bottom: -3%;
+  height: 15%;
+  border-radius: 50%;
+  background:
+    radial-gradient(38% 46% at 34% 56%, rgb(38 22 10 / 0.72), rgb(38 22 10 / 0.26) 62%, rgb(38 22 10 / 0)),
+    radial-gradient(closest-side, rgb(38 22 10 / 0.34), rgb(38 22 10 / 0));
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+.ubud__frasco-caja {
+  position: relative;
+  height: 100%;
+  transform-origin: 50% 100%;
+}
+
+.ubud__frasco-boton {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  filter: sepia(0.05) saturate(0.97) drop-shadow(6px 8px 10px rgb(46 42 31 / 0.3));
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ubud__ancla-frasco {
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  width: 1px;
+  height: 1px;
+}
+
+.ubud__helice-capa {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--ubud-fundido) var(--m-marea);
+}
+
+.ubud__helice-capa[data-visible] {
+  opacity: 1;
+  transition-duration: var(--d-instante);
+}
+
+.ubud__helice {
+  position: absolute;
+  left: -50%;
+  bottom: -7%;
+  width: 200%;
+  height: auto;
+  aspect-ratio: 200 / 360;
+  overflow: visible;
+}
+
+.ubud__fruta {
+  position: absolute;
+  left: -24%;
+  top: 84%;
+  width: max(44px, 46%);
+  height: max(44px, 46%);
+  aspect-ratio: 1;
+  height: auto;
+  min-height: 44px;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Punto interactivo: 14 px de crema con anillo tinta, pulso lento. */
+.ubud__punto {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--r-punto);
+  background: var(--c-crema);
+  box-shadow: 0 0 0 2px var(--c-tinta);
+  transition: transform var(--d-rapido) var(--m-salida);
+}
+
+.ubud__punto::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 1.5px solid var(--c-crema);
+  animation: ubud-pulso 2.4s var(--m-marea) infinite;
+}
+
+@keyframes ubud-pulso {
+  from { transform: scale(1); opacity: 0.9; }
+  to { transform: scale(2.6); opacity: 0; }
+}
+
+.ubud__fruta:active .ubud__punto { transform: scale(0.9); }
+.ubud__fruta[aria-pressed='true'] .ubud__punto { background: var(--c-pitaya); }
+.ubud__fruta[aria-pressed='true'] .ubud__punto::after { animation: none; opacity: 0; }
+
+@media (hover: hover) {
+  .ubud__fruta:hover .ubud__punto { transform: scale(1.3); }
+}
+
+.ubud__punto--frasco {
+  position: absolute;
+  left: 72%;
+  top: 22%;
+}
+
+/* ---------- Primer plano ---------- */
+.ubud__rafaga {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ubud__fronda {
+  position: absolute;
+  max-width: none;
+  height: auto;
+  will-change: transform;
+}
+
+.ubud__fronda--c { display: none; }
+
+.ubud__fronda--a {
+  left: -4%;
+  top: -7%;
+  width: clamp(14rem, calc(40 * var(--cqw)), 36rem);
+  transform-origin: 0 0;
+  animation: ubud-fronda-a 5.6s var(--m-marea) infinite alternate;
+}
+
+.ubud__fronda--b {
+  right: -5%;
+  bottom: -8%;
+  width: clamp(13rem, calc(36 * var(--cqw)), 36rem);
+  transform-origin: 100% 100%;
+  animation: ubud-fronda-b 7.2s var(--m-marea) infinite alternate;
+}
+
+@keyframes ubud-fronda-a {
+  from { transform: rotate(-1.4deg); }
+  to { transform: rotate(1.8deg); }
+}
+
+@keyframes ubud-fronda-b {
+  from { transform: rotate(1.4deg); }
+  to { transform: rotate(-1.8deg); }
+}
+
+.ubud__sello {
+  position: absolute;
+  left: clamp(1rem, calc(3.4 * var(--cqw)), 2.5rem);
+  top: clamp(1rem, calc(4 * var(--cqh)), 2.5rem);
+  pointer-events: none;
+  cursor: default;
+  mix-blend-mode: multiply;
+  opacity: 0.86;
+  --sello-tinta: var(--c-crema);
+}
+
+/* Instrucción breve: misma nota que en Atacama. */
+.ubud__instruccion {
+  position: absolute;
+  z-index: 6;
+  left: calc(var(--ox) + var(--W) * 0.3 + var(--frasco-alto) * 0.42);
+  bottom: calc(3.6 * var(--cqh));
+  width: max-content;
+  max-width: calc(62 * var(--cqw));
+  pointer-events: none;
+}
+
+/* ---------- Nota con hilo ---------- */
+.ubud__nota-zona,
+.ubud__nota-capa {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ubud__nota { position: absolute; }
+
+.ubud__hilo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ubud__hilo path {
+  stroke: var(--c-crema);
+  stroke-width: 1;
+}
+
+/* ---------- Folio ---------- */
+.ubud .tamano[aria-pressed='true'] { color: var(--c-pitaya-osc); }
+
+/* Panorámico: la foto (928 × 1152) no da para tanto. Se queda a la derecha con tope de 1,5
+   aumentos y su reflejo desenfocado continúa el valle hacia la izquierda. */
+@container (min-aspect-ratio: 5/4) and (min-width: 900px) {
+  .ubud__escena {
+    --W: min(max(calc(72 * var(--cqw)), calc(calc(122 * var(--cqh)) * var(--ar))), 1392px);
+    --px: 1;
+    --py: 0.3;
+  }
+
+  .ubud__reflejo {
+    display: block;
+    filter: blur(9px) brightness(1.05) saturate(0.86);
+  }
+
+  /* Reflejo estirado desde la junta: solo entra el valle, nunca la persona ni el cuenco. */
+  .ubud__extension {
+    left: var(--ox);
+    scale: -2.7 1;
+    transform-origin: 0 50%;
+  }
+
+  /* Fronda delantera: cierra por abajo la parte reflejada del banco. */
+  .ubud__fronda--c {
+    display: block;
+    left: -3%;
+    bottom: -18%;
+    width: clamp(20rem, calc(46 * var(--cqw)), 60rem);
+    transform-origin: 0 100%;
+    rotate: -94deg;
+    scale: 1 -1;
+    animation: ubud-fronda-b 8.4s var(--m-marea) infinite alternate;
+  }
+
+  .ubud__extension--base { left: var(--ox); scale: 1 1; }
+
+  .ubud__lienzo {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 9%);
+    mask-image: linear-gradient(to right, transparent 0, #000 9%);
+  }
+}
+
+/* ---------- Apilado: cara y cuenco a la vista ---------- */
+@media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+  .ubud__escena {
+    --px: 0.58;
+    --py: 0.3;
+    --frasco-alto: min(calc(var(--H) * 0.32), calc(52 * var(--cqh)), 26rem);
+  }
+
+  .ubud__instruccion {
+    left: auto;
+    right: var(--e-3);
+    bottom: calc(2.4 * var(--cqh));
+    font-size: var(--t-etiqueta);
+  }
+
+  .ubud__frasco-eje { left: max(calc(var(--ox) + var(--W) * 0.305), calc(var(--frasco-alto) * 0.566 * 0.74 + 30px)); }
+
+  .ubud__sello {
+    top: calc(var(--alto-pestana) + var(--e-3));
+    left: var(--e-3);
+  }
+
+  .ubud__fronda--a { width: calc(58 * var(--cqw)); }
+  .ubud__fronda--b { width: calc(44 * var(--cqw)); }
+}
+
+/* ---------- Móvil horizontal ---------- */
+@media (orientation: landscape) and (max-height: 559px) {
+  .ubud__escena {
+    --py: 0.52;
+    --frasco-alto: min(calc(var(--H) * 0.34), calc(62 * var(--cqh)));
+  }
+
+  .ubud__instruccion {
+    left: auto;
+    right: var(--e-3);
+    bottom: calc(2.4 * var(--cqh));
+    font-size: var(--t-etiqueta);
+  }
+
+  .ubud__sello {
+    top: var(--e-3);
+    left: var(--e-3);
+  }
+
+  .ubud__fronda--b { display: none; }
+}

@@ -1,0 +1,538 @@
+/* ---------- Cabecera: dos pestañas ---------- */
+.cabecera {
+  position: fixed;
+  z-index: var(--z-cabecera);
+  top: 0;
+  left: max(var(--margen), env(safe-area-inset-left, 0px));
+  right: max(var(--margen), env(safe-area-inset-right, 0px));
+  display: flex;
+  justify-content: space-between;
+  gap: var(--e-3);
+  pointer-events: none;
+}
+
+.pestana-caja { pointer-events: auto; min-width: 0; }
+
+.pestana-grupo {
+  flex: none;
+  display: flex;
+  gap: var(--e-1);
+}
+
+.pestana {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  min-height: var(--alto-pestana);
+  padding: env(safe-area-inset-top, 0px) var(--e-4) 0;
+  border: 0;
+  background: var(--ficha);
+  color: var(--ficha-texto);
+  box-shadow: var(--s-papel);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform var(--d-rapido) var(--m-salida), box-shadow var(--d-rapido) var(--m-salida);
+}
+
+.pestana--marca {
+  font-family: var(--f-texto);
+  font-size: var(--t-dato);
+  font-weight: 600;
+}
+
+.pestana--eslogan {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-dato);
+  font-variation-settings: var(--f-ejes-nota);
+  font-optical-sizing: none;
+}
+
+.pestana__corto { display: none; }
+
+.pestana--contacto {
+  justify-content: center;
+  min-width: var(--tactil);
+  font-family: var(--f-texto);
+  font-size: var(--t-etiqueta);
+  font-weight: 600;
+  font-stretch: var(--ancho-etiqueta);
+  letter-spacing: var(--e-etiqueta);
+  text-transform: uppercase;
+}
+
+.pestana__contacto-icono { display: none; flex: none; }
+
+/* Firma diminuta: dice que el eslogan se puede pulsar. */
+.pestana__remolino {
+  flex: none;
+  transition: rotate var(--d-medio) var(--m-salida);
+}
+
+.pestana:active { transform: translateY(-1px); }
+
+@media (hover: hover) {
+  .pestana:hover {
+    transform: translateY(3px);
+    box-shadow: var(--s-papel-alzado);
+  }
+
+  .pestana:hover .pestana__remolino { rotate: 45deg; }
+}
+
+/* ---------- Barra de ruta ---------- */
+.ruta {
+  position: fixed;
+  z-index: var(--z-ruta);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--e-5);
+  height: var(--ruta-total);
+  padding:
+    0
+    max(var(--margen), env(safe-area-inset-right, 0px))
+    env(safe-area-inset-bottom, 0px)
+    max(var(--margen), env(safe-area-inset-left, 0px));
+  background: var(--ruta-fondo);
+  color: var(--ruta-texto);
+  font-family: var(--f-texto);
+  font-size: var(--t-etiqueta);
+  font-weight: 600;
+  font-stretch: var(--ancho-etiqueta);
+  letter-spacing: var(--e-etiqueta);
+  text-transform: uppercase;
+}
+
+.ruta :focus-visible { --foco: var(--c-crema); --foco-halo: var(--c-tinta); }
+
+.ruta__lado {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  min-height: var(--tactil);
+  min-width: var(--tactil);
+  padding: 0 var(--e-1);
+  border: 0;
+  background: none;
+  color: var(--ruta-tenue);
+  font: inherit;
+  font-stretch: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--d-rapido) var(--m-salida);
+}
+
+.ruta__lado[aria-current='page'],
+.ruta__lado[aria-pressed='true'] { color: var(--ruta-acento); }
+
+.ruta__icono {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.ruta__lado--movimiento[aria-pressed='true'] .ruta__icono { stroke-dasharray: 2 3; }
+
+@media (hover: hover) {
+  .ruta__lado:hover { color: var(--ruta-texto); }
+}
+
+.ruta__paradas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.parada {
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.tramo {
+  flex: 1 1 3rem;
+  width: clamp(1rem, 3.4vw, 4.5rem);
+  height: 2px;
+  margin-inline: var(--e-2);
+  overflow: visible;
+}
+
+.tramo line { fill: none; stroke-width: 1.5; }
+
+.tramo__base {
+  stroke: var(--ruta-linea);
+  stroke-dasharray: var(--l-trazo);
+}
+
+.tramo__hecho {
+  stroke: var(--ruta-acento);
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--d-lento) var(--m-salida) var(--d-lento);
+}
+
+.tramo__hecho[data-recorrido] { stroke-dashoffset: 0; }
+
+.parada__enlace {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  min-width: var(--tactil);
+  min-height: var(--tactil);
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ruta-tenue);
+  font: inherit;
+  font-stretch: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.parada__circulo {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: var(--l-media) solid var(--ruta-linea);
+  border-radius: var(--r-punto);
+  transition: transform var(--d-instante) var(--m-salida), border-color var(--d-rapido) var(--m-salida);
+}
+
+.parada__numero {
+  font-family: var(--f-display);
+  font-size: 0.875rem;
+  line-height: 1;
+  font-variation-settings: var(--f-ejes-dato);
+  letter-spacing: 0;
+}
+
+.parada__enlace:active .parada__circulo { transform: scale(0.94); }
+
+@media (hover: hover) {
+  .parada__enlace:hover { color: var(--ruta-acento); }
+  .parada__enlace:hover .parada__circulo { border-color: var(--ruta-acento); }
+}
+
+/* Actual */
+.parada[data-estado='actual'] .parada__enlace { color: var(--ruta-texto); }
+
+.parada[data-estado='actual'] .parada__circulo {
+  border-color: var(--ruta-acento);
+  box-shadow: 0 0 0 1.5px var(--ruta-acento);
+}
+
+/* Visitada: círculo relleno y matasellos */
+.parada[data-estado='visitada'] .parada__circulo {
+  border-color: var(--ruta-acento);
+  background: var(--ruta-acento);
+  color: var(--ruta-sobre-acento);
+}
+
+.parada__circulo .parada__numero { position: relative; z-index: 1; }
+
+.matasellos {
+  position: absolute;
+  inset: -1.5px;
+  fill: none;
+  stroke: var(--ruta-sobre-acento);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+.ruta[data-lista] .matasellos {
+  animation: sello-cae 180ms var(--m-sello) var(--d-remolino-revela) backwards;
+}
+
+@keyframes sello-cae {
+  from { transform: scale(1.5) rotate(-10deg); opacity: 0; }
+}
+
+/* Lista para volver a casa: pulso lento */
+.parada__enlace[data-lista] .parada__circulo {
+  border-color: var(--ruta-acento);
+  animation: pulso-parada 2.4s var(--m-marea) infinite;
+}
+
+@keyframes pulso-parada {
+  50% {
+    box-shadow: 0 0 0 5px rgb(163 165 106 / 0.3);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--ruta-acento) 28%, transparent);
+  }
+}
+
+/* Sello ? */
+.parada--secreta .parada__circulo {
+  border-style: dotted;
+  transition: transform var(--d-lento) var(--m-sello), background-color var(--d-rapido) var(--m-sello);
+}
+
+.parada--secreta:is([data-estado='ganada'], [data-estado='actual']) .parada__circulo {
+  border-style: solid;
+  border-color: var(--ruta-acento);
+  background: var(--ruta-acento);
+  color: var(--ruta-sobre-acento);
+  transform: rotate(12deg);
+}
+
+/* Con poco ancho, etiqueta solo en la parada actual. */
+@media (max-width: 899px) {
+  .ruta {
+    grid-template-columns: var(--tactil) minmax(0, 1fr) var(--tactil);
+    gap: 0;
+    padding-left: max(var(--e-1), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--e-1), env(safe-area-inset-right, 0px));
+  }
+
+  .ruta__lado { justify-content: center; padding: 0; }
+  .ruta__lado-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .ruta__paradas {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    max-width: 30rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .parada {
+    position: relative;
+    justify-content: center;
+    align-self: stretch;
+  }
+
+  .tramo {
+    position: absolute;
+    top: calc(50% - 7px);
+    right: calc(50% + 15px);
+    width: calc(100% - 30px);
+    margin: 0;
+  }
+
+  .parada__enlace {
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 14px;
+    width: 100%;
+    min-width: 0;
+    min-height: var(--alto-ruta);
+  }
+
+  .parada__texto {
+    position: absolute;
+    top: calc(50% + 11px);
+    left: 50%;
+    translate: -50% 0;
+    display: none;
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+  }
+
+  .parada[data-estado='actual'] .parada__texto { display: block; }
+}
+
+/* ---------- Avisos ---------- */
+.aviso-zona {
+  position: fixed;
+  z-index: var(--z-aviso);
+  left: 0;
+  right: 0;
+  bottom: calc(var(--ruta-total) + var(--e-3));
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--margen);
+  pointer-events: none;
+}
+
+.aviso { max-width: 34ch; }
+
+.aviso-zona[data-anclada] {
+  justify-content: flex-start;
+  padding-inline: 0;
+  bottom: calc(var(--ruta-total) + var(--e-2));
+}
+
+.aviso--anclado { max-width: none; rotate: 0deg; }
+
+/* Hilo de 1 px hasta el botón que pidió la nota. */
+.aviso--anclado::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: var(--aviso-hilo);
+  width: 1px;
+  height: var(--e-3);
+  background: var(--ficha);
+}
+
+/* ---------- Panel de contacto ---------- */
+.contacto {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-web-f);
+}
+
+.contacto__fondo {
+  position: absolute;
+  inset: 0;
+  background: rgb(46 42 31 / 0.55);
+}
+
+.contacto__hoja {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-5);
+  width: min(26rem, 100%);
+  padding:
+    calc(env(safe-area-inset-top, 0px) + var(--e-5))
+    max(var(--margen), env(safe-area-inset-right, 0px))
+    calc(env(safe-area-inset-bottom, 0px) + var(--e-5))
+    var(--margen);
+  background: var(--folio);
+  color: var(--folio-texto);
+  overflow-y: auto;
+  box-shadow: -6px 0 0 rgb(46 42 31 / 0.22);
+}
+
+.contacto__cerrar { align-self: flex-end; }
+
+.contacto__titulo { font-size: var(--t-h1); }
+
+.contacto__lista { margin: 0; }
+
+.contacto__fila {
+  display: grid;
+  gap: var(--e-1);
+  padding-block: var(--e-4);
+  border-top: var(--l-fina) solid var(--linea);
+}
+
+.contacto__fila:last-child { border-bottom: var(--l-fina) solid var(--linea); }
+
+.contacto__fila .etiqueta { color: var(--folio-tenue); }
+
+.contacto__fila dd {
+  margin: 0;
+  font-size: var(--t-cuerpo);
+}
+
+.contacto__fila[data-activa] .etiqueta { color: var(--folio-texto); }
+
+/* Secundario frente a G y H, pero con objetivo táctil completo. */
+.contacto__documentacion {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tactil);
+  margin-top: calc(var(--e-3) * -1);
+  color: var(--folio-tenue);
+  font-size: var(--t-dato);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+@media (hover: hover) {
+  .contacto__documentacion:hover {
+    color: var(--folio-texto);
+    text-decoration-thickness: 2px;
+  }
+}
+
+.contacto__firma {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+  font-size: var(--t-dato);
+  font-weight: 600;
+}
+
+/* ---------- Apilado: la cabecera se queda arriba y se va con el scroll ---------- */
+@media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+  .cabecera {
+    position: absolute;
+    left: max(var(--e-2), env(safe-area-inset-left, 0px));
+    right: max(var(--e-2), env(safe-area-inset-right, 0px));
+  }
+}
+
+@media (max-width: 699px) {
+  .pestana { padding-inline: var(--e-3); }
+  .pestana--marca { font-size: 0.8125rem; gap: var(--e-1); }
+  .pestana__largo { display: none; }
+  .pestana__corto { display: inline; }
+  .pestana--eslogan { font-size: 0.9375rem; }
+}
+
+/* Móvil estrecho: tres pestañas caben si Contacto pasa a icono. Conserva su aria-label. */
+@media (max-width: 459px) {
+  .cabecera { gap: var(--e-1); }
+  .pestana--contacto { padding-inline: 0; }
+  .pestana__contacto-texto { display: none; }
+  .pestana__contacto-icono { display: block; }
+}
+
+@media (max-width: 359px) {
+  .pestana { padding-inline: var(--e-2); }
+  .pestana--contacto { padding-inline: 0; }
+  .pestana--marca .remolino { display: none; }
+  .pestana--eslogan .pestana__remolino { display: none; }
+}
+
+/* ---------- Móvil horizontal: ruta solo con números ---------- */
+@media (orientation: landscape) and (max-height: 559px) {
+  .pestana__largo { display: none; }
+  .pestana__corto { display: inline; }
+
+  .pestana { padding-inline: var(--e-3); }
+
+  .parada__texto,
+  .parada[data-estado='actual'] .parada__texto { display: none; }
+
+  .ruta__lado-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .parada__enlace { padding-bottom: 0; min-height: var(--tactil); }
+  .tramo { top: 50%; }
+}

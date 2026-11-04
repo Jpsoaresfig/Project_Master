@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es" data-theme="inicio">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Un viaje en cada cucharada</title>
+    <meta name="description" content="Crema de cacahuete con frutas exóticas en tres sabores y tres destinos: Casa, Ubud y el Desierto de Atacama. Un viaje en cada cucharada." />
+    <meta name="theme-color" content="#3F4322" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="Un viaje en cada cucharada" />
+    <meta property="og:description" content="Crema de cacahuete con frutas exóticas en tres sabores y tres destinos: Casa, Ubud y el Desierto de Atacama. Un viaje en cada cucharada." />
+    <meta property="og:image" content="/og-imagen.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Los tres frascos de crema de cacahuete sobre una balda de madera." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Color de la pared antes de que llegue el CSS: la primera pintura ya es la marca. -->
+    <style>html,body{margin:0;background:#A59C64}</style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      /* Abierta con doble clic, el navegador bloquea los módulos: se explica en vez de quedar en blanco. */
+      if (location.protocol === 'file:') {
+        document.getElementById('root').innerHTML =
+          '<div style="max-width:36rem;padding:3rem 1.5rem;font-family:Georgia,serif;font-size:1.125rem;line-height:1.5;color:#2E2A1F">' +
+          '<h1 style="margin:0 0 .5em;font-size:2.25rem;line-height:1.1;font-weight:400">Esta web necesita un servidor</h1>' +
+          '<p>El navegador no permite abrirla directamente desde el archivo.</p>' +
+          '<p>Abre esta carpeta en una terminal y ejecuta <code style="padding:.1em .35em;background:#F7F3EA">npx serve</code>. Después entra en la dirección que aparece.</p>' +
+          '</div>';
+      }
+    </script>
+    <noscript>
+      <div style="max-width:34rem;padding:3rem 1.5rem;font-family:Georgia,serif;color:#2E2A1F">
+        <h1 style="margin:0 0 .5em;font-size:2.5rem;line-height:1.05;font-weight:400">Un viaje en cada cucharada</h1>
+        <p>Atrévete. El mundo cabe en una cucharada.</p>
+        <p>Esta web es un anuncio interactivo y necesita JavaScript. Tres sabores, tres destinos: Crema de Cacahuete Tradicional, Remolino de Pitaya Rosa y Remolino de Flor de Cactus.</p>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

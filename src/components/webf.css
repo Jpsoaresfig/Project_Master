@@ -1,0 +1,111 @@
+.webf {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-web-f);
+  overflow: hidden;
+  container-type: inline-size;
+  background-color: rgb(46 42 31 / 0.985);
+  background-image: var(--grano);
+  color: var(--c-crema);
+  outline: 0;
+  touch-action: none; /* El dedo mueve la nube, no la página. */
+}
+
+/* Área libre: dos tercios superiores y todo el lado derecho del titular. */
+.webf__aire {
+  position: absolute;
+  inset:
+    calc(env(safe-area-inset-top, 0px) + var(--e-5))
+    calc(env(safe-area-inset-right, 0px) + var(--e-5))
+    var(--e-5)
+    calc(env(safe-area-inset-left, 0px) + var(--e-5));
+}
+
+.webf__lema {
+  position: absolute;
+  z-index: 1;
+  left: max(var(--margen), env(safe-area-inset-left, 0px));
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--e-7));
+  max-width: 62%;
+  pointer-events: none;
+}
+
+.webf__atrevete {
+  --f-soft: 100;
+  --f-wonk: 1;
+  font-size: min(var(--t-portada), 30vh);
+  color: var(--c-crema);
+}
+
+.webf__mundo {
+  margin-top: var(--e-3);
+  font-size: var(--t-h3);
+  color: var(--c-crema);
+}
+
+.webf__instruccion {
+  margin-top: var(--e-4);
+  color: #CFCAB8;
+}
+
+.webf__cerrar {
+  position: absolute;
+  z-index: 3;
+  top: calc(env(safe-area-inset-top, 0px) + var(--e-4));
+  right: max(var(--margen), env(safe-area-inset-right, 0px));
+}
+
+.webf__nota {
+  position: absolute;
+  z-index: 2;
+  left: var(--nota-x);
+  top: var(--nota-y);
+}
+
+.webf__pista {
+  display: flex;
+  align-items: center;
+  min-height: var(--tactil);
+  color: inherit;
+  font-weight: 600;
+  text-underline-offset: 0.25em;
+}
+
+/* Móvil: titular arriba, elementos abajo; sin esquiva. */
+@media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+  .webf__lema {
+    left: max(var(--margen), env(safe-area-inset-left, 0px));
+    right: max(var(--margen), env(safe-area-inset-right, 0px));
+    top: calc(env(safe-area-inset-top, 0px) + var(--e-8));
+    bottom: auto;
+    max-width: none;
+  }
+
+  .webf__atrevete { font-size: clamp(3.25rem, calc(19 * var(--cqi)), 8rem); }
+
+  .webf__aire {
+    top: 38%;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--e-4));
+  }
+
+  .webf__nota {
+    left: max(var(--margen), env(safe-area-inset-left, 0px));
+    right: max(var(--margen), env(safe-area-inset-right, 0px));
+    top: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--e-5));
+    max-width: none;
+  }
+}
+
+/* Móvil horizontal: el titular se queda a la izquierda y el aire a la derecha. */
+@media (orientation: landscape) and (max-height: 559px) {
+  .webf__lema {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--e-4));
+    max-width: 42%;
+  }
+
+  .webf__atrevete { font-size: 22vh; }
+  .webf__mundo { font-size: var(--t-entrada); }
+  .webf__instruccion { margin-top: var(--e-2); }
+  .webf__aire { left: 40%; top: var(--e-7); }
+}

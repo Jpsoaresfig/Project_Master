@@ -1,0 +1,31 @@
+.velo {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-remolino);
+  overflow: hidden;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.velo svg { display: block; }
+
+.velo path {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.velo__a { stroke: var(--remolino-a); }
+.velo__b { stroke: var(--remolino-b); }
+
+.velo--fundido {
+  background: var(--remolino-b);
+  opacity: 0;
+}
+
+/* Pantalla diferida que tarda más que el velo: el papel del tema. */
+.cargando-ruta {
+  height: calc(var(--vista) - var(--ruta-total));
+  background: var(--fondo);
+}

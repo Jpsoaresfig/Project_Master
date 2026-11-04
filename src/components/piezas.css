@@ -1,0 +1,144 @@
+/* ---------- Ilustración en línea ---------- */
+.ilu {
+  display: inline-block;
+  color: var(--ilu-tinta);
+  line-height: 0;
+}
+
+.ilu svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* ---------- Frasco: la caja es el frasco; el lienzo cuelga de su eje ---------- */
+.frasco {
+  position: relative;
+  display: block;
+  flex: none;
+}
+
+.frasco__lienzo {
+  position: absolute;
+  left: 50%;
+  bottom: calc(-100% * var(--f-base) / var(--f-altura));
+  height: calc(100% / var(--f-altura));
+  width: auto;
+  max-width: none;
+  transform: translateX(calc(-100% * var(--f-eje)));
+}
+
+/* ---------- Sello ---------- */
+.sello {
+  color: var(--sello-tinta);
+  flex: none;
+}
+
+/* ---------- Billete ---------- */
+.boton {
+  font-family: var(--f-texto);
+  cursor: pointer;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-decoration: none;
+}
+
+.boton--billete {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-4);
+  min-height: 52px;
+  padding: 0 calc(var(--e-5) + var(--muesca) * 0.5);
+  color: var(--sobre-acento);
+  font-size: var(--t-etiqueta);
+  font-weight: 600;
+  font-stretch: var(--ancho-etiqueta);
+  letter-spacing: var(--e-etiqueta);
+  text-transform: uppercase;
+  transition: transform var(--d-instante) var(--m-salida), filter var(--d-rapido) var(--m-salida);
+}
+
+/* La muesca va en un ::before: si fuera en el botón, recortaría el foco. */
+.boton--billete::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--acento);
+  --corte-i: radial-gradient(circle var(--muesca) at 0 50%, #0000 97%, #000);
+  --corte-d: radial-gradient(circle var(--muesca) at 100% 50%, #0000 97%, #000);
+  -webkit-mask: var(--corte-i) left / 51% 100% no-repeat, var(--corte-d) right / 51% 100% no-repeat;
+  mask: var(--corte-i) left / 51% 100% no-repeat, var(--corte-d) right / 51% 100% no-repeat;
+}
+
+.boton--billete .icono-flecha {
+  flex: none;
+  transition: translate var(--d-rapido) var(--m-salida);
+}
+
+.boton--billete:active {
+  transform: translateY(1px);
+  filter: none;
+}
+
+@media (hover: hover) {
+  .boton--billete:hover { filter: drop-shadow(2px 3px 0 rgb(46 42 31 / 0.3)); }
+  .boton--billete:hover .icono-flecha { translate: 6px 0; }
+}
+
+/* ---------- Cierre de capa ---------- */
+.cerrar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-2);
+  min-width: 6rem;
+  min-height: var(--tactil);
+  padding: 0 var(--e-4);
+  border: 0;
+  background: var(--c-crema);
+  color: var(--c-tinta);
+  box-shadow: var(--s-papel);
+  font-family: var(--f-texto);
+  font-size: var(--t-etiqueta);
+  font-weight: 600;
+  font-stretch: var(--ancho-etiqueta);
+  letter-spacing: var(--e-etiqueta);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform var(--d-rapido) var(--m-salida), box-shadow var(--d-rapido) var(--m-salida);
+}
+
+.cerrar svg { transition: rotate var(--d-medio) var(--m-salida); }
+
+.cerrar:active { transform: translateY(1px); box-shadow: none; }
+
+@media (hover: hover) {
+  .cerrar:hover { box-shadow: var(--s-papel-alzado); }
+  .cerrar:hover svg { rotate: 90deg; }
+}
+
+/* ---------- Enlace secundario ---------- */
+.boton--enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  min-height: var(--tactil);
+  padding: 0;
+  color: var(--folio-texto);
+  font-size: var(--t-cuerpo);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+.boton--enlace:active { color: var(--folio-tenue); }
+
+@media (hover: hover) {
+  .boton--enlace:hover { text-decoration-thickness: 2px; }
+}

@@ -1,0 +1,869 @@
+/* Remolino perfecto: el cuaderno abierto (DESIGN §5). Selectores limitados a .vip,
+   salvo las capas que se montan fuera de la pantalla. */
+
+/* WONK solo en cuerpos grandes: por debajo de 20 px la letra torcida se ensucia. */
+.vip,
+.capa-pasaporte { --f-ejes-nota: 'opsz' 12, 'SOFT' 100, 'WONK' 0; }
+
+.vip .escenario {
+  background-color: var(--c-crema);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(var(--pauta-paso) - 1px),
+    var(--pauta) calc(var(--pauta-paso) - 1px) var(--pauta-paso)
+  );
+  background-position: 0 var(--pauta-y, 0);
+}
+
+.vip .escenario::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--grano);
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.vip__pagina {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--e-3);
+  padding:
+    calc(var(--alto-pestana) + env(safe-area-inset-top, 0px) + var(--e-4))
+    var(--margen)
+    var(--e-4)
+    max(var(--margen), env(safe-area-inset-left, 0px));
+  /* Cada ingrediente ocupa un número entero de renglones de la pauta. */
+  --fila: 9rem;
+  --tam-ing: min(var(--fila) - 2.25rem, 10.5rem);
+  /* El frasco se mide contra el escenario: así su columna no depende del pie de foto. */
+  --alto-tarro: min(calc(100 * var(--cqh)) - 12.75rem, calc(62 * var(--cqi)));
+}
+
+@supports (width: round(down, 1px, 1px)) {
+  .vip__pagina {
+    --fila: clamp(6.75rem, round(down, (calc(100 * var(--cqh)) - 9.5rem) / 3.4, var(--pauta-paso)), 13.5rem);
+  }
+}
+
+.vip__titulo {
+  color: var(--c-oliva-osc);
+  font-size: clamp(1.625rem, min(calc(5.2 * var(--cqi)), calc(7.4 * var(--cqh))), 5.5rem);
+}
+
+/* ---------- Mesa: ingredientes, frasco, intrusos ---------- */
+.vip__mesa {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) calc(var(--alto-tarro) * 0.6) minmax(0, 1fr);
+  align-items: center;
+  justify-items: center;
+  gap: var(--e-4);
+  min-height: 0;
+  width: min(100%, calc(175 * var(--cqh)));
+  margin-inline: auto;
+}
+
+/* Tres filas iguales a los dos lados: los pies caen en los mismos renglones. */
+.vip__bandeja,
+.vip__extra {
+  display: grid;
+  grid-template-rows: repeat(3, var(--fila));
+  justify-items: center;
+  transition: opacity var(--d-lento) var(--m-salida), visibility var(--d-lento);
+}
+
+.vip__bandeja { order: 1; justify-self: end; margin-right: clamp(0rem, calc(3 * var(--cqi)), 3rem); }
+.vip__centro { order: 2; }
+.vip__extra { order: 3; justify-self: start; margin-left: clamp(0rem, calc(3 * var(--cqi)), 3rem); }
+
+.vip__extra > :last-child { grid-row: 3; }
+
+.vip__extra[data-fuera] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.vip__centro {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e-3);
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* El hueco es un contenedor: el frasco cabe siempre en él sin perder la proporción,
+   y canvas y vidrio coinciden. */
+.vip__hueco-tarro {
+  container-type: size;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: var(--alto-tarro);
+}
+
+.vip__pie {
+  flex: none;
+  color: #5A5443;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-nota);
+  font-variation-settings: var(--f-ejes-nota);
+  font-optical-sizing: none;
+  line-height: 1.2;
+}
+
+/* En el hueco que deja el hombro del frasco: apunta a la boca sin tocar ningún pie. */
+.vip__flecha {
+  position: absolute;
+  right: 80%;
+  top: 1.5%;
+  width: clamp(3rem, calc(8 * var(--cqi)), 5.5rem);
+  stroke: var(--pagina-acento-texto);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.vip__flecha path:first-child { stroke-dasharray: 7 6; }
+
+/* ---------- Pieza ---------- */
+.pieza {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: var(--tactil);
+  min-height: var(--tactil);
+  padding: 0 var(--e-1);
+  border: 0;
+  background: none;
+  color: var(--c-tinta);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.pieza:active { cursor: grabbing; }
+
+.pieza[aria-disabled='true'] {
+  cursor: default;
+  touch-action: auto;
+}
+
+.pieza[data-vuelo] { z-index: 30; }
+
+.pieza__img {
+  height: var(--tam-ing);
+  width: var(--tam-ing);
+  max-width: none;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(1px 2px 0 rgb(46 42 31 / 0.2));
+  transition: filter var(--d-rapido) var(--m-salida), opacity var(--d-medio) var(--m-salida);
+}
+
+.pieza[data-vuelo] .pieza__img,
+.pieza[data-elegida] .pieza__img,
+.pieza[data-vuelo] .pieza__ilu,
+.pieza[data-elegida] .pieza__ilu,
+.pieza[data-vuelo] .pieza__sello,
+.pieza[data-elegida] .pieza__sello {
+  filter: drop-shadow(0 12px 12px rgb(46 42 31 / 0.42));
+}
+
+/* El elegido se ve como al arrastrar y lleva un marco a lápiz, visible sin color. */
+.pieza[data-elegida]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: var(--l-media) dashed var(--pagina-acento-texto);
+  pointer-events: none;
+}
+
+.pieza[data-usada] .pieza__img {
+  opacity: 0.2;
+  filter: grayscale(1);
+}
+
+.pieza[data-usada] .pieza__pie { color: #5A5443; }
+
+/* Misma caja que las fotos: todos los pies empiezan a la misma altura. */
+.pieza__ilu,
+.pieza__sello {
+  width: var(--tam-ing) !important;
+  height: var(--tam-ing);
+  flex: none;
+  pointer-events: none;
+}
+
+.pieza__pie {
+  display: block;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-nota);
+  font-variation-settings: var(--f-ejes-nota);
+  font-optical-sizing: none;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.pieza__pie small {
+  display: block;
+  color: #5A5443;
+  font-size: 0.8em;
+}
+
+@media (hover: hover) {
+  .pieza:not([aria-disabled='true']):hover .pieza__img { filter: drop-shadow(3px 5px 0 rgb(46 42 31 / 0.22)); }
+}
+
+/* La aguja tiembla cuando la brújula no entra. */
+.pieza[data-aviso] .aguja {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: aguja-tiembla 90ms var(--m-marea) 6 alternate;
+}
+
+@keyframes aguja-tiembla {
+  from { rotate: -12deg; }
+  to { rotate: 12deg; }
+}
+
+/* ---------- Frasco ---------- */
+.tarro {
+  position: relative;
+  z-index: 1;
+  display: block;
+  flex: none;
+  width: min(calc(100 * var(--cqw)), calc(60 * var(--cqh)));
+  aspect-ratio: 3 / 5;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: scale var(--d-medio) var(--m-salida);
+}
+
+.tarro[aria-disabled='true'] { cursor: default; }
+.tarro[data-cerca] { scale: 1.025; }
+
+.tarro > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tarro__fondo path { fill: rgb(255 255 255 / 0.66); }
+
+/* La crema queda dentro del vidrio: el grosor de la pared se ve. */
+.tarro__crema {
+  --silueta: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 400' preserveAspectRatio='none'%3E%3Cpath transform='translate(120 200) scale(.95 .968) translate(-120 -200)' d='M62 12h116q6 0 6 6v30q0 6-4 9q44 14 44 62v236q0 31-32 31H48q-32 0-32-31V119q0-48 44-62q-4-3-4-9V18q0-6 6-6z'/%3E%3C/svg%3E");
+  -webkit-mask: var(--silueta) center / 100% 100% no-repeat;
+  mask: var(--silueta) center / 100% 100% no-repeat;
+}
+
+.tarro__vidrio { overflow: visible; }
+
+.tarro__contorno {
+  stroke: var(--pagina-acento-texto);
+  stroke-width: 1.5;
+  stroke-dasharray: 1.1 0.9;
+  transition: stroke var(--d-pliegue) var(--m-salida), stroke-width var(--d-rapido) var(--m-salida);
+}
+
+.tarro[data-cerca] .tarro__contorno { stroke-width: 3; }
+
+.tarro[data-lleno] .tarro__contorno {
+  stroke: var(--c-oliva-osc);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+
+.tarro__rosca {
+  stroke: rgb(63 67 34 / 0.2);
+  stroke-width: 1.5;
+}
+
+.tarro__reflejo {
+  stroke: rgb(255 255 255 / 0.4);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.tarro__reflejo--fino {
+  stroke: rgb(255 255 255 / 0.28);
+  stroke-width: 3;
+}
+
+/* ---------- Folio ---------- */
+.vip__folio {
+  --foco: var(--foco-folio);
+  --foco-halo: var(--foco-halo-folio);
+}
+
+/* El «Salir» fijo del folio no debe tapar lo que se trae a la vista. */
+.vip__folio .folio__hoja { scroll-padding-bottom: 4rem; }
+
+.vip__folio .vip__titulo {
+  color: var(--folio-texto);
+  font-size: var(--t-h3);
+}
+
+.vip__estado {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-4);
+}
+
+.vip__estado .etiqueta { color: var(--acento-texto); }
+
+.pasos {
+  display: grid;
+  gap: var(--e-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pasos li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-3);
+}
+
+.pasos__numero {
+  flex: none;
+  width: 1.1em;
+  color: var(--folio-tenue);
+  font-family: var(--f-display);
+  font-size: var(--t-h3);
+  font-variation-settings: var(--f-ejes-dato);
+  font-optical-sizing: none;
+  line-height: 1;
+}
+
+.pasos__texto {
+  background: linear-gradient(currentColor, currentColor) 0 58% / 0 1px no-repeat;
+  transition: background-size var(--d-lento) var(--m-salida), color var(--d-lento) var(--m-salida);
+}
+
+.pasos li[data-hecho] .pasos__texto {
+  background-size: 100% 1px;
+  color: var(--folio-tenue);
+}
+
+.vip__aviso {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--e-2);
+}
+
+.vip__pista {
+  max-width: 100%;
+  width: 100%;
+  min-height: 4.1em;
+}
+
+/* Mientras gira nada queda a medias: se puede omitir. */
+.vip__saltar {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tactil);
+  color: inherit;
+}
+
+/* ---------- Pasaporte ---------- */
+.pasaporte {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--e-3);
+  padding: var(--e-3);
+  background: var(--c-oliva);
+  color: var(--c-tinta);
+  box-shadow: var(--s-papel-alzado);
+}
+
+.pasaporte__tapa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-2);
+  align-self: stretch;
+  padding: var(--e-3) var(--e-2);
+  border: var(--l-fina) solid var(--c-tinta);
+  --remolino-a: var(--c-pitaya-osc);
+  --remolino-b: var(--c-oliva-osc);
+}
+
+.pasaporte__tapa .etiqueta { font-size: 0.625rem; }
+
+.pasaporte__titulo { font-size: var(--t-h3); }
+
+.pasaporte__texto {
+  display: grid;
+  gap: var(--e-1);
+  min-width: 0;
+}
+
+.pasaporte__texto p {
+  font-size: var(--t-nota);
+  line-height: 1.3;
+}
+
+.pasaporte__hueco {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 5.75rem;
+  height: 5.75rem;
+}
+
+.pasaporte:not([data-abierto]) .pasaporte__hueco::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: var(--l-fina) dashed var(--c-tinta);
+  border-radius: var(--r-punto);
+  opacity: 0.6;
+}
+
+/* Por debajo de 1100 px la tapa no deja sitio: el texto pisaría el círculo del sello. */
+@media (max-width: 1099px) {
+  .pasaporte { grid-template-columns: minmax(0, 1fr) auto; }
+  .pasaporte__tapa { display: none; }
+}
+
+.pasaporte__onda {
+  position: absolute;
+  inset: 4px;
+  border: 2px solid var(--c-pitaya-osc);
+  border-radius: var(--r-punto);
+  animation: sello-onda 520ms var(--m-salida) both;
+  pointer-events: none;
+}
+
+@keyframes sello-onda {
+  from { scale: 0.9; opacity: 0.8; }
+  to { scale: 1.9; opacity: 0; }
+}
+
+.vip__golpe {
+  position: fixed;
+  z-index: var(--z-web-f);
+  pointer-events: none;
+}
+
+.vip__golpe .sello { width: 100% !important; }
+
+.vip__acciones {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--e-1);
+}
+
+.vip__acciones .boton--billete { width: 100%; }
+
+.vip__enlaces {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--e-4);
+}
+
+.vip__salida {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  margin-bottom: calc(var(--e-5) * -1);
+  padding-bottom: var(--e-2);
+  background: var(--folio);
+}
+
+.vip__salida .boton--enlace {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tactil);
+}
+
+.vip__salir-fijo.boton--billete {
+  position: fixed;
+  z-index: var(--z-folio);
+  right: max(var(--margen), env(safe-area-inset-right, 0px));
+  bottom: calc(var(--ruta-total) + var(--e-2));
+  min-height: var(--tactil);
+  padding-inline: var(--e-4);
+  --acento: var(--c-oliva-osc);
+  --sobre-acento: var(--c-crema);
+  filter: drop-shadow(1px 2px 0 rgb(46 42 31 / 0.3));
+}
+
+.vip__salir-fijo .boton__texto {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+}
+
+/* ---------- Modal: un librito que se abre ---------- */
+.capa-pasaporte {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-web-f);
+  --capa-margen-y: max(var(--e-4), env(safe-area-inset-top, 0px));
+  display: grid;
+  place-items: center;
+  padding:
+    var(--capa-margen-y)
+    max(var(--e-4), env(safe-area-inset-right, 0px))
+    max(var(--e-4), env(safe-area-inset-bottom, 0px))
+    max(var(--e-4), env(safe-area-inset-left, 0px));
+  background: rgb(46 42 31 / 0.62);
+  perspective: 1400px;
+  overflow: hidden;
+  --foco: var(--c-pitaya-osc);
+  --foco-halo: var(--c-crema);
+  --acento: var(--c-oliva-osc);
+  --sobre-acento: var(--c-crema);
+}
+
+.librito {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  width: min(100%, 50rem);
+  max-height: calc(var(--vista) - var(--capa-margen-y) * 2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  background: var(--c-oliva);
+  color: var(--c-tinta);
+  box-shadow: 0 30px 50px -18px rgb(46 42 31 / 0.7);
+  transform-origin: left center;
+}
+
+.librito__izquierda {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: var(--e-6) var(--e-4);
+  border-right: var(--l-fina) solid rgb(46 42 31 / 0.4);
+}
+
+.librito__izquierda .sello { max-width: 100%; }
+
+.librito__derecha {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--e-3);
+  padding: var(--e-6);
+}
+
+.librito__titulo { font-size: var(--t-h2); }
+
+.librito__lista {
+  display: grid;
+  gap: var(--e-1);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.librito__lista li {
+  padding: var(--e-1) 0;
+  border-bottom: var(--l-fina) solid rgb(46 42 31 / 0.4);
+}
+
+.librito__aviso {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-variation-settings: var(--f-ejes-nota);
+  font-optical-sizing: none;
+}
+
+/* Fijo a la capa, no al librito: se ve siempre, por mucho que haya que desplazar. */
+.capa-pasaporte .librito__cerrar {
+  position: fixed;
+  z-index: 1;
+  top: max(var(--e-2), env(safe-area-inset-top, 0px));
+  right: max(var(--e-2), env(safe-area-inset-right, 0px));
+}
+
+/* ---------- Tableta vertical: columnas de la mesa, folio debajo ---------- */
+@media (orientation: portrait) and (min-width: 700px) and (max-width: 1099px) {
+  .vip__folio .folio__hoja { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .vip__salida { display: none; }
+  .vip__folio .pasaporte,
+  .vip__folio .vip__acciones { grid-column: 2; }
+  .vip__estado { grid-row: span 3; }
+  .vip__folio { padding-bottom: var(--e-8); }
+}
+
+/* ---------- Móvil vertical: ingredientes en fila encima del frasco ---------- */
+@media (orientation: portrait) and (max-width: 699px), (max-width: 699px) and (min-height: 560px) {
+  .vip .escenario {
+    flex: none;
+    height: max(calc(var(--vista-s) - var(--ruta-total)), 31rem);
+  }
+
+  .vip__pagina {
+    padding-top: calc(var(--alto-pestana) + env(safe-area-inset-top, 0px) + var(--e-2));
+    padding-bottom: var(--e-2);
+    gap: var(--e-2);
+    --tam-ing: clamp(2.75rem, calc(12 * var(--cqi)), 4.5rem);
+  }
+
+  .vip__titulo { font-size: clamp(1.5rem, calc(7.4 * var(--cqi)), 2.5rem); }
+
+  .vip__mesa {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: var(--e-2) var(--e-1);
+    align-items: start;
+  }
+
+  .vip__bandeja,
+  .vip__extra {
+    display: contents;
+    margin: 0;
+  }
+
+  .vip__extra > :last-child { grid-row: auto; }
+
+  .vip__centro {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    gap: var(--e-2);
+  }
+
+  .vip__hueco-tarro { max-height: none; }
+
+  /* Debajo del frasco, centrado: la pista a la izquierda y el «Salir» fijo a la derecha. */
+  .vip__tira {
+    position: relative;
+    flex: none;
+    align-self: stretch;
+    display: flex;
+    align-items: flex-end;
+    min-height: 5.75rem;
+    padding-right: 5.75rem;
+  }
+
+  .vip__tira:empty { min-height: 3rem; }
+
+  .vip__aviso { flex: 1; min-width: 0; }
+
+  /* Justo encima del «Salir»: aparece sin mover ni el frasco ni la pista. */
+  .vip__saltar {
+    position: absolute;
+    right: 0;
+    bottom: calc(var(--tactil) + var(--e-1));
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .pieza { padding: 2px 0; width: 100%; }
+  .pieza__ilu,
+  .pieza__sello { margin-inline: auto; }
+  .pieza__pie { font-size: 0.8125rem; }
+  .pieza__pie small { display: none; }
+  .pieza__ilu .grabado,
+  .pieza__sello .grabado { display: none; }
+
+  .vip__mesa[data-premio] { grid-template-columns: minmax(0, 1fr); }
+
+  .vip__premio {
+    display: grid;
+    gap: var(--e-2);
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Aquí el premio está sobre la página crema, no sobre el folio oscuro. */
+  .vip__premio {
+    --acento: var(--c-pitaya);
+    --sobre-acento: var(--c-crema);
+    --folio-texto: var(--c-tinta);
+    --folio-tenue: #5A5443;
+  }
+
+  .vip__premio .pasaporte__tapa { display: none; }
+
+  .vip__premio .pasaporte {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: var(--e-2) var(--e-3);
+  }
+
+  .vip__premio .pasaporte__hueco {
+    width: 4.25rem;
+    height: 4.25rem;
+  }
+
+  .vip__premio .pasaporte__hueco .sello { width: 4rem !important; }
+  .vip__premio .pasaporte__titulo { font-size: 1.25rem; }
+
+  .vip__premio .vip__enlaces {
+    flex-wrap: nowrap;
+    gap: var(--e-2);
+  }
+
+  .vip__premio .boton--enlace {
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .vip__flecha,
+  .vip__pie { display: none; }
+
+  .vip__pista {
+    min-height: 0;
+    rotate: 0deg;
+    font-size: 0.875rem;
+  }
+
+  .vip__salida { display: none; }
+  .vip__folio { padding-bottom: var(--e-8); }
+
+  .librito { grid-template-columns: minmax(0, 1fr); }
+
+  .librito__izquierda {
+    padding: var(--e-4);
+    border-right: 0;
+    border-bottom: var(--l-fina) solid rgb(46 42 31 / 0.4);
+  }
+
+  .librito__derecha { padding: var(--e-5) var(--e-4); }
+  .librito__izquierda .sello { width: 8.5rem !important; }
+}
+
+/* ---------- Bajo: frasco a toda altura y el título pasa al folio ---------- */
+@media (orientation: landscape) and (max-height: 559px) {
+  .vip__pagina {
+    display: block;
+    padding: var(--e-1) var(--e-2) var(--e-1) max(var(--e-2), env(safe-area-inset-left, 0px));
+    --tam-ing: 2.75rem;
+  }
+
+  .vip__pagina { --alto-tarro: min(calc(100 * var(--cqh)) - var(--alto-pestana) - var(--e-3), calc(58 * var(--cqi))); }
+
+  .vip__mesa {
+    height: 100%;
+    gap: var(--e-2);
+    width: 100%;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  /* Ninguna pieza se corta: las tres filas caben siempre en la altura del escenario. */
+  .vip__bandeja,
+  .vip__extra {
+    padding-top: calc(var(--alto-pestana) + var(--e-1));
+    height: 100%;
+    min-height: 0;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .vip__bandeja { margin-right: 0; }
+  .vip__extra { margin-left: 0; }
+
+  .vip__centro {
+    padding-top: calc(var(--alto-pestana) + var(--e-1));
+    gap: 0;
+  }
+
+  .vip__hueco-tarro { max-height: none; }
+
+  .vip__pie,
+  .vip__flecha { display: none; }
+
+  .pieza__pie { font-size: 0.75rem; white-space: nowrap; }
+  .pieza__pie small { display: none; }
+  .pieza__ilu .grabado,
+  .pieza__sello .grabado { display: none; }
+
+  /* El scroll empieza bajo la pestaña, y la pista queda fija arriba mientras se juega. */
+  .vip__folio .folio__hoja {
+    height: calc(100% - var(--alto-pestana) - var(--e-1));
+    margin-top: calc(var(--alto-pestana) + var(--e-1));
+    padding-top: var(--e-1);
+    scroll-padding-top: 6rem;
+  }
+
+  .vip__folio .vip__aviso {
+    position: sticky;
+    z-index: 2;
+    top: 0;
+    flex: none;
+    gap: 0;
+    padding-block: var(--e-1);
+    background: var(--folio);
+  }
+
+  .vip__folio[data-ganado] .vip__aviso { position: static; }
+
+  /* Tras ganar, el pasaporte y su botón caben juntos: el scroll no corta el título. */
+  .vip__folio[data-ganado] .folio__hoja { scroll-padding-bottom: 3rem; }
+  .vip__folio .pasaporte__titulo { font-size: 1.25rem; white-space: nowrap; }
+
+  .vip__folio .vip__acciones .boton--billete {
+    gap: var(--e-2);
+    padding-inline: var(--e-3);
+  }
+
+  .vip__folio .vip__titulo { font-size: 1.375rem; }
+  .vip__estado { gap: var(--e-2); }
+  .pasos { gap: 0; }
+  .pasos__numero { font-size: var(--t-cuerpo); }
+  .vip__pista { min-height: 0; }
+
+  .pasaporte {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: var(--e-2);
+  }
+
+  .pasaporte__tapa { display: none; }
+
+  .pasaporte__hueco {
+    width: 4.25rem;
+    height: 4.25rem;
+  }
+
+  .pasaporte__hueco .sello { width: 4rem !important; }
+
+  .librito { width: min(100%, 44rem); }
+  .librito__izquierda { padding: var(--e-3); }
+  .librito__izquierda .sello { width: 8rem !important; }
+
+  .librito__derecha {
+    padding: var(--e-3) var(--e-4);
+    gap: var(--e-1);
+  }
+
+  .librito__titulo { font-size: var(--t-h3); }
+  .librito__lista { gap: 0; }
+  .librito__lista li { padding: 1px 0; font-size: 0.9375rem; }
+}

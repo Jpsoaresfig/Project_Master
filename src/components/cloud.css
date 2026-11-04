@@ -1,0 +1,59 @@
+.nube {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.flot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  will-change: transform;
+}
+
+.flot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.flot .ilu { width: 100%; display: block; }
+
+.flot--toca {
+  pointer-events: auto;
+  cursor: pointer;
+  min-width: var(--tactil);
+  min-height: var(--tactil);
+}
+
+/* Con `respuesta` también los elementos sin frase atienden al toque. */
+.nube--responde .flot { pointer-events: auto; cursor: pointer; }
+
+.flot--toca[data-tocado]:not(.flot--oro) { opacity: 0.6; }
+
+.flot--toca:active svg { transform: scale(0.94); }
+
+/* El dorado es el único relleno: la mancha va en registro y el grabado, en tostado. */
+.flot--oro .ilu {
+  --ilu-tinta: #5C3E0E;
+  color: var(--ilu-tinta);
+}
+
+.flot--oro .mancha { transform: none; }
+.flot--oro .grabado { stroke-width: 1.5; }
+.flot--oro .contorno { stroke-width: 2.4; }
+
+.flot--oro svg {
+  animation: destello 6s var(--m-marea) infinite;
+}
+
+@keyframes destello {
+  0%, 86%, 100% { filter: drop-shadow(0 0 6px rgb(242 201 76 / 0.45)); }
+  93% { filter: drop-shadow(0 0 22px rgb(255 228 138 / 0.95)); }
+}

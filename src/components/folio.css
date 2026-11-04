@@ -1,0 +1,249 @@
+/* Sin container-type ni z-index en .folio: el numeral debe mezclarse con el escenario. */
+.folio {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background-color: var(--folio);
+  background-image: var(--folio-velo);
+  color: var(--folio-texto);
+}
+
+.folio__hoja {
+  position: relative;
+  z-index: 3;
+  container-type: inline-size;
+  /* El scroll empieza bajo la pestaña: nada pasa por detrás de ella. */
+  --bajo-pestana: calc(var(--alto-pestana) + env(safe-area-inset-top, 0px));
+  height: calc(100% - var(--bajo-pestana));
+  margin-top: var(--bajo-pestana);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-5);
+  padding:
+    var(--e-5)
+    max(var(--margen), env(safe-area-inset-right, 0px))
+    var(--e-5)
+    var(--margen);
+}
+
+.pantalla[data-invertida] .folio__hoja {
+  padding-left: max(var(--margen), env(safe-area-inset-left, 0px));
+  padding-right: var(--margen);
+}
+
+/* El numeral asoma del lado del escenario: en el folio solo roza el margen, y así nunca
+   queda bajo un control, sea cual sea el alto. */
+.folio__numeral {
+  position: absolute;
+  left: var(--margen);
+  bottom: -0.04em;
+  z-index: 2; /* Sobre el escenario: `order` altera el orden de pintura en Ubud. */
+  font-size: clamp(9rem, 14vw, 42vh);
+  line-height: 0.8;
+  transform: translateX(-100%);
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  user-select: none;
+}
+
+:is([data-theme='ubud'], [data-theme='atacama'], [data-theme='vip'], [data-theme='final'], [data-theme='inicio']) .folio__numeral {
+  mix-blend-mode: screen;
+}
+
+.pantalla[data-invertida] .folio__numeral {
+  left: auto;
+  right: var(--margen);
+  transform: translateX(100%);
+}
+
+.folio__ficha {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--e-3);
+}
+
+.folio__dato { color: var(--folio-tenue); }
+
+.folio__titulo {
+  font-size: var(--t-h1);
+  margin-top: var(--e-2);
+}
+
+.folio__cita { max-width: 26ch; }
+
+.folio__descripcion {
+  max-width: var(--medida);
+  font-size: var(--t-cuerpo);
+  line-height: var(--i-cuerpo);
+  color: var(--folio-texto);
+}
+
+/* El grabado solo aparece si hay aire: nunca toca el título ni empuja las salidas. */
+.folio__grabado {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.folio__grabado .ilu { max-height: 100%; }
+
+@media (max-height: 859px) {
+  .folio__grabado { display: none; }
+}
+
+.folio__salidas {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3) var(--e-5);
+}
+
+.folio__salidas .boton--billete { flex: 1 1 auto; max-width: 20rem; }
+
+/* ---------- Tamaños ---------- */
+.tamanos {
+  display: flex;
+  gap: var(--e-2);
+  margin-top: var(--e-2);
+}
+
+.tamano {
+  width: 72px;
+  height: var(--tactil);
+  border: var(--l-fina) solid var(--linea);
+  background: transparent;
+  color: var(--folio-texto);
+  font-family: var(--f-display);
+  font-size: var(--t-dato);
+  font-variation-settings: var(--f-ejes-dato);
+  cursor: pointer;
+  transition: background-color var(--d-rapido) var(--m-salida), transform var(--d-instante) var(--m-salida);
+}
+
+.tamano[aria-pressed='true'] {
+  background: var(--folio-texto);
+  border-color: var(--folio-texto);
+  color: var(--texto-sobre-folio, var(--fondo));
+}
+
+.tamano:active { transform: scale(0.97); }
+
+@media (hover: hover) {
+  .tamano:not([aria-pressed='true']):hover {
+    background: rgb(128 128 128 / 0.14);
+    background: color-mix(in srgb, var(--folio-texto) 10%, transparent);
+  }
+}
+
+/* ---------- Apilado: el numeral vive dentro del folio ---------- */
+@media (orientation: portrait) and (max-width: 1099px), (max-width: 699px) and (min-height: 560px) {
+  .folio__hoja {
+    height: auto;
+    margin-top: 0;
+    overflow: visible;
+    padding:
+      var(--e-6)
+      max(var(--margen), env(safe-area-inset-right, 0px))
+      var(--e-6)
+      max(var(--margen), env(safe-area-inset-left, 0px));
+  }
+
+  .pantalla[data-invertida] .folio__hoja {
+    padding-right: max(var(--margen), env(safe-area-inset-right, 0px));
+  }
+
+  .folio { overflow: hidden; }
+
+  .folio__numeral,
+  .pantalla[data-invertida] .folio__numeral {
+    left: auto;
+    right: var(--margen);
+    top: var(--e-4);
+    bottom: auto;
+    font-size: 7rem;
+    transform: none;
+  }
+
+  .folio__grabado {
+    display: flex;
+    flex: none;
+    justify-content: flex-start;
+  }
+
+  .folio__grabado .ilu { width: 120px !important; }
+
+  .folio__salidas { margin-top: 0; }
+}
+
+/* Tableta vertical: texto y controles a dos columnas. */
+@media (orientation: portrait) and (min-width: 700px) and (max-width: 1099px) {
+  .folio__hoja {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--e-5) var(--e-7);
+    align-items: start;
+  }
+
+  .folio__ficha { grid-row: span 2; }
+  .folio__numeral { display: none; }
+  .folio__salidas { grid-column: 2; flex-direction: column; align-items: stretch; }
+  .folio__salidas .boton--billete { max-width: none; }
+}
+
+/* Entre 700 y 1099 en horizontal: sin numeral. */
+@media (orientation: landscape) and (max-width: 1099px) {
+  .folio__numeral { display: none; }
+}
+
+/* Móvil horizontal: folio con scroll propio. */
+@media (orientation: landscape) and (max-height: 559px) {
+  .folio__hoja {
+    padding-top: var(--e-2);
+    padding-bottom: 0;
+    gap: var(--e-2);
+  }
+
+  .folio__numeral,
+  .folio__grabado { display: none; }
+
+  /* Ficha compacta: la acción no se pierde al fondo del scroll. */
+  .folio__ficha { gap: var(--e-2); }
+  .folio__titulo { font-size: var(--t-h3); margin-top: 0; }
+  .folio__cita { font-size: var(--t-cuerpo); max-width: none; }
+  .folio__descripcion { font-size: 0.9375rem; line-height: 1.4; }
+
+  /* Salidas fijas al pie, con degradado para que el texto se funda al pasar por debajo. */
+  .folio__salidas {
+    position: sticky;
+    z-index: 1;
+    bottom: 0;
+    margin: auto calc(var(--margen) * -1) 0;
+    padding: var(--e-5) var(--margen) var(--e-2);
+    flex-wrap: wrap;
+    gap: 0 var(--e-3);
+    background: linear-gradient(transparent, var(--folio-pie) var(--e-5));
+    pointer-events: none;
+  }
+
+  .folio__salidas > * { pointer-events: auto; }
+
+  .folio__salidas .boton--billete {
+    flex: 1 1 8rem;
+    max-width: none;
+    min-height: var(--tactil);
+    padding-inline: var(--e-3);
+    gap: var(--e-2);
+  }
+
+  .folio__salidas .boton--enlace { font-size: 0.875rem; }
+}
