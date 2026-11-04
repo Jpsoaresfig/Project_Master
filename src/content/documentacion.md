@@ -263,6 +263,16 @@ Pulsa cualquier boceto para ampliarlo. Con las flechas se pasa de uno a otro.
 
 La documentación está en `/documentation`, también en `/documentacion` y `/documentacion.html`. Se llega desde un enlace discreto en el panel de Contacto.
 
+### Rendimiento en móvil
+
+Una auditoría con un móvil de gama media emulado (412 × 915, densidad 2,6, CPU seis veces más lenta) mostró que el mayor problema era el cambio de página. La versión táctil sigue una regla: en cada fotograma solo cambian `transform` y `opacity`, y siempre que se puede los anima el compositor. El escritorio conserva todos los efectos.
+
+- La transición de remolino es un disco pintado una vez que solo gira y se escala, y sigue en marcha mientras se monta la pantalla nueva.
+- El cambio de tema ya no anima los ejes de la fuente, que recalculaba todo el documento en cada fotograma.
+- En Atacama, el parpadeo de la luz y la deriva de los planos pasan a CSS. El fuego y los pétalos van a 30 fps constantes, y los pétalos se detienen fuera de la pantalla.
+- Las texturas generadas con `feTurbulence` se sirven como WebP ya rasterizados.
+- Se retira el parallax ligado al scroll y las fusiones `mix-blend-mode` sobre capas animadas. El parallax con el dedo se mantiene.
+
 ### Formato y resolución de imágenes
 
 Las fotografías y capas de la web están en **WebP**, que ocupa menos que los originales en JPG y PNG y conserva la transparencia de los recortes. Los grabados, el sello y el remolino están en **SVG**, insertados en línea para que hereden el color de cada destino.
@@ -450,6 +460,8 @@ Los cambios se han comprobado contra el código de la versión final.
 | Inicio | Texto bajo la balda | Texto y controles en el folio lateral | Toda la web usa la misma regla de los 2/3 |
 | Velocidad del carrusel | Controles A y B | Cinco velocidades, también con A y B | Da un margen claro entre muy lenta y muy rápida |
 | Pausa del carrusel | Solo con el cursor | Se añade un botón de pausa | En táctil no hay cursor, y la pausa debe existir en cualquier dispositivo |
+| Transición en móvil | Espiral que se dibuja a pantalla completa | Disco en espiral que gira y crece | Dibujar el trazo repinta toda la pantalla en cada fotograma; el disco no se detiene mientras carga la pantalla nueva |
+| Parallax de scroll en móvil | Casa con parallax | Se mantiene con el dedo y se retira del scroll | Desde JavaScript siempre llega tarde al scroll del móvil y tiembla |
 | Contacto | Panel lateral G y H | Panel con el correo ficticio cuchavia@hotmail.com, redes «Próximamente» y enlace a la documentación | Datos ficticios facilitados por el grupo |
 | Coordenadas | No aparecen | Coordenadas reales de Ubud y San Pedro de Atacama en el folio; Casa dice «las de tu mesa» | Refuerzan el cuaderno de viaje con un dato verdadero |
 | Ubud | Foto a la izquierda y texto a la derecha | Pantalla invertida, con el folio a la izquierda | La mujer de la foto mira hacia el texto |

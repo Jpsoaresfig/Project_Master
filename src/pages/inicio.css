@@ -647,3 +647,10 @@
   .casilla__letra { width: 44px; height: 44px; font-size: 1.25rem; }
   .casilla { min-height: 44px; }
 }
+
+/* Táctil: la sombra y el color no cambian al girar. Un filtro distinto, o su transición, obliga a
+   rasterizar de nuevo el frasco entero en plena órbita. */
+@media (hover: none), (pointer: coarse) {
+  .frasco-boton img { transition: none; }
+  .frasco-eje[data-frente='no'] img { filter: drop-shadow(12px 14px 16px rgb(46 42 31 / 0.32)); }
+}

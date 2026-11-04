@@ -5,7 +5,7 @@ import grabadoCacahuete from '../assets/ilustraciones/cacahuete.svg?raw';
 import grabadoPitaya from '../assets/ilustraciones/pitaya.svg?raw';
 import grabadoFlor from '../assets/ilustraciones/flor-nopal.svg?raw';
 import { CONTACTO, GEOMETRIA_FRASCO, SABORES } from '../data.js';
-import { useDisposicion } from '../hooks.js';
+import { useDisposicion, useTactil } from '../hooks.js';
 import { useViaje } from '../state.jsx';
 import { Boton, Frasco, Hoja, IconoFlecha, Ilu, Pantalla, centroDe, useContacto, useTransicion, useWebF } from '../components/index.js';
 import './inicio.css';
@@ -137,6 +137,7 @@ function ReservaSabor({ sabor }) {
 export default function Inicio() {
   const { reducido } = useViaje();
   const disposicion = useDisposicion();
+  const tactil = useTactil();
   const { abrir: abrirContacto, abierto: contactoAbierto } = useContacto();
   const { abierta: webFAbierta } = useWebF();
   const transicion = useTransicion();
@@ -173,6 +174,9 @@ export default function Inicio() {
   nivelActual.current = nivel;
   const disposicionRef = useRef(disposicion);
   disposicionRef.current = disposicion;
+  const tactilRef = useRef(false);
+  const frontalRef = useRef(0);
+  tactilRef.current = tactil;
 
   useEffect(() => {
     if (faseVelo !== 'cubre') setEntrada('entra');
@@ -186,12 +190,23 @@ export default function Inicio() {
         if (!eje) return;
         const { x, y, s } = colocar((i - m.pos) / 3, orbitaActual);
         eje.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${s.toFixed(4)})`;
-        eje.style.zIndex = String(10 + Math.round(s * 20));
-        eje.style.setProperty('--contra-escala', (1 / s).toFixed(3));
-        eje.dataset.frente = s > 0.8 ? 'si' : 'no';
+        /* Solo `transform` cambia en cada fotograma: lo demás recalcula estilos y reordena capas. */
+        const z = 10 + Math.round(s * 20);
+        if (eje.dataset.z !== String(z)) {
+          eje.dataset.z = z;
+          eje.style.zIndex = String(z);
+        }
+        const frente = s > 0.8 ? 'si' : 'no';
+        if (eje.dataset.frente !== frente) eje.dataset.frente = frente;
+        /* El rótulo solo se ve con cursor o foco. */
+        if (!tactilRef.current) eje.style.setProperty('--contra-escala', (1 / s).toFixed(3));
       });
     }
-    setActivo(modulo(Math.round(m.pos), 3));
+    const frontal = modulo(Math.round(m.pos), 3);
+    if (frontal !== frontalRef.current) {
+      frontalRef.current = frontal;
+      setActivo(frontal);
+    }
   }, []);
 
   /* Mide en px: el transform no depende de `cqw`, que Safari 15 no conoce. */
@@ -239,6 +254,11 @@ export default function Inicio() {
       const objetivo = m.destino + DERIVA * (Math.max(0, m.espera) / espera) + m.arrastre;
       m.vel += (omega * omega * (objetivo - m.pos) - 2 * omega * m.vel) * dt;
       m.pos += m.vel * dt;
+      /* Parado y asentado no hay nada que escribir. */
+      if (parado.current && Math.abs(m.vel) < 1e-3 && Math.abs(objetivo - m.pos) < 1e-3) {
+        cuadro = requestAnimationFrame(paso);
+        return;
+      }
       pintar();
       if (pulso.current) {
         pulso.current.style.transform = `scaleX(${(Math.max(0, m.espera) / espera).toFixed(3)})`;

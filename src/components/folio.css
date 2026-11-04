@@ -247,3 +247,12 @@
 
   .folio__salidas .boton--enlace { font-size: 0.875rem; }
 }
+
+/* Táctil: el numeral no debe fusionarse con un escenario animado. */
+@media (hover: none), (pointer: coarse) {
+  .folio__numeral,
+  :is([data-theme='ubud'], [data-theme='atacama'], [data-theme='vip'], [data-theme='final'], [data-theme='inicio']) .folio__numeral {
+    mix-blend-mode: normal;
+    opacity: 0.1;
+  }
+}

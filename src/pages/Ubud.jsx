@@ -260,6 +260,8 @@ export default function Ubud() {
       [cx, cy, md, sx, sy, desp].forEach((v) => v.jump(0));
       return undefined;
     }
+    /* En táctil el scroll va por el compositor: un parallax desde JS siempre llega tarde y tiembla. */
+    if (tactil) return undefined;
     const raiz = escena.current?.closest('.ubud');
     const lienzo = raiz?.querySelector('.escenario');
     const hoja = raiz?.querySelector('.folio__hoja');
@@ -282,7 +284,7 @@ export default function Ubud() {
       hoja.removeEventListener('scroll', leer);
       window.removeEventListener('resize', leer);
     };
-  }, [reducido, disposicion, cx, cy, md, sx, sy, desp]);
+  }, [reducido, tactil, disposicion, cx, cy, md, sx, sy, desp]);
 
   const cerrarNota = useCallback(() => setNota(null), []);
 

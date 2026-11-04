@@ -7,7 +7,10 @@ import './styles/app.css';
 import App from './App.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { BASENAME } from './raiz.js';
+import { precargarEnReposo } from './rutasDiferidas.js';
 import { ViajeProvider } from './state.jsx';
+
+window.addEventListener('load', precargarEnReposo, { once: true });
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

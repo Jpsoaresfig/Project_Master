@@ -463,3 +463,13 @@
   --d-remolino-revela: 160ms;
   --d-clima: 0.01ms;
 }
+
+/* Táctil: las mismas tres texturas ya rasterizadas. feTurbulence se calcula píxel a píxel en la CPU
+   y, con la densidad de un móvil, la pared tardaba segundos en aparecer. */
+@media (hover: none), (pointer: coarse) {
+  :root {
+    --grano: url('../assets/texturas/grano.webp');
+    --veta: url('../assets/texturas/veta.webp');
+    --revoco: url('../assets/texturas/revoco.webp');
+  }
+}

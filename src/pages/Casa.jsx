@@ -8,7 +8,7 @@ import lino from '../assets/casa/lino.webp';
 import lino1000 from '../assets/casa/lino-1000.webp';
 import cacahuete from '../assets/cacahuete.webp';
 import { GEOMETRIA_FRASCO, TAMANOS, saborPorId } from '../data.js';
-import { useDisposicion } from '../hooks.js';
+import { useDisposicion, useTactil } from '../hooks.js';
 import { useViaje } from '../state.jsx';
 import { Folio, Frasco, Pantalla, useTransicion } from '../components/index.js';
 import FichaPeso from './FichaPeso.jsx';
@@ -59,6 +59,7 @@ function usePlano(cx, cy, desp, k, kScroll = 0) {
 export default function Casa() {
   const { reducido } = useViaje();
   const disposicion = useDisposicion();
+  const tactil = useTactil();
   const transicion = useTransicion();
 
   const [tam, setTam] = useState(TAMANOS[0]);
@@ -152,25 +153,28 @@ export default function Casa() {
     const leer = () => {
       if (disposicion === 'apilado') {
         const r = escenario.getBoundingClientRect();
-        md.set(limitar(-r.top / r.height, 0, 1));
+        if (!tactil) md.set(limitar(-r.top / r.height, 0, 1));
       } else {
         const recorrido = hoja.scrollHeight - hoja.clientHeight;
-        md.set(recorrido > 0 ? limitar(hoja.scrollTop / recorrido, 0, 1) : 0);
+        if (!tactil) md.set(recorrido > 0 ? limitar(hoja.scrollTop / recorrido, 0, 1) : 0);
       }
       /* Sin página que desplazar, el dedo es libre en los dos ejes. */
       const pagina = document.documentElement.scrollHeight > window.innerHeight + 1;
       escenario.style.touchAction = pagina ? 'pan-y' : 'none';
     };
     leer();
-    window.addEventListener('scroll', leer, { passive: true });
-    hoja.addEventListener('scroll', leer, { passive: true });
+    /* En táctil el scroll va por el compositor: un parallax desde JS siempre llega tarde y tiembla. */
+    if (!tactil) {
+      window.addEventListener('scroll', leer, { passive: true });
+      hoja.addEventListener('scroll', leer, { passive: true });
+    }
     window.addEventListener('resize', leer);
     return () => {
       window.removeEventListener('scroll', leer);
       hoja.removeEventListener('scroll', leer);
       window.removeEventListener('resize', leer);
     };
-  }, [reducido, disposicion, md]);
+  }, [reducido, tactil, disposicion, md]);
 
   const seguirDedo = (e) => {
     if (e.pointerType !== 'touch' || reducido) return;

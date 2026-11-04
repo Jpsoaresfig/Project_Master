@@ -462,3 +462,9 @@
 
   .ubud__fronda--b { display: none; }
 }
+
+/* ---------- Táctil: nada de filtros ni fusiones sobre capas que se mueven ---------- */
+@media (hover: none), (pointer: coarse) {
+  .ubud__foto { filter: none; }
+  .ubud__sello { mix-blend-mode: normal; opacity: 0.7; }
+}

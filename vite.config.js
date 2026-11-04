@@ -34,6 +34,8 @@ function precargasCriticas() {
           tags: [
             precarga(/fraunces-latin-full-normal.*\.woff2$/, fuente),
             precarga(/instrument-sans-latin-standard-normal.*\.woff2$/, fuente),
+            /* El frasco de frente de la portada es el elemento mayor de la primera pantalla. */
+            precarga(/frasco-tradicional.*\.webp$/, { as: 'image', fetchpriority: 'high' }),
           ],
         };
       },

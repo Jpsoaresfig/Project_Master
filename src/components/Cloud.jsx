@@ -2,7 +2,7 @@
    Cada partícula tiene una trayectoria base y un desvío con muelle que la aparta del cursor.
    Contrato en src/ARQUITECTURA.md. */
 import { memo, useEffect, useMemo, useRef } from 'react';
-import { useTactil } from '../hooks.js';
+import { CONSULTA_TACTIL, useTactil } from '../hooks.js';
 import { useViaje } from '../state.jsx';
 import './cloud.css';
 
@@ -161,8 +161,25 @@ function CloudBase({
     quieta();
 
     let cuadro = 0;
+    let espera = 0;
     let previo = 0;
     let reloj = 0;
+    const tactil = window.matchMedia(CONSULTA_TACTIL).matches;
+
+    /* En táctil, 30 fps: el temporizador deja libres los fotogramas intermedios. */
+    const pedir = () => {
+      if (tactil) {
+        espera = setTimeout(() => {
+          cuadro = requestAnimationFrame(paso);
+        }, 20);
+      } else {
+        cuadro = requestAnimationFrame(paso);
+      }
+    };
+    const detener = () => {
+      clearTimeout(espera);
+      cancelAnimationFrame(cuadro);
+    };
 
     const paso = (ahora) => {
       const dt = Math.min(0.033, previo ? (ahora - previo) / 1000 : 0.016);
@@ -221,7 +238,7 @@ function CloudBase({
         }
         pintar(v, x, y, g);
       }
-      cuadro = requestAnimationFrame(paso);
+      pedir();
     };
 
     const mover = (e) => {
@@ -282,17 +299,27 @@ function CloudBase({
     });
     observador.observe(cont);
 
+    /* Fuera de vista no se anima: en móvil se pasa la mayor parte del tiempo leyendo el folio. */
+    const vista = new IntersectionObserver(([e]) => {
+      detener();
+      if (e.isIntersecting) {
+        previo = 0;
+        cuadro = requestAnimationFrame(paso);
+      }
+    });
+
     if (activa && !reducido) {
       window.addEventListener('pointermove', mover, { passive: true });
       window.addEventListener('pointerdown', mover, { passive: true });
       window.addEventListener('pointerup', soltar, { passive: true });
       window.addEventListener('pointercancel', salir, { passive: true });
       document.documentElement.addEventListener('pointerleave', salir);
-      cuadro = requestAnimationFrame(paso);
+      vista.observe(cont);
     }
 
     return () => {
-      cancelAnimationFrame(cuadro);
+      detener();
+      vista.disconnect();
       observador.disconnect();
       window.removeEventListener('pointermove', mover);
       window.removeEventListener('pointerdown', mover);

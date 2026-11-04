@@ -3,12 +3,12 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { metaDeRuta } from './data.js';
 import Layout from './components/Layout.jsx';
 import Inicio from './pages/Inicio.jsx';
-import Casa from './pages/Casa.jsx';
-import Final from './pages/Final.jsx';
 import NoEncontrada from './pages/NoEncontrada.jsx';
 import { CARGAS } from './rutasDiferidas.js';
 
-/* Las tres pantallas más pesadas van aparte. Transicion.jsx las precarga al arrancar el velo. */
+/* El arranque solo trae la portada. Transicion.jsx precarga la pantalla al arrancar el velo. */
+const Casa = lazy(CARGAS['/casa']);
+const Final = lazy(CARGAS['/de-vuelta-a-casa']);
 const Ubud = lazy(CARGAS['/ubud']);
 const Atacama = lazy(CARGAS['/atacama']);
 const Vip = lazy(CARGAS['/remolino-perfecto']);

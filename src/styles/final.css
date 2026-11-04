@@ -379,3 +379,8 @@
   .final__sello-estado { display: none; }
   .final__sello-vacio { font-size: var(--t-cuerpo); }
 }
+
+/* Táctil: animar un eje de la fuente remaqueta el titular en cada fotograma. */
+@media (hover: none), (pointer: coarse) {
+  .final__palabra { transition: none; }
+}

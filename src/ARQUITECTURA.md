@@ -12,7 +12,7 @@ Contratos de la base y de la página principal. Reglas de contenido en `../BRIEF
 | `data.js` | Textos de marca, sabores, geometría de frascos, paradas y metadatos de ruta |
 | `hooks.js` | `useMedia`, `useDisposicion`, `useTactil`, `useCapaModal` |
 | `raiz.js` | Carpeta real de la web (`BASENAME`) y `HREF_DOCUMENTACION` |
-| `rutasDiferidas.js` | Cargas `lazy()` de Ubud, Atacama y VIP, y su precarga al arrancar el velo |
+| `rutasDiferidas.js` | Cargas `lazy()` de todas las pantallas salvo Inicio, su precarga al arrancar el velo y `precargarEnReposo()` |
 | `components/index.js` | **Importa desde aquí** todas las piezas |
 | `components/Layout.jsx` | Cabecera, barra, `<main id="contenido">`, aviso, Contacto, Web F, efectos de ruta |
 | `pages/Inicio.jsx` | Página principal. Terminada |
@@ -250,3 +250,18 @@ El único enlace a la documentación está en el panel de Contacto, con `HREF_DO
 - Solo el frasco de frente está en el orden de Tab; ← y → llevan el foco al que queda delante.
 - La órbita pasa por debajo de la balda, no por encima: así la base nunca queda a la vista.
 - Tope de 46 rem para el frasco, por resolución.
+
+## Rendimiento en táctil
+
+Todo se activa con `(hover: none), (pointer: coarse)`; escritorio no cambia. La regla: en cada fotograma solo cambian `transform` y `opacity`, y si puede, los anima el compositor. Bloque propio al final de cada CSS.
+
+- **Velo:** disco en `<canvas>` pintado una vez que solo escala y gira. Sigue girando aunque montar la ruta ocupe el hilo principal.
+- **Tema:** sin transición de ejes de fuente en `<html>`; remaquetaba el documento en cada fotograma.
+- **Atacama:** parpadeo (`atacama-parpadeo`) y deriva (`atacama-deriva`, amplitud `--k`) en CSS. Fuego a 30 fps con DPR 1,25; estrellas a 10 fps con DPR 1. La calidad adaptable mide contra 33 ms.
+- **Cloud:** 30 fps y pausa fuera de vista.
+- **Límite de fps:** un temporizador entre fotogramas, nunca un `return` dentro del rAF, que gasta igual el fotograma.
+- **Casa y Ubud:** sin parallax de scroll: desde JS siempre llega tarde al scroll del compositor. El parallax con el dedo sigue.
+- **Texturas:** `--grano`, `--veta` y `--revoco` apuntan a `assets/texturas/*.webp`, la misma imagen rasterizada: `feTurbulence` tardaba segundos en pintarse. Si cambias el SVG de `tokens.css`, regenera el WebP.
+- **Fusiones:** `mix-blend-mode` retirado de capas sobre contenido animado (`.casa__luz`, `.folio__numeral`, `.ubud__sello`, `.atacama__borde`) con opacidad equivalente.
+
+Para medir: 412 × 915, DPR 2,625, CPU ×6, comparando contra la versión anterior en paralelo. Los fps de una sola pasada dependen de la carga de la máquina; cuenta repintados y recálculos en la traza.

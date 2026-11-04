@@ -506,3 +506,37 @@
 /* Movimiento reducido: la escena ya no se mueve; solo la luz cambia de golpe. */
 [data-motion='reducido'] .atacama__plano,
 [data-motion='reducido'] .atacama__fuego { will-change: auto; }
+
+/* ---------- Táctil: solo opacidad y transform, sin repintar los planos ---------- */
+@media (hover: none), (pointer: coarse) {
+  /* El parpadeo lo lleva el compositor: escribir la opacidad desde JS recalcula estilos en cada
+     fotograma y, sin capa propia, repinta el plano entero con sus máscaras. */
+  .atacama [data-parpadea] {
+    animation: atacama-parpadeo 2.9s linear infinite;
+    will-change: opacity;
+  }
+
+  .atacama__plano,
+  .atacama__fuego { animation: atacama-deriva 26s var(--m-marea) infinite alternate; }
+
+  .atacama__borde { filter: none; mix-blend-mode: normal; }
+
+  /* Cambiar el peso del h1 remaqueta el folio. */
+  .atacama .folio__titulo { --f-peso: 380; }
+}
+
+@keyframes atacama-parpadeo {
+  0%, 100% { opacity: 0.94; }
+  11% { opacity: 0.84; }
+  23% { opacity: 0.98; }
+  37% { opacity: 0.87; }
+  52% { opacity: 1; }
+  64% { opacity: 0.82; }
+  78% { opacity: 0.96; }
+  89% { opacity: 0.86; }
+}
+
+@keyframes atacama-deriva {
+  from { transform: translate3d(calc(var(--k, 0) * 0.32px), calc(var(--k, 0) * -0.09px), 0); }
+  to { transform: translate3d(calc(var(--k, 0) * -0.32px), calc(var(--k, 0) * 0.09px), 0); }
+}

@@ -10,6 +10,11 @@ const AVIVADA = 0.25;
 const SUBE = 1.8;
 const BAJA = 0.09;
 const DPR_MAX = 2;
+const DPR_TACTIL = 1.25;
+/* En táctil, 30 fps constantes: mejor que 60 a tirones y la mitad de batería. El temporizador deja
+   libres los fotogramas intermedios; un `return` dentro del rAF los gastaría igual. */
+const PAUSA_TACTIL = 20;
+const ESTRELLAS_CADA = 3;
 const MAX_LLAMAS = 460;
 const MAX_CHISPAS = 240;
 const MAX_HUMO = 16;
@@ -345,7 +350,10 @@ export function crearEscena(nodos, op) {
   let W = 0;
   let H = 0;
   let dpr = 1;
-  let topeDpr = tactil ? 1.5 : DPR_MAX;
+  let topeDpr = tactil ? DPR_TACTIL : DPR_MAX;
+  let dprTitila = 1;
+  let espera = 0;
+  let turno = 0;
   let fx = 0;
   let fy = 0;
   let u = 1;
@@ -359,7 +367,6 @@ export function crearEscena(nodos, op) {
   let calidad = tactil ? 0.58 : 1;
   let medida = 0;
   let cuenta = 0;
-  let par = false;
   let cercania = 0;
   let conFoco = false;
   let golpe = 0;
@@ -392,7 +399,7 @@ export function crearEscena(nodos, op) {
   function escribir(ahora, forzar) {
     const v = Math.round(estado.i * 100) / 100;
     if (v === escrito) return;
-    if (!forzar && ahora - ultimoEscrito < 33) return;
+    if (!forzar && ahora - ultimoEscrito < (tactil ? 100 : 33)) return;
     escrito = v;
     ultimoEscrito = ahora;
     html.style.setProperty('--intensidad', String(v));
@@ -656,7 +663,7 @@ export function crearEscena(nodos, op) {
   function pintarEstrellas(fijo) {
     tx.setTransform(1, 0, 0, 1, 0, 0);
     tx.clearRect(0, 0, titila.width, titila.height);
-    tx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    tx.setTransform(dprTitila, 0, 0, dprTitila, 0, 0);
     tx.globalCompositeOperation = 'lighter';
     for (const e of estrellas) {
       const al = fijo ? e.a * 0.8 : e.a * (0.55 + 0.45 * Math.sin(reloj * e.v + e.f));
@@ -691,6 +698,8 @@ export function crearEscena(nodos, op) {
   }
 
   function moverPlanos() {
+    /* En táctil la deriva es una animación CSS: la lleva el compositor. */
+    if (tactil && !reducido) return;
     const ox = px + Math.sin(reloj * 0.17) * 0.32;
     const oy = py + Math.cos(reloj * 0.13) * 0.26;
     for (const { el, k } of planos) {
@@ -699,6 +708,8 @@ export function crearEscena(nodos, op) {
   }
 
   function aplicarParpadeo(p) {
+    /* En táctil el parpadeo es una animación CSS: sin escrituras por fotograma. */
+    if (tactil && !reducido) return;
     const v = p.toFixed(3);
     for (const el of parpadeos) el.style.opacity = v;
     if (sombra) {
@@ -707,7 +718,13 @@ export function crearEscena(nodos, op) {
   }
 
   const frame = (ahora) => {
-    cuadro = requestAnimationFrame(frame);
+    if (tactil) {
+      espera = setTimeout(() => {
+        cuadro = requestAnimationFrame(frame);
+      }, PAUSA_TACTIL);
+    } else {
+      cuadro = requestAnimationFrame(frame);
+    }
     const dt = Math.min(0.05, previo ? (ahora - previo) / 1000 : 0.016);
     previo = ahora;
 
@@ -716,13 +733,14 @@ export function crearEscena(nodos, op) {
     cuenta += 1;
     if (cuenta > 50) {
       cuenta = 0;
-      if (medida > 0.024 && calidad > 0.36) {
+      if (medida > (tactil ? 0.042 : 0.024) && calidad > 0.36) {
         calidad *= 0.82;
         if (calidad < 0.5 && dpr > 1) {
           topeDpr = 1;
-          ajustar();
+          if (tactil) medirLienzos();
+          else ajustar();
         }
-      } else if (medida < 0.0175 && calidad < (tactil ? 0.58 : 1)) {
+      } else if (medida < (tactil ? 0.036 : 0.0175) && calidad < (tactil ? 0.58 : 1)) {
         calidad = Math.min(tactil ? 0.58 : 1, calidad * 1.05);
       }
     }
@@ -763,8 +781,8 @@ export function crearEscena(nodos, op) {
       fugaz.v += dt / 0.8;
       if (fugaz.v >= 1) fugaz = null;
     }
-    par = !par;
-    if (par || fugaz) pintarEstrellas(false);
+    turno = (turno + 1) % (tactil ? ESTRELLAS_CADA : 2);
+    if (turno === 0 || fugaz) pintarEstrellas(false);
   };
 
   function arrancar() {
@@ -776,6 +794,7 @@ export function crearEscena(nodos, op) {
 
   function parar() {
     enMarcha = false;
+    clearTimeout(espera);
     cancelAnimationFrame(cuadro);
   }
 
@@ -793,6 +812,16 @@ export function crearEscena(nodos, op) {
     moverPlanos();
   }
 
+  function medirLienzos() {
+    dpr = Math.min(window.devicePixelRatio || 1, topeDpr);
+    dprTitila = tactil ? 1 : dpr;
+    fuego.width = Math.round(W * dpr);
+    fuego.height = Math.round(H * dpr);
+    titila.width = Math.round(W * dprTitila);
+    titila.height = Math.round(H * dprTitila);
+    sucio = null;
+  }
+
   function ajustar() {
     const caja = raiz.getBoundingClientRect();
     const a = ancla.getBoundingClientRect();
@@ -803,17 +832,12 @@ export function crearEscena(nodos, op) {
     fx = a.left + a.width / 2 - caja.left;
     fy = a.bottom - caja.top - a.height * 0.14;
     u = limitar(Math.min(esc.width / 900, esc.height / 760), 0.5, 1.5);
-    dpr = Math.min(window.devicePixelRatio || 1, topeDpr);
 
     raiz.style.setProperty('--fx', `${fx.toFixed(1)}px`);
     raiz.style.setProperty('--fy', `${fy.toFixed(1)}px`);
     raiz.style.setProperty('--u', u.toFixed(3));
 
-    for (const c of [fuego, titila]) {
-      c.width = Math.round(W * dpr);
-      c.height = Math.round(H * dpr);
-    }
-    sucio = null;
+    medirLienzos();
 
     /* El polvo de estrellas se pinta a densidad de pantalla y no vuelve a tocarse. */
     const dprCielo = Math.min(window.devicePixelRatio || 1, tactil ? 1.5 : DPR_MAX);

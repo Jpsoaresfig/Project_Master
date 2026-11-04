@@ -418,3 +418,8 @@
     opacity: 0;
   }
 }
+
+/* Táctil: una fusión a pantalla completa obliga a leer el fondo en cada fotograma. */
+@media (hover: none), (pointer: coarse) {
+  .casa__luz { mix-blend-mode: normal; opacity: 0.4; }
+}

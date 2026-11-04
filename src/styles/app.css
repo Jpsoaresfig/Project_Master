@@ -61,6 +61,12 @@ html {
 
 html[data-clima='fijo'] { transition: none; }
 
+/* Táctil: animar ejes de fuente en <html> recalcula y remaqueta todo el documento en cada
+   fotograma, justo mientras se monta la ruta nueva. El cambio de tema va tapado por el velo. */
+@media (hover: none), (pointer: coarse) {
+  html { transition: none; }
+}
+
 body {
   margin: 0;
   min-height: var(--vista);

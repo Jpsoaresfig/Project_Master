@@ -57,3 +57,17 @@
   0%, 86%, 100% { filter: drop-shadow(0 0 6px rgb(242 201 76 / 0.45)); }
   93% { filter: drop-shadow(0 0 22px rgb(255 228 138 / 0.95)); }
 }
+
+/* Táctil: el destello pasa de filtro animado, que repinta, a un latido en transform. */
+@media (hover: none), (pointer: coarse) {
+  .flot--oro svg {
+    filter: drop-shadow(0 0 10px rgb(255 228 138 / 0.75));
+    animation-name: latido-oro;
+    will-change: transform;
+  }
+}
+
+@keyframes latido-oro {
+  0%, 86%, 100% { transform: scale(1); }
+  93% { transform: scale(1.14); }
+}

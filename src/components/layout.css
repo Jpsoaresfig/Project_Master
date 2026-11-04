@@ -536,3 +536,25 @@
   .parada__enlace { padding-bottom: 0; min-height: var(--tactil); }
   .tramo { top: 50%; }
 }
+
+/* Táctil: el pulso es un anillo aparte que solo cambia de opacidad. Animar `box-shadow` repinta
+   la barra en cada fotograma, en todas las pantallas. */
+@media (hover: none), (pointer: coarse) {
+  .parada__enlace[data-lista] .parada__circulo { animation: none; }
+
+  .parada__enlace[data-lista] .parada__circulo::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px rgb(163 165 106 / 0.3);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--ruta-acento) 28%, transparent);
+    opacity: 0;
+    animation: pulso-anillo 2.4s var(--m-marea) infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes pulso-anillo {
+  50% { opacity: 1; }
+}

@@ -99,6 +99,10 @@ export default function Atacama() {
     const altura = new ResizeObserver(fijarAlto);
     altura.observe(esc);
 
+    /* Amplitud de la deriva CSS en táctil. */
+    [plano1, plano2, plano3, plano4].forEach(({ current: el }, i) => el.style.setProperty('--k', [5, 9, 14, 22][i]));
+    fuego.current.style.setProperty('--k', 14);
+
     const m = crearEscena(
       {
         raiz: nodo,

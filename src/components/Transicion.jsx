@@ -3,6 +3,7 @@
 import { createContext, forwardRef, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useHref, useLocation, useNavigate } from 'react-router-dom';
 import { metaDeRuta, normalizarRuta } from '../data.js';
+import { CONSULTA_TACTIL } from '../hooks.js';
 import { precargarRuta } from '../rutasDiferidas.js';
 import { useViaje } from '../state.jsx';
 import './transicion.css';
@@ -12,6 +13,9 @@ const CUBRE = 700;
 const REVELA = 620;
 const FUNDIDO = 160;
 const VUELTAS = 6;
+/* Lado del disco en táctil. Se pinta una vez y luego solo se transforma. */
+const LADO_DISCO = 640;
+const VUELTA_DISCO = 1500;
 
 const Contexto = createContext(null);
 
@@ -38,8 +42,27 @@ function espiral(cx, cy, R, vueltas, desfase = 0) {
   return d;
 }
 
+/* El mismo remolino en un lienzo: hebra A de fondo y hebra B encima. */
+function pintarDisco(lienzo, colorA, colorB) {
+  const c = lienzo.getContext('2d');
+  const r = LADO_DISCO / 2;
+  c.beginPath();
+  c.arc(r, r, r, 0, Math.PI * 2);
+  c.fillStyle = colorA;
+  c.fill();
+  c.clip();
+  c.strokeStyle = colorB;
+  c.lineWidth = (r / VUELTAS) * 0.5;
+  c.lineJoin = 'round';
+  c.lineCap = 'round';
+  c.stroke(new Path2D(espiral(r, r, r * 1.1, VUELTAS, Math.PI)));
+}
+
 function Velo({ vuelo, control, alCubrir, alRevelar, alTerminar }) {
-  const { reducido } = vuelo;
+  const { reducido, tactil } = vuelo;
+  const conDisco = tactil && !reducido;
+  const escala = useRef(null);
+  const disco = useRef(null);
   const raiz = useRef(null);
   const giro = useRef(null);
   const hebraA = useRef(null);
@@ -59,6 +82,7 @@ function Velo({ vuelo, control, alCubrir, alRevelar, alTerminar }) {
       /* Cada hebra tiene un paso de R / VUELTAS. La A lo cubre entero; la B pinta la mitad. */
       anchoA: (R / VUELTAS) * 1.04,
       anchoB: (R / VUELTAS) * 0.5,
+      s: (R * 2) / LADO_DISCO,
     };
   }, [vuelo]);
 
@@ -91,6 +115,14 @@ function Velo({ vuelo, control, alCubrir, alRevelar, alTerminar }) {
         animar(raiz.current, { opacity: [1, 0] }, { duration: FUNDIDO, easing: 'linear' }).onfinish = terminar;
         return;
       }
+      if (conDisco) {
+        animar(
+          escala.current,
+          { transform: [`scale(${trazo.s})`, 'scale(0.01)'] },
+          { duration: REVELA, easing: 'cubic-bezier(0.55, 0, 0.3, 1)' },
+        ).onfinish = terminar;
+        return;
+      }
       const tiempo = { duration: REVELA };
       animar(giro.current, { transform: ['rotate(120deg)', 'rotate(240deg)'] }, tiempo);
       animar(hebraA.current, { strokeDashoffset: ['0', '-1'] }, tiempo);
@@ -106,6 +138,20 @@ function Velo({ vuelo, control, alCubrir, alRevelar, alTerminar }) {
 
     if (reducido) {
       animar(raiz.current, { opacity: [0, 1] }, { duration: FUNDIDO, easing: 'linear' }).onfinish = cubierta;
+    } else if (conDisco) {
+      /* Solo `transform`: lo anima el compositor y el giro sigue aunque montar la ruta ocupe el hilo principal. */
+      const estilo = getComputedStyle(raiz.current);
+      pintarDisco(
+        disco.current,
+        estilo.getPropertyValue('--remolino-a').trim(),
+        estilo.getPropertyValue('--remolino-b').trim(),
+      );
+      animar(
+        disco.current,
+        { transform: ['rotate(0deg)', 'rotate(360deg)'] },
+        { duration: VUELTA_DISCO, easing: 'linear', iterations: Infinity },
+      );
+      animar(escala.current, { transform: ['scale(0.01)', `scale(${trazo.s})`] }, { duration: CUBRE }).onfinish = cubierta;
     } else {
       const tiempo = { duration: CUBRE };
       animar(giro.current, { transform: ['rotate(0deg)', 'rotate(120deg)'] }, tiempo);
@@ -148,7 +194,7 @@ function Velo({ vuelo, control, alCubrir, alRevelar, alTerminar }) {
       window.removeEventListener('keydown', tecla, true);
       animaciones.forEach((a) => a.cancel());
     };
-  }, [vuelo, reducido, control, alCubrir, alRevelar, alTerminar]);
+  }, [vuelo, reducido, conDisco, trazo.s, control, alCubrir, alRevelar, alTerminar]);
 
   return (
     <div
@@ -158,7 +204,16 @@ function Velo({ vuelo, control, alCubrir, alRevelar, alTerminar }) {
       data-velo=""
       aria-hidden="true"
     >
-      {!reducido && (
+      {conDisco && (
+        <div
+          ref={escala}
+          className="velo__escala"
+          style={{ left: vuelo.x - LADO_DISCO / 2, top: vuelo.y - LADO_DISCO / 2, width: LADO_DISCO, height: LADO_DISCO }}
+        >
+          <canvas ref={disco} width={LADO_DISCO} height={LADO_DISCO} />
+        </div>
+      )}
+      {!reducido && !conDisco && (
         <svg width={trazo.w} height={trazo.h} viewBox={`0 0 ${trazo.w} ${trazo.h}`} fill="none">
           <g ref={giro} style={{ transformOrigin: `${vuelo.x}px ${vuelo.y}px` }}>
             <path ref={hebraA} className="velo__a" d={trazo.a} pathLength="1" strokeWidth={trazo.anchoA} />
@@ -203,6 +258,7 @@ export function TransicionProvider({ children }) {
       clave: Date.now(),
       tema: metaDeRuta(to).tema || 'inicio',
       reducido: reducidoActual.current,
+      tactil: window.matchMedia(CONSULTA_TACTIL).matches,
       x: punto?.x ?? window.innerWidth / 2,
       y: punto?.y ?? window.innerHeight / 2,
     });
