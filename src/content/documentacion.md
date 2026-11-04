@@ -470,7 +470,7 @@ Los cambios se han comprobado contra el código de la versión final.
 | Etiquetas de los frascos | Dicen «Mantequilla de cacahuete» y toda la web dice «Crema» | Recortes retocados: la etiqueta dice «Crema de cacahuete» | Un producto no puede llamarse de dos maneras |
 | Ingredientes | Medallones ovalados | Recortes sin fondo, a 168 px como máximo | Se rehicieron los recortes, y su resolución fija el tamaño |
 | Remolino del juego | Trazo dibujado dentro del frasco | Crema pintada con WebGL, en los tonos de la foto del frasco; sin WebGL, una versión plana en SVG | Se pide que el remolino se forme de verdad y que parezca crema |
-| Color de la flor | Verde, según el prototipo y el tema VIP | Violeta y pistacho | Son los colores del frasco de Flor de Cactus en la imagen |
+| Color de la flor | Verde, según el prototipo y el tema VIP | Violeta y verde | Son los colores del frasco de Flor de Cactus en la imagen |
 | Título del juego en móvil horizontal | Sobre la página | En el folio | Así el frasco aprovecha toda la altura |
 | Pasaporte en móvil vertical | En el folio | Sube junto al frasco al ganar | El sello debe verse sin hacer scroll |
 | Documentación | Cabecera con la marca | Marca e índice en el lateral, sin cabecera | Es una página de lectura, sin nada encima del texto |
