@@ -171,9 +171,20 @@ const META = {
     titulo: `Documentación · ${CONCEPTO}`,
     descripcion: 'Memoria del proyecto: proceso, decisiones técnicas y cambios respecto al storyboard.',
   },
+  '/colors': {
+    tema: null,
+    titulo: `Colores · ${CONCEPTO}`,
+    descripcion: 'La paleta de Cuchavia: qué color usa cada destino y por qué se eligió.',
+  },
+  '/storyboard': {
+    tema: null,
+    titulo: `Storyboard · ${CONCEPTO}`,
+    descripcion: 'El storyboard del viaje explicado pantalla a pantalla, con lo que cambió en la versión final.',
+  },
 };
 const ALIAS = {
   '/index.html': '/',
+  '/colores': '/colors',
   '/documentacion': '/documentation',
   '/documentacion.html': '/documentation',
 };

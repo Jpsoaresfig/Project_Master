@@ -20,6 +20,8 @@ Contratos de la base y de la página principal. Reglas de contenido en `../BRIEF
 | `pages/Casa`, `Ubud`, `Atacama`, `Final` | Destinos y cierre. Terminadas |
 | `pages/Vip.jsx`, `pages/vipCrema.js` | Minijuego y motor WebGL de la crema. Ver «Minijuego» |
 | `pages/Documentacion.jsx` | Documentación: lee `content/documentacion.md` y añade portada e índice al imprimir |
+| `pages/Colores.jsx` | Página `/colors` (alias `/colores`): paleta, temas por destino y comprobador de contraste. Fuera del `Layout`, sin enlace público. Textos en `content/colores.js`; sus hex copian los de `tokens.css` |
+| `pages/Storyboard.jsx` | Página `/storyboard`: lámina con zonas pulsables, flechas del flujo, cada pantalla con su boceto y sus cambios. Fuera del `Layout`, sin enlace público. Textos en `content/storyboard.js`; los cambios copian `documentacion.md` §13 |
 
 Los estilos de cada componente van junto a él. Cada página importa su propio CSS (`pages/casa.css`) y limita sus selectores con la clase que pasa a `Pantalla` (`.casa`).
 

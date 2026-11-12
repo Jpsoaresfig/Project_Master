@@ -13,6 +13,8 @@ const Ubud = lazy(CARGAS['/ubud']);
 const Atacama = lazy(CARGAS['/atacama']);
 const Vip = lazy(CARGAS['/remolino-perfecto']);
 const Documentacion = lazy(() => import('./pages/Documentacion.jsx'));
+const Colores = lazy(() => import('./pages/Colores.jsx'));
+const Storyboard = lazy(() => import('./pages/Storyboard.jsx'));
 
 /* Cada ruta lleva su descripción. `valor` null retira la etiqueta. */
 function ponerMeta(selector, atributo, nombre, valor) {
@@ -59,6 +61,22 @@ function PaginaDocumentacion() {
   );
 }
 
+function PaginaColores() {
+  return (
+    <Suspense fallback={<div className="cargando" role="status">Cargando colores</div>}>
+      <Colores />
+    </Suspense>
+  );
+}
+
+function PaginaStoryboard() {
+  return (
+    <Suspense fallback={<div className="cargando" role="status">Cargando storyboard</div>}>
+      <Storyboard />
+    </Suspense>
+  );
+}
+
 export default function App() {
   useMetaRuta();
   return (
@@ -76,6 +94,9 @@ export default function App() {
       <Route path="/documentation" element={<PaginaDocumentacion />} />
       <Route path="/documentacion" element={<PaginaDocumentacion />} />
       <Route path="/documentacion.html" element={<PaginaDocumentacion />} />
+      <Route path="/colors" element={<PaginaColores />} />
+      <Route path="/colores" element={<PaginaColores />} />
+      <Route path="/storyboard" element={<PaginaStoryboard />} />
     </Routes>
   );
 }
