@@ -216,22 +216,26 @@
 }
 
 .atacama__frasco-noche .frasco__lienzo {
-  /* Noche de luna: el vidrio toma el azul del suelo, no un gris bajado de brillo. */
-  filter: brightness(0.34) saturate(0.42) contrast(1.06) hue-rotate(-6deg);
+  /* Noche de luna: la foto de producto es de estudio, con luz de día pareja. Se apaga mucho
+     y se tiñe del azul frío del suelo (sepia + giro de tono), para que nada brille de blanco. */
+  filter: brightness(0.3) sepia(0.55) hue-rotate(188deg) saturate(0.65) contrast(1.08);
 }
 
 .atacama__frasco-luz {
   position: absolute;
   inset: 0;
-  opacity: calc(0.04 + 0.92 * var(--intensidad));
+  /* Ni con la fogata al máximo vuelve la foto de día: el lado oscuro queda siempre en penumbra. */
+  opacity: calc(0.22 + 0.66 * var(--intensidad));
 }
 
 .atacama__frasco-parpadeo { position: absolute; inset: 0; }
 
 .atacama__frasco-luz .frasco__lienzo {
-  filter: sepia(0.3) saturate(1.3) brightness(1.08);
-  -webkit-mask-image: linear-gradient(96deg, #000 30%, rgb(0 0 0 / 0.66) 52%, rgb(0 0 0 / 0.16) 76%, transparent 96%);
-  mask-image: linear-gradient(96deg, #000 30%, rgb(0 0 0 / 0.66) 52%, rgb(0 0 0 / 0.16) 76%, transparent 96%);
+  /* Luz de fuego: ámbar y algo más baja que la foto, sin blancos de estudio. */
+  filter: sepia(0.65) saturate(1.6) hue-rotate(-10deg) brightness(0.84) contrast(1.1);
+  /* La fogata está abajo a la izquierda: la luz cae desde esa esquina y muere hacia arriba y a la derecha. */
+  -webkit-mask-image: radial-gradient(125% 105% at 0% 88%, #000 22%, rgb(0 0 0 / 0.6) 46%, rgb(0 0 0 / 0.16) 70%, transparent 90%);
+  mask-image: radial-gradient(125% 105% at 0% 88%, #000 22%, rgb(0 0 0 / 0.6) 46%, rgb(0 0 0 / 0.16) 70%, transparent 90%);
 }
 
 /* Sombra de contacto: el frasco pesa sobre la grava. */

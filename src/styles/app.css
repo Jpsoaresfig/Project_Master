@@ -75,6 +75,7 @@ body {
   background: var(--fondo);
   color: var(--texto);
   font-family: var(--f-texto);
+  font-variation-settings: var(--f-ejes-texto);
   font-size: var(--t-cuerpo);
   line-height: var(--i-cuerpo);
   -webkit-font-smoothing: antialiased;

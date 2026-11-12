@@ -8,7 +8,7 @@ Guía para el front. Los valores viven en `styles/tokens.css`; aquí está cómo
 
 Cuatro rasgos hacen que parezca una sola marca y no una plantilla:
 
-1. **El folio.** El tercio de texto no es una columna: es la hoja del cuaderno, y cambia de material en cada destino: papel mantequilla (Casa), papel teñido de pitaya (Ubud), nada, solo aire de noche (Atacama).
+1. **El folio.** El tercio de texto no es una columna: es la hoja del cuaderno, y cambia de material en cada destino: papel mantequilla (Casa), papel rosado claro con la pitaya de acento (Ubud), nada, solo aire de noche (Atacama).
 2. **El clima tipográfico.** La misma Fraunces cambia con el lugar: gruesa y blanda en Casa, cursiva húmeda en Ubud, un hilo afilado en Atacama. Los ejes se interpolan entre pantallas. Las letras viajan.
 3. **La mancha desajustada.** Cada grabado lleva una mancha plana de color desplazada 4 px, como una impresión a dos tintas mal registrada. Es el gesto gráfico propio de la marca.
 4. **El remolino.** Solo el remolino es curvo. Todo lo demás es recto, con filete fino y papel.
@@ -80,9 +80,9 @@ No usar el atajo `font:` después: reinicia los ejes. En Atacama quitar la `tran
 | --- | --- | --- |
 | Portada y H1 | Fraunces, clima del tema | `--t-portada`, `--t-h1` |
 | Cita del destino | Fraunces cursiva | `--t-entrada`; `'opsz' 36, 'SOFT' 100, 'WONK' 1`, peso 400 |
-| Cuerpo | Instrument Sans 400 | `--t-cuerpo`, `--medida` |
-| Etiqueta (etapa, ruta) | Instrument Sans 600 | Mayúsculas, `--t-etiqueta`, `font-stretch: var(--ancho-etiqueta)`, `--e-etiqueta` |
-| Coordenada, gramos | Fraunces | `--t-dato`, `--f-ejes-dato`. **Instrument Sans no tiene el glifo ′** |
+| Cuerpo | Fraunces 400, `--f-ejes-texto` (SOFT 50), tamaño óptico automático | `--t-cuerpo`, `--medida` |
+| Etiqueta (etapa, ruta) | Fraunces 600 | Mayúsculas, `--t-etiqueta`, `--e-etiqueta` |
+| Coordenada, gramos | Fraunces | `--t-dato`, `--f-ejes-dato` |
 | Nota manuscrita | Fraunces cursiva | `--t-nota`, `--f-ejes-nota` |
 
 ### Detalles de cuaderno
@@ -124,7 +124,7 @@ No usar el atajo `font:` después: reinicia los ejes. En Atacama quitar la `tran
 
 No hay franja. Son **pestañas de cuaderno** que cuelgan del borde superior (`--alto-pestana`, `--ficha`, `--s-papel`, sin radio), en la capa `--z-cabecera`.
 
-- Izquierda: remolino + Cuchavia en Instrument Sans. Enlaza a `/`.
+- Izquierda: remolino + Cuchavia en Fraunces. Enlaza a `/`.
 - Derecha: «Contacto», en estilo etiqueta, que abre el panel común (G, H y el enlace a la documentación); con menos de 460 px de ancho es un sobre de 44 px con `aria-label`. A su lado, el eslogan en Fraunces cursiva, como botón que abre la Web F.
 - Fijas: no cambian de sitio, aunque Ubud invierta la pantalla.
 
@@ -183,7 +183,7 @@ const espiral = (cx, cy, R, vueltas, desfase = 0) => {
 - **A y B:** casillas de 56 px con la letra en Fraunces y debajo «Más lento» / «Más rápido»; encima, cinco marcas que indican la velocidad.
 - **Contacto:** `G · Escríbenos` y `H · Redes sociales`, filas separadas por filete, sin cajas. Sin datos inventados.
 
-**Flechas.** Sobre la balda, abajo a la izquierda, 44 px, SVG (Fraunces e Instrument no tienen ◀ ▶).
+**Flechas.** Sobre la balda, abajo a la izquierda, 44 px, SVG (Fraunces no tiene ◀ ▶).
 
 **Movimiento.** Entrada en menos de 1,2 s: pared, balda, titular línea a línea, frascos escalonados y folio; espera a que abra el remolino. Órbita continua: la posición se interpola con un progreso de 0 a 1 por `requestAnimationFrame`, no a saltos. Trayectoria en arco. El texto cambia con fundido y 8 px en vertical (`--d-medio`). Pausa con cursor, foco de teclado (`:focus-visible`) o escenario fuera de vista; en táctil, el primer toque la deja en pausa y el botón la reanuda. Hover o foco en un frasco: rótulo «Viajar a Ubud». Selección: el frasco crece a 1,12 (resorte `frasco`) y de su centro nace el remolino.
 
@@ -199,7 +199,7 @@ const espiral = (cx, cy, R, vueltas, desfase = 0) => {
 
 ### Ubud `/ubud` · Modo Selva
 
-**Composición.** **Pantalla invertida: folio a la izquierda**, escenario a la derecha. La mujer mira hacia la izquierda: así su mirada lleva al texto. `ubud.webp`, `object-position: 50% 44%`. Folio: `--c-pitaya` a todo color, sin blanco.
+**Composición.** **Pantalla invertida: folio a la izquierda**, escenario a la derecha. La mujer mira hacia la izquierda: así su mirada lleva al texto. `ubud.webp`, `object-position: 50% 44%`. Folio: papel `--c-rosa-papel`, con la pitaya solo de acento (título en `--c-pitaya-osc`, botón en `--c-pitaya`), por la regla 60-30-10.
 
 **Folio.** `Etapa 02 · Modo Selva`, `8°30′S 115°16′E · Ubud, Bali`, h1 «Remolino de Pitaya Rosa», cita, descripción, tamaños, numeral 02 y `pitaya.svg` de 170 px, enlace, billete crema.
 

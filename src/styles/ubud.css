@@ -372,7 +372,8 @@
 }
 
 /* ---------- Folio ---------- */
-.ubud .tamano[aria-pressed='true'] { color: var(--c-pitaya-osc); }
+/* La pitaya vuelve como acento: título en pitaya oscura (7,7:1 sobre el papel). */
+.ubud .folio__titulo { color: var(--c-pitaya-osc); }
 
 /* Panorámico: la foto (928 × 1152) no da para tanto. Se queda a la derecha con tope de 1,5
    aumentos y su reflejo desenfocado continúa el valle hacia la izquierda. */

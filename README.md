@@ -41,7 +41,7 @@ La web funciona con ratón, táctil y teclado, se adapta de 320 px a ultrapanor�
 - Framer Motion
 - Canvas 2D y WebGL
 - Marked, para la página de documentación
-- Fuentes autoalojadas: Fraunces e Instrument Sans
+- Fuente autoalojada: Fraunces, en toda la web
 - Imágenes WebP y SVG
 
 No necesita base de datos: el progreso del viaje se guarda en `localStorage`.

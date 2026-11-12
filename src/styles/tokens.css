@@ -58,6 +58,7 @@
   --c-oliva-clara: #D8DAB0;   /* oliva apto para texto sobre oliva oscuro */
   --c-pitaya-osc: #8A0F40;    /* pitaya sobre crema en botones invertidos */
   --c-rosa-pale: #FCE3EC;     /* texto secundario sobre pitaya */
+  --c-rosa-papel: #F6E4E8;    /* papel de Ubud: pitaya muy diluida en crema, calma y armonía con el verde */
   --c-noche: #0D0F1E;         /* cielo alto de noche.webp */
   --c-noche-media: #181E30;   /* cielo bajo de noche.webp */
   --c-noche-tinta: #1E2133;   /* pestañas y fichas en Atacama */
@@ -69,8 +70,8 @@
 
   /* ---------- Tipografía: familias ---------- */
   --f-display: 'Fraunces Variable', 'Fraunces Respaldo', Georgia, 'Times New Roman', serif;
-  --f-texto: 'Instrument Sans Variable', 'Instrument Respaldo', 'Segoe UI', Arial, sans-serif;
-  /* Instrument Sans NO tiene el glifo ′ (U+2032). Toda coordenada va en Fraunces. */
+  /* Una sola familia: Fraunces también en el texto, con su tamaño óptico automático. */
+  --f-texto: var(--f-display);
   --f-coordenada: var(--f-display);
 
   /* ---------- Clima tipográfico: lo que cada destino le hace a Fraunces ----------
@@ -91,7 +92,9 @@
   --f-ejes-nota: 'opsz' 12, 'SOFT' 100, 'WONK' 1;
   /* Coordenadas y números de ficha. */
   --f-ejes-dato: 'opsz' 14, 'SOFT' 0, 'WONK' 0;
-  /* Etiquetas en Instrument Sans estrechada: font-stretch: var(--ancho-etiqueta). */
+  /* Texto corrido: Fraunces algo blanda, sin letras torcidas. */
+  --f-ejes-texto: 'SOFT' 50, 'WONK' 0;
+  /* Fraunces no tiene eje de anchura: font-stretch no cambia nada, se conserva por si vuelve una sans. */
   --ancho-etiqueta: 78%;
 
   /* ---------- Escala fluida (360 a 1600 px) ---------- */
@@ -288,25 +291,27 @@
   --f-peso: 330;
   --f-estilo: italic;
 
-  --fondo: var(--c-pitaya);
-  --texto: var(--c-crema);
-  --folio: var(--c-pitaya);
-  --folio-texto: var(--c-crema);
-  --folio-tenue: var(--c-rosa-pale);
-  --acento: var(--c-crema);
-  --sobre-acento: var(--c-pitaya-osc);
-  --acento-texto: var(--c-crema);
-  --linea: var(--c-rosa-pale);
-  --foco: var(--c-crema);
-  --foco-halo: var(--c-pitaya-osc);
+  /* Regla 60-30-10: papel rosado claro (60), foto verde (30) y pitaya solo de acento (10).
+     Un bloque de magenta puro junto al verde de la foto chocaba y contradecía la calma. */
+  --fondo: var(--c-rosa-papel);
+  --texto: var(--c-tinta);
+  --folio: var(--c-rosa-papel);
+  --folio-texto: var(--c-tinta);
+  --folio-tenue: #6B4A52;          /* 6,3:1 sobre el papel */
+  --acento: var(--c-pitaya);
+  --sobre-acento: var(--c-crema);
+  --acento-texto: #AD1250;         /* 5,8:1 sobre el papel */
+  --linea: #9E6E7B;                /* 3,5:1 sobre el papel */
+  --foco: var(--c-pitaya-osc);
+  --foco-halo: var(--c-rosa-papel);
 
   --ruta-acento: var(--c-rosa);
   --remolino-a: var(--c-pitaya);
   --remolino-b: var(--c-rosa);
-  --ilu-tinta: var(--c-crema);
-  --ilu-mancha: rgb(240 106 158 / 0.45);
-  --ilu-papel: var(--c-pitaya);
-  --sello-tinta: var(--c-crema);
+  --ilu-tinta: var(--c-pitaya-osc);
+  --ilu-mancha: rgb(240 106 158 / 0.4);
+  --ilu-papel: var(--c-rosa-papel);
+  --sello-tinta: var(--c-pitaya);
 }
 
 /* ---------- Atacama · Modo Noche: seco, afilado, finísimo. La fogata lo ablanda ---------- */

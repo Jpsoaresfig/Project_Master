@@ -2,12 +2,12 @@
 .inicio .escenario {
   --alto-balda: calc(11 * var(--cqh));
   --hundido: calc(3.5 * var(--cqh));
-  --portada: min(var(--t-portada), calc(13.2 * var(--cqi)), calc(17.5 * var(--cqh)));
-  /* El frasco roza la base de «cucharada» sin tapar más del 20 % de la letra. */
+  --portada: min(var(--t-portada), calc(10.5 * var(--cqi)), calc(13.5 * var(--cqh)));
+  /* Nada delante del titular: el frasco empieza bajo «cucharada», con sus descendentes (2,15 líneas). */
   --alto-frasco: min(
     calc(58 * var(--cqh)),
     46rem,
-    calc(100 * var(--cqh) - var(--alto-balda) + var(--hundido) - var(--alto-pestana) - var(--e-5) - 1.72 * var(--portada))
+    calc(100 * var(--cqh) - var(--alto-balda) + var(--hundido) - var(--alto-pestana) - var(--e-5) - 2.15 * var(--portada))
   );
   /* La tinta de la pared: el foco claro no se lee sobre ella. */
   --foco: var(--c-tinta);
@@ -531,10 +531,10 @@
       calc(var(--vista-s) - var(--ruta-total) - var(--reserva-folio))
     );
     --alto-balda: max(calc(11 * var(--cqh)), 2.75rem);
-    --portada: min(var(--t-portada), calc(14.2 * var(--cqi)), calc(11.5 * var(--cqh)));
+    --portada: min(var(--t-portada), calc(11.5 * var(--cqi)), calc(9.5 * var(--cqh)));
     --alto-frasco: min(
       calc(56 * var(--cqh)),
-      calc(100 * var(--cqh) - var(--alto-balda) + var(--hundido) - var(--alto-pestana) - var(--e-2) - 1.9 * var(--portada))
+      calc(100 * var(--cqh) - var(--alto-balda) + var(--hundido) - var(--alto-pestana) - var(--e-2) - 2.15 * var(--portada))
     );
   }
 
@@ -565,7 +565,7 @@
       calc(var(--vista-s) * 0.52),
       calc(var(--vista-s) - var(--ruta-total) - var(--reserva-folio))
     );
-    --portada: min(var(--t-portada), calc(13.2 * var(--cqi)), calc(15 * var(--cqh)));
+    --portada: min(var(--t-portada), calc(11 * var(--cqi)), calc(12.5 * var(--cqh)));
   }
 
   .inicio__nombre { font-size: var(--t-h2); }
@@ -605,8 +605,11 @@
   /* Canto alto: las flechas caben en la balda y no pisan el frasco lateral. */
   .inicio .escenario {
     --alto-balda: max(calc(11 * var(--cqh)), 3.5rem);
-    --alto-frasco: calc(56 * var(--cqh));
-    --portada: min(calc(13 * var(--cqh)), calc(8.4 * var(--cqi)));
+    --portada: min(calc(11 * var(--cqh)), calc(7.4 * var(--cqi)));
+    --alto-frasco: min(
+      calc(56 * var(--cqh)),
+      calc(100 * var(--cqh) - var(--alto-balda) + var(--hundido) - var(--alto-pestana) - var(--e-3) - 2.15 * var(--portada))
+    );
   }
 
   .inicio__titular {

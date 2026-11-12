@@ -97,7 +97,26 @@ Las imágenes generadas decían «Mantequilla de cacahuete», y la presentación
 
 La paleta combina una base cálida y apagada con acentos saturados que identifican cada destino. Los tonos de base, el cacahuete y el verde se agrupan entre los 32° y los 87° del círculo cromático, de modo que resultan análogos. La pitaya (336°) y la flor (280°) quedan al otro lado del círculo y por eso destacan sobre esa base.
 
-El color ayuda a diferenciar las páginas: Casa es cálida, Ubud es luminosa y rosa, y Atacama es oscura. La base común mantiene la unidad de marca.
+El color ayuda a diferenciar las páginas: Casa es cálida, Ubud es luminosa y suave, y Atacama es oscura. La base común mantiene la unidad de marca.
+
+### Armonía y psicología del color
+
+**Esquema de armonía.** La base es un grupo análogo (32° a 87°) y los acentos, flor y pitaya, ocupan la zona complementaria. En cada pantalla se aplica la regla 60-30-10: 60 % de color dominante tranquilo (papel o pared), 30 % secundario (foto o ficha) y 10 % de acento saturado (título, botón, sello). Todos los colores comparten una temperatura cálida: los claros tiran a crema y los oscuros a tinta marrón.
+
+| Color | Qué transmite | Por qué encaja |
+| --- | --- | --- |
+| Crema | Calidez, limpieza, natural | Producto natural y casero; más acogedor que el blanco |
+| Cacahuete | Confort, hogar, tostado, apetito | Los marrones abren el apetito: Casa y «el sabor de siempre» |
+| Oliva oscuro | Naturaleza, calma, calidad | Aire premium y vegetal, usado con medida |
+| Pitaya | Energía, sorpresa, exotismo | Dice «atrévete»; por ser tan estimulante, solo como acento |
+| Rosa papel | Suavidad, descanso | Fondo de Ubud: la pausa y la reconexión del texto |
+| Verde | Frescura, equilibrio | Terrazas y cactus; equilibra los acentos |
+| Flor | Misterio, rareza, asombro | «Algo inesperado» que florece en el desierto |
+| Noche y ascua | Calma profunda; calor y refugio | El azul baja el ritmo y la fogata devuelve al frasco su tono apetecible |
+
+**Ajustes tras la revisión de la armonía.** Ubud tenía la ficha entera en magenta saturado junto a una foto verde: chocaba con ella y contradecía «descanso y reconexión». La ficha pasa a un papel rosado claro (`#F6E4E8`) y la pitaya queda como acento en el título, el botón y el sello. En Atacama, el frasco conservaba la luz blanca de la foto de estudio; ahora queda en penumbra de luna y solo lo ilumina, en ámbar, el lado de la fogata.
+
+La psicología del color depende de la cultura y del contexto, así que la paleta se apoya sobre todo en criterios comprobables: cada color sale del ingrediente o del lugar, sigue un esquema de armonía definido y cumple el contraste de lectura. La página `/colors` lo muestra con ejemplos.
 
 **Paleta**, con los colores de la presentación:
 
@@ -257,7 +276,7 @@ Pulsa cualquier boceto para ampliarlo. Con las flechas se pasa de uno a otro.
 | `marked` | Convierte este texto en Markdown en la página de documentación. |
 | Vercel | Publica el sitio estático, sin base de datos. Todas las rutas se reescriben a `index.html`, de modo que funcionan al escribir la URL. |
 | Compilación para el ZIP | `npm run build:zip` genera `dist-zip` con rutas relativas, para servirlo desde cualquier carpeta. |
-| Fraunces e Instrument Sans | Títulos y textos, autoalojadas con `@fontsource-variable`. |
+| Fraunces | Única familia de la web, para títulos y textos, autoalojada con `@fontsource-variable`. Una sola voz y una sola descarga. |
 | `localStorage` con `try/catch` | Guarda el estado del recorrido, y la web sigue funcionando si no está disponible. |
 | `prefers-reduced-motion` y «Reducir movimiento» | Detienen el movimiento; el estado final siempre se ve. |
 
@@ -454,7 +473,7 @@ Los cambios se han comprobado contra el código de la versión final.
 | Elemento | Storyboard | Versión final | Motivo |
 | --- | --- | --- | --- |
 | Tecnología | Prototipo estático en HTML, CSS y JavaScript | Web en React, con Vite y framer-motion | Rutas reales, estado compartido y animación por interpolación |
-| Tipografía | Una serifa genérica, de maqueta | Fraunces e Instrument Sans | Fraunces cambia de grosor y suavidad en cada destino: las letras viajan |
+| Tipografía | Una serifa genérica, de maqueta | Fraunces en toda la web | Fraunces cambia de grosor y suavidad en cada destino: las letras viajan |
 | Cabecera | Franja con marca, eslogan y menú | Tres pestañas de cuaderno (marca, Contacto y eslogan); se quitan «Destinos» y «Storyboard» | La barra de ruta ya cubre los destinos y la imagen gana altura |
 | Barra de ruta | Píldoras redondeadas | Paradas numeradas con matasellos | Solo el remolino es curvo, y el recorrido se lee como un viaje |
 | Inicio | Texto bajo la balda | Texto y controles en el folio lateral | Toda la web usa la misma regla de los 2/3 |

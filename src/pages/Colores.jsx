@@ -7,7 +7,7 @@ import { Boton, Frasco, Ilu, Remolino, SelectorTamano, Sello } from '../componen
 import { useViaje } from '../state.jsx';
 import { MARCA } from '../data.js';
 import {
-  APOYO, CLIMAS_TIPO, DETALLES_TIPO, FAMILIAS, IDEA, ILUSTRACIONES, MOVIMIENTOS, PILARES,
+  AJUSTES_COLOR, APOYO, ARMONIA, CLIMAS_TIPO, NOTA_PSICOLOGIA, PSICOLOGIA, DETALLES_TIPO, FAMILIAS, IDEA, ILUSTRACIONES, MOVIMIENTOS, PILARES,
   PRINCIPALES, RASGOS, REGLAS, ROLES_TIPO, TEMAS, TEXTURAS,
 } from '../content/colores.js';
 import cacahuete from '../assets/ilustraciones/cacahuete.svg?raw';
@@ -23,6 +23,7 @@ const TODOS = [...PRINCIPALES, ...APOYO];
 const SECCIONES = [
   ['idea', 'La idea'],
   ['colores', 'Colores'],
+  ['psicologia', 'Psicología del color'],
   ['tipografia', 'Tipografía'],
   ['ilustracion', 'Ilustración'],
   ['texturas', 'Texturas'],
@@ -388,12 +389,53 @@ export default function Colores() {
           <Comprobador />
         </section>
 
-        {/* ---------- 3. Tipografía ---------- */}
-        <section aria-labelledby="col-tipografia">
-          <h2 id="col-tipografia"><span className="col-num">03</span> Tipografía</h2>
+        {/* ---------- 3. Psicología del color y armonía ---------- */}
+        <section aria-labelledby="col-psicologia">
+          <h2 id="col-psicologia"><span className="col-num">03</span> Psicología del color y armonía</h2>
           <p className="col-texto">
-            Dos familias variables: una serifa con personalidad para la voz de la marca y una sans serif neutra para la
-            información. Una cuenta el viaje; la otra lo explica.
+            Qué transmite cada color, por qué encaja con el producto y con su destino, y qué reglas hacen que colores tan
+            distintos convivan en armonía.
+          </p>
+
+          <h3>Cómo se consigue la armonía</h3>
+          <ul className="col-rejilla col-rejilla--2">
+            {ARMONIA.map((a) => <li key={a.titulo}><h4>{a.titulo}</h4><p>{a.texto}</p></li>)}
+          </ul>
+
+          <h3>Qué transmite cada color</h3>
+          <ul className="col-psico">
+            {PSICOLOGIA.map((c) => (
+              <li key={c.nombre}>
+                <span className="col-psico__color" style={{ background: c.hex }} aria-hidden="true" />
+                <div>
+                  <p className="col-psico__nombre">{c.nombre} <code>{c.hex}</code></p>
+                  <p className="col-psico__sensacion">{c.sensacion}</p>
+                </div>
+                <p>{c.encaje}</p>
+              </li>
+            ))}
+          </ul>
+
+          <h3>Ajustes hechos para mejorar la armonía</h3>
+          <div className="sb-tabla col-tabla" role="region" aria-label="Ajustes de color" tabIndex={0}>
+            <table>
+              <thead><tr><th>Antes</th><th>Ahora</th><th>Por qué</th></tr></thead>
+              <tbody>
+                {AJUSTES_COLOR.map((a) => (
+                  <tr key={a.antes}><td>{a.antes}</td><td>{a.despues}</td><td>{a.motivo}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="col-nota">{NOTA_PSICOLOGIA}</p>
+        </section>
+
+        {/* ---------- 4. Tipografía ---------- */}
+        <section aria-labelledby="col-tipografia">
+          <h2 id="col-tipografia"><span className="col-num">04</span> Tipografía</h2>
+          <p className="col-texto">
+            Una sola familia, Fraunces, para todo: títulos, texto, botones y etiquetas. La misma voz de principio a fin,
+            como un cuaderno escrito a mano por una sola persona. Lo que cambia es cómo se usa: peso, tamaño, cursiva y ejes.
           </p>
           <div className="col-familias">
             {FAMILIAS.map((f) => (
@@ -405,11 +447,12 @@ export default function Colores() {
                   ABCDEFGHIJKLMNÑOPQRSTUVWXYZ<br />abcdefghijklmnñopqrstuvwxyz<br />0123456789 ¿?¡! «» · ′
                 </p>
                 <p className="col-fam__pesos" aria-hidden="true">
-                  <span style={{ fontWeight: f.id === 'fraunces' ? 200 : 400 }}>Ligera</span>
-                  <span style={{ fontWeight: f.id === 'fraunces' ? 420 : 500 }}>Regular</span>
-                  <span style={{ fontWeight: f.id === 'fraunces' ? 700 : 700 }}>Negrita</span>
-                  {f.id === 'fraunces' && <span style={{ fontStyle: 'italic' }}>Cursiva</span>}
-                  {f.id === 'instrument' && <span style={{ fontStretch: '78%', fontWeight: 600 }}>ESTRECHA</span>}
+                  <span style={{ fontWeight: 200 }}>Ligera</span>
+                  <span style={{ fontWeight: 420 }}>Regular</span>
+                  <span style={{ fontWeight: 700 }}>Negrita</span>
+                  <span style={{ fontWeight: 900 }}>Black</span>
+                  <span style={{ fontStyle: 'italic' }}>Cursiva</span>
+                  <span style={{ fontVariationSettings: "'SOFT' 100, 'WONK' 1" }}>Blanda y torcida</span>
                 </p>
                 <p><strong>Uso.</strong> {f.uso}</p>
                 <ul>{f.porque.map((t) => <li key={t}>{t}</li>)}</ul>
@@ -448,7 +491,7 @@ export default function Colores() {
 
         {/* ---------- 4. Ilustración ---------- */}
         <section aria-labelledby="col-ilustracion">
-          <h2 id="col-ilustracion"><span className="col-num">04</span> Ilustración</h2>
+          <h2 id="col-ilustracion"><span className="col-num">05</span> Ilustración</h2>
           <p className="col-texto">
             Grabados botánicos de cuaderno de viaje, en SVG. Se insertan en línea para que tomen la tinta y la mancha de
             cada destino. La <strong>mancha desajustada</strong>, un relleno plano desplazado unos píxeles respecto al
@@ -506,7 +549,7 @@ export default function Colores() {
 
         {/* ---------- 5. Texturas ---------- */}
         <section aria-labelledby="col-texturas">
-          <h2 id="col-texturas"><span className="col-num">05</span> Texturas</h2>
+          <h2 id="col-texturas"><span className="col-num">06</span> Texturas</h2>
           <p className="col-texto">
             El segundo pilar es la luz y las texturas naturales. Tres texturas dan tacto a las superficies; en móvil se
             sirven como imágenes ya pintadas para no frenar la página.
@@ -525,7 +568,7 @@ export default function Colores() {
 
         {/* ---------- 6. Formas ---------- */}
         <section aria-labelledby="col-formas">
-          <h2 id="col-formas"><span className="col-num">06</span> Formas y componentes</h2>
+          <h2 id="col-formas"><span className="col-num">07</span> Formas y componentes</h2>
           <p className="col-texto">
             Todo es recto, con filete fino y sombra de papel, como piezas impresas recortadas. Así el remolino, lo único
             curvo, destaca siempre. Estos son los componentes reales de la web.
@@ -564,7 +607,7 @@ export default function Colores() {
 
         {/* ---------- 7. Composición ---------- */}
         <section aria-labelledby="col-composicion">
-          <h2 id="col-composicion"><span className="col-num">07</span> Composición</h2>
+          <h2 id="col-composicion"><span className="col-num">08</span> Composición</h2>
           <div className="col-rueda-bloque">
             <div className="col-dosterc" aria-hidden="true">
               <div className="col-dosterc__escena"><span>Escenario · 2/3</span></div>
@@ -592,7 +635,7 @@ export default function Colores() {
 
         {/* ---------- 8. Movimiento ---------- */}
         <section aria-labelledby="col-movimiento">
-          <h2 id="col-movimiento"><span className="col-num">08</span> Movimiento</h2>
+          <h2 id="col-movimiento"><span className="col-num">09</span> Movimiento</h2>
           <p className="col-texto">
             Cada gesto tiene su curva, y todas cuentan algo del producto: remover, soltar, estampar. Pulsa «Ver» para
             comparar. {reducido && <strong>Tienes activado «Reducir movimiento»: las demos van sin animación.</strong>}
@@ -604,7 +647,7 @@ export default function Colores() {
 
         {/* ---------- 9. Reglas ---------- */}
         <section aria-labelledby="col-reglas">
-          <h2 id="col-reglas"><span className="col-num">09</span> Reglas de uso</h2>
+          <h2 id="col-reglas"><span className="col-num">10</span> Reglas de uso</h2>
           <ul className="col-lista">
             {REGLAS.map((r) => <li key={r}>{r}</li>)}
           </ul>

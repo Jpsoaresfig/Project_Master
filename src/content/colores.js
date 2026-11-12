@@ -56,9 +56,9 @@ export const PRINCIPALES = [
     hex: '#C2185B',
     token: '--c-pitaya',
     grupo: 'Ubud',
-    uso: 'Ficha de Ubud, sellos y foco.',
+    uso: 'Acento de Ubud: título, botón y sellos.',
     porque:
-      'El magenta de la pulpa de la fruta del dragón. Es el acento más intenso de la marca: energía tropical y la primera sorpresa del viaje.',
+      'El magenta de la pulpa de la fruta del dragón. Es el acento más intenso de la marca: energía tropical y la primera sorpresa del viaje. Por eso va en superficies pequeñas.',
   },
   {
     id: 'rosa',
@@ -97,7 +97,7 @@ export const APOYO = [
   { nombre: 'Tostado', hex: '#70451A', token: '--c-tostado', porque: 'Cacahuete oscurecido para poder usarlo como texto sobre mantequilla y crema.' },
   { nombre: 'Oliva claro', hex: '#D8DAB0', token: '--c-oliva-clara', porque: 'Texto secundario legible sobre oliva oscuro.' },
   { nombre: 'Pitaya oscura', hex: '#8A0F40', token: '--c-pitaya-osc', porque: 'Pitaya sobre crema en los botones invertidos.' },
-  { nombre: 'Rosa pálido', hex: '#FCE3EC', token: '--c-rosa-pale', porque: 'Texto secundario sobre la ficha de pitaya.' },
+  { nombre: 'Rosa papel', hex: '#F6E4E8', token: '--c-rosa-papel', porque: 'Papel de Ubud: pitaya muy diluida en crema. Calma y armonía con el verde de la foto.' },
   { nombre: 'Noche', hex: '#0D0F1E', token: '--c-noche', porque: 'Cielo de Atacama, tomado de las capas fotográficas.' },
   { nombre: 'Flor clara', hex: '#D2BBE3', token: '--c-flor-clara', porque: 'El lila convertido en texto legible sobre la noche.' },
   { nombre: 'Ascua', hex: '#F2A23A', token: '--c-ascua', porque: 'Fuego. Solo como luz o partícula, nunca como texto pequeño.' },
@@ -123,8 +123,8 @@ export const TEMAS = [
   {
     tema: 'ubud',
     nombre: 'Ubud',
-    clima: 'Luminoso y rosa',
-    porque: 'La ficha entera en pitaya, sin blanco: la exuberancia tropical de la selva de Bali.',
+    clima: 'Luminoso y suave',
+    porque: 'Papel rosado claro con la pitaya solo de acento: la calma de Bali sin chocar con el verde de la foto.',
   },
   {
     tema: 'atacama',
@@ -153,24 +153,14 @@ export const FAMILIAS = [
     id: 'fraunces',
     nombre: 'Fraunces',
     clase: 'col-fam--fraunces',
-    tipo: 'Serifa variable · ejes de peso, tamaño óptico, SOFT y WONK',
-    uso: 'Títulos, citas de cada destino, coordenadas, gramos y notas a mano.',
+    tipo: 'Serifa variable · ejes de peso, tamaño óptico, SOFT y WONK · una sola familia para toda la web',
+    uso: 'Todo: títulos, citas, texto corrido, botones, etiquetas de la ruta, coordenadas y gramos.',
     porque: [
       'Es una serifa de estilo antiguo, cálida y con carácter: recuerda a los rótulos impresos de un cuaderno de viaje y a las etiquetas de los frascos.',
       'Su eje SOFT redondea los remates hasta hacerlos «cremosos», como el producto. El eje WONK inclina algunas letras y les da un aire hecho a mano.',
-      'Al ser variable, cada destino le cambia el peso, la suavidad y la inclinación sin cargar otra fuente: las letras también viajan.',
-    ],
-  },
-  {
-    id: 'instrument',
-    nombre: 'Instrument Sans',
-    clase: 'col-fam--instrument',
-    tipo: 'Sans serif variable · ejes de peso y anchura',
-    uso: 'Texto corrido, botones, etiquetas de la ruta y controles.',
-    porque: [
-      'Una sans serif neutra y muy legible: hace de contrapunto tranquilo a Fraunces, que es la que tiene la personalidad.',
-      'Su eje de anchura permite estrecharla al 78 % en las etiquetas en mayúsculas, como el texto de un sello o de un billete de tren.',
-      'Funciona bien en tamaños pequeños de móvil, donde va casi toda la información práctica.',
+      'Una sola familia hace que toda la web hable con la misma voz, como un cuaderno escrito por una sola persona, y la marca se reconoce en cualquier línea de texto.',
+      'Su eje de tamaño óptico ajusta el dibujo a cada tamaño: más contraste y finura en los títulos, trazos más robustos y abiertos en el texto pequeño, así se sigue leyendo bien en el móvil.',
+      'Al ser variable, cada destino le cambia el peso, la suavidad y la inclinación sin cargar otra fuente: las letras también viajan. Y la web descarga una sola familia.',
     ],
   },
 ];
@@ -178,8 +168,8 @@ export const FAMILIAS = [
 export const ROLES_TIPO = [
   { rol: 'Títulos (H1 y portada)', letra: 'Fraunces, con el clima del destino', clase: 'col-rol--titulo', muestra: 'Un viaje en cada cucharada' },
   { rol: 'Cita del destino', letra: 'Fraunces cursiva, blanda y torcida', clase: 'col-rol--cita', muestra: '«Te detienes, respiras y vuelves a conectar»' },
-  { rol: 'Texto corrido', letra: 'Instrument Sans 400', clase: 'col-rol--cuerpo', muestra: 'Crema de cacahuete y pitaya rosa, la fruta del dragón.' },
-  { rol: 'Etiquetas y ruta', letra: 'Instrument Sans 600, estrecha y en mayúsculas', clase: 'col-rol--etiqueta', muestra: 'Etapa 02 · Modo Selva' },
+  { rol: 'Texto corrido', letra: 'Fraunces 400, algo blanda (SOFT 50), tamaño óptico automático', clase: 'col-rol--cuerpo', muestra: 'Crema de cacahuete y pitaya rosa, la fruta del dragón.' },
+  { rol: 'Etiquetas y ruta', letra: 'Fraunces 600, en mayúsculas y espaciada', clase: 'col-rol--etiqueta', muestra: 'Etapa 02 · Modo Selva' },
   { rol: 'Coordenadas y gramos', letra: 'Fraunces, ejes de dato', clase: 'col-rol--dato', muestra: '8°30′S 115°16′E · 300 g' },
 ];
 
@@ -194,8 +184,8 @@ export const CLIMAS_TIPO = [
 ];
 
 export const DETALLES_TIPO = [
-  'Las dos fuentes van autoalojadas (@fontsource-variable) y solo con el subconjunto latino: es todo lo que usa la web en español y ahorra unos 460 KB.',
-  'Las coordenadas van siempre en Fraunces, porque Instrument Sans no tiene el signo de minuto ′.',
+  'Fraunces va autoalojada (@fontsource-variable) y solo con el subconjunto latino: es todo lo que usa la web en español y ahorra unos 460 KB.',
+  'Fraunces tiene el signo de minuto ′ de las coordenadas y las comillas angulares « » del español.',
   'Al cambiar de destino, los ejes de Fraunces se interpolan durante la transición de remolino: el título se transforma en lugar de saltar.',
   'Con un peso inferior a 300, el tamaño mínimo es de 48 px, para que los trazos finos se sigan leyendo.',
 ];
@@ -253,3 +243,43 @@ export const REGLAS = [
   'Solo se animan la posición, la opacidad, los trazos y los ejes de la letra, y como mucho una animación continua por zona.',
   'Con «Reducir movimiento», todo se detiene y el estado final se ve igual.',
 ];
+
+/* ---------- Psicología del color y armonía ---------- */
+export const ARMONIA = [
+  {
+    titulo: 'Esquema: análogo + complementario dividido',
+    texto: 'La base (crema, oliva, cacahuete y verde, de 32° a 87°) es un grupo análogo: vecinos en la rueda, que conviven sin tensión. Los acentos, flor (280°) y pitaya (336°), están al otro lado, en la zona complementaria de esa base. Es un esquema clásico: mucha calma y unos pocos acentos que destacan.',
+  },
+  {
+    titulo: 'Regla 60-30-10 en cada pantalla',
+    texto: 'Un 60 % de color dominante y tranquilo (papel o pared), un 30 % de color secundario (la foto o la ficha) y solo un 10 % de acento saturado (título, botón y sello). Así el acento llama la atención sin cansar.',
+  },
+  {
+    titulo: 'Un tono que lo une todo',
+    texto: 'Todos los colores comparten un fondo cálido: los claros tiran a crema y los oscuros a tinta marrón, nunca a blanco ni negro puros. Esa «temperatura común» es lo que hace que colores tan distintos parezcan de la misma familia.',
+  },
+  {
+    titulo: 'Saturación controlada',
+    texto: 'La base está apagada a propósito y los acentos van puros, pero en superficies pequeñas. Dos colores muy saturados nunca se tocan en grandes áreas: el magenta y el verde de la foto, por ejemplo, ya no comparten pantalla a partes iguales.',
+  },
+];
+
+export const PSICOLOGIA = [
+  { hex: '#F7F3EA', nombre: 'Crema', sensacion: 'Calidez, limpieza, natural', encaje: 'Producto natural y casero. Más acogedor que el blanco, que resultaría clínico.' },
+  { hex: '#B07A3E', nombre: 'Cacahuete', sensacion: 'Confort, hogar, tostado, apetito', encaje: 'Los tonos marrones y anaranjados abren el apetito y recuerdan a lo horneado: encaja con Casa y «el sabor de siempre».' },
+  { hex: '#3F4322', nombre: 'Oliva oscuro', sensacion: 'Naturaleza, calma, calidad', encaje: 'Da un aire premium y vegetal sin enfriar. Se usa con medida para no volverse serio en exceso.' },
+  { hex: '#C2185B', nombre: 'Pitaya', sensacion: 'Energía, sorpresa, exotismo, sabor', encaje: 'Es el color que dice «atrévete». Por ser tan estimulante, va solo como acento (título, botón, sello), no como fondo.' },
+  { hex: '#F6E4E8', nombre: 'Rosa papel', sensacion: 'Suavidad, descanso, cuidado', encaje: 'El fondo de Ubud: la pitaya diluida en crema transmite la pausa y la reconexión que promete el texto.' },
+  { hex: '#6E8C4A', nombre: 'Verde', sensacion: 'Frescura, equilibrio, vida', encaje: 'Las terrazas de arroz y el cactus. Es el color más relajante para el ojo y equilibra los acentos.' },
+  { hex: '#8E5FA6', nombre: 'Flor', sensacion: 'Misterio, rareza, asombro', encaje: 'El morado se asocia a lo poco común: perfecto para «algo inesperado» que florece en el desierto.' },
+  { hex: '#0D0F1E', nombre: 'Noche', sensacion: 'Calma profunda, introspección', encaje: 'El azul nocturno baja el ritmo. Como los azules quitan apetito, el frasco siempre recibe la luz cálida de la fogata.' },
+  { hex: '#F2A23A', nombre: 'Ascua', sensacion: 'Calor, refugio, compañía', encaje: 'La fogata convierte la noche fría en un lugar acogedor y devuelve al producto su tono apetecible.' },
+];
+
+export const AJUSTES_COLOR = [
+  { antes: 'Ubud tenía la ficha entera en magenta saturado, pegada a una foto verde y brumosa.', despues: 'La ficha pasa a un papel rosado claro (#F6E4E8) y la pitaya queda para el título, el botón y el sello.', motivo: 'El magenta es un color muy estimulante: en grande contradecía «descanso y reconexión» y chocaba con el verde. Ahora se cumple el 60-30-10.' },
+  { antes: 'En Atacama, el frasco mantenía la luz pareja y blanca de la foto de estudio.', despues: 'El frasco queda en penumbra azul de luna y solo lo ilumina, en ámbar, el lado de la fogata.', motivo: 'Una luz de día en plena noche rompía la escena. La luz cálida de la fogata mantiene el producto apetecible.' },
+];
+
+export const NOTA_PSICOLOGIA =
+  'La psicología del color no es una ciencia exacta: cada asociación depende de la cultura y del contexto. Por eso la paleta se apoya, sobre todo, en criterios comprobables: cada color sale del ingrediente o del lugar real, sigue un esquema de armonía definido y cumple el contraste mínimo de lectura.';

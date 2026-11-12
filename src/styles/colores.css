@@ -502,7 +502,7 @@ p.col-texto { margin: 0 0 var(--e-4); }
 /* ---------- Tipografía ---------- */
 .col-familias {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: var(--e-6);
   margin-top: var(--e-5);
 }
@@ -513,7 +513,7 @@ p.col-texto { margin: 0 0 var(--e-4); }
 .col-fam ul { margin: 0; padding-left: 1.1rem; }
 .col-fam li { margin-bottom: var(--e-2); }
 
-.col-fam__aa { margin: 0; font-size: clamp(4.5rem, 3rem + 5vw, 7.5rem); line-height: 1; color: var(--c-oliva-osc); }
+.col-fam .col-fam__aa { margin: 0; font-size: clamp(4.5rem, 3rem + 5vw, 7.5rem); line-height: 1; color: var(--c-oliva-osc); }
 .col-fam .col-fam__nombre { margin: var(--e-2) 0 var(--e-1); font-size: 2rem; }
 .col-fam__tipo { margin: 0 0 var(--e-4); color: var(--folio-tenue); }
 .col-fam .col-fam__alfabeto { margin: 0 0 var(--e-3); font-size: 1.15rem; line-height: 1.45; overflow-wrap: anywhere; }
@@ -525,10 +525,7 @@ p.col-texto { margin: 0 0 var(--e-4); }
 .col-fam--fraunces .col-fam__pesos { font-family: var(--f-display); }
 .col-fam--fraunces .col-fam__aa { font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; }
 
-.col-fam--instrument .col-fam__aa,
-.col-fam--instrument .col-fam__nombre,
-.col-fam--instrument .col-fam__alfabeto,
-.col-fam--instrument .col-fam__pesos { font-family: var(--f-texto); }
+
 
 .col-roles { margin: 0; padding: 0; list-style: none; }
 .col-roles li {
@@ -546,7 +543,7 @@ p.col-texto { margin: 0 0 var(--e-4); }
 .col-rol--titulo { font-family: var(--f-display); font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.8rem); line-height: 1.05; font-weight: 420; font-variation-settings: 'opsz' 144, 'SOFT' 40, 'WONK' 0; letter-spacing: -0.022em; }
 .col-rol--cita { font-family: var(--f-display); font-style: italic; font-size: var(--t-entrada); font-variation-settings: 'opsz' 36, 'SOFT' 100, 'WONK' 1; }
 .col-rol--cuerpo { font-family: var(--f-texto); font-size: var(--t-cuerpo); }
-.col-rol--etiqueta { font-family: var(--f-texto); font-size: var(--t-etiqueta); font-weight: 600; font-stretch: 78%; letter-spacing: 0.09em; text-transform: uppercase; }
+.col-rol--etiqueta { font-family: var(--f-texto); font-size: var(--t-etiqueta); font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; }
 .col-rol--dato { font-family: var(--f-display); font-size: 1.15rem; font-variation-settings: 'opsz' 14, 'SOFT' 0, 'WONK' 0; }
 
 .col-climas {
@@ -798,4 +795,39 @@ p.col-texto { margin: 0 0 var(--e-4); }
   .col-indice,
   .col-boton,
   .col-clima__fogata { display: none; }
+}
+
+/* ---------- Psicología del color ---------- */
+.col-psico { margin: var(--e-3) 0 0; padding: 0; list-style: none; }
+.col-psico li {
+  display: grid;
+  grid-template-columns: 3rem minmax(12rem, 1fr) 2fr;
+  gap: var(--e-4);
+  align-items: center;
+  padding-block: var(--e-3);
+  border-bottom: var(--l-fina) solid rgb(138 132 96 / 0.35);
+}
+.col-psico p { margin: 0; font-size: var(--t-nota); }
+.col-psico__color { width: 3rem; height: 3rem; box-shadow: inset 0 0 0 1px rgb(46 42 31 / 0.15); }
+.col-psico__nombre { font-weight: 600; }
+.col-psico__sensacion { color: #7A4F1E; font-style: italic; }
+
+.col-tabla { overflow-x: auto; margin-top: var(--e-3); }
+.col-tabla table { width: 100%; min-width: 40rem; border-collapse: collapse; font-size: var(--t-nota); }
+.col-tabla th,
+.col-tabla td { padding: var(--e-2) var(--e-3); border-bottom: var(--l-fina) solid rgb(138 132 96 / 0.35); text-align: left; vertical-align: top; }
+.col-tabla thead th { border-bottom: 2px solid var(--c-oliva-osc); color: var(--c-oliva-osc); font-weight: 600; }
+
+.col-nota {
+  max-width: 46rem;
+  margin: var(--e-5) 0 0;
+  padding: var(--e-3) var(--e-4);
+  border-left: 3px solid var(--c-cacahuete);
+  background: rgb(176 122 62 / 0.08);
+  font-size: var(--t-nota);
+}
+
+@media (max-width: 599px) {
+  .col-psico li { grid-template-columns: 3rem 1fr; }
+  .col-psico li > p { grid-column: 1 / -1; }
 }

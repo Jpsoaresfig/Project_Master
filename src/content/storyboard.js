@@ -200,7 +200,7 @@ export const COMUNES = [
 
 export const CAMBIOS_GENERALES = [
   { elemento: 'Tecnología', antes: 'Prototipo estático en HTML, CSS y JavaScript', despues: 'Web en React, con Vite y framer-motion', motivo: 'Rutas reales, estado compartido y animación por interpolación.' },
-  { elemento: 'Tipografía', antes: 'Una serifa genérica, de maqueta', despues: 'Fraunces e Instrument Sans', motivo: 'Fraunces cambia de grosor y suavidad en cada destino: las letras viajan.' },
+  { elemento: 'Tipografía', antes: 'Una serifa genérica, de maqueta', despues: 'Fraunces en toda la web', motivo: 'Fraunces cambia de grosor y suavidad en cada destino: las letras viajan.' },
   { elemento: 'Cabecera', antes: 'Franja con marca, eslogan y menú', despues: 'Tres pestañas de cuaderno: marca, Contacto y eslogan', motivo: 'La barra de ruta ya cubre los destinos y la imagen gana altura.' },
   { elemento: 'Barra de ruta', antes: 'Píldoras redondeadas', despues: 'Paradas numeradas con matasellos', motivo: 'Solo el remolino es curvo, y el recorrido se lee como un viaje.' },
   { elemento: 'Transición en móvil', antes: 'Espiral que se dibuja a pantalla completa', despues: 'Disco en espiral que gira y crece', motivo: 'Dibujar el trazo repintaba toda la pantalla en cada fotograma.' },
