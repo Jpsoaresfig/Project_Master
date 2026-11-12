@@ -27,8 +27,8 @@ Disponibles conceptualmente en 300 g y 150 g.
 | `/remolino-perfecto` | Sección oculta: minijuego y pasaporte VIP |
 | `/de-vuelta-a-casa` | Cierre del viaje |
 | `/documentation` | Documentación del proyecto, enlazada desde el panel de Contacto |
-| `/colors` | Identidad visual: colores, tipografía, ilustración, texturas, formas, composición y movimiento, con el porqué de cada decisión. También `/colores`. Sin enlace en la web |
-| `/storyboard` | El storyboard explicado pantalla a pantalla, con los cambios de la versión final. Sin enlace en la web |
+| `/colors` | Identidad visual: colores, tipografía, ilustración, texturas, formas, composición y movimiento, con el porqué de cada decisión. También `/colores`. Enlazada desde el panel de Contacto |
+| `/storyboard` | El storyboard explicado pantalla a pantalla, con los cambios de la versión final. Enlazada desde el panel de Contacto |
 
 La **Web F** es una capa de elementos flotantes que se abre al pulsar el eslogan en cualquier pantalla. La pista de la sección oculta aparece al avivar dos veces la fogata o al encontrar el cacahuete dorado de la Web F.
 

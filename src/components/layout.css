@@ -453,13 +453,18 @@
 
 .contacto__fila[data-activa] .etiqueta { color: var(--folio-texto); }
 
-/* Secundario frente a G y H, pero con objetivo táctil completo. */
+/* Secundarios frente a G y H, pero con objetivo táctil completo. */
+.contacto__enlaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--e-4);
+  margin-top: calc(var(--e-3) * -1);
+}
+
 .contacto__documentacion {
-  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   min-height: var(--tactil);
-  margin-top: calc(var(--e-3) * -1);
   color: var(--folio-tenue);
   font-size: var(--t-dato);
   text-decoration: underline;

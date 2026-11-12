@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useMemo, useRef, useState } fro
 import { AnimatePresence, motion, useIsPresent } from 'framer-motion';
 import { CONTACTO, MARCA } from '../data.js';
 import { useCapaModal } from '../hooks.js';
-import { HREF_DOCUMENTACION } from '../raiz.js';
+import { HREF_COLORES, HREF_DOCUMENTACION, HREF_STORYBOARD } from '../raiz.js';
 import { useViaje } from '../state.jsx';
 import { BotonCerrar, Remolino } from './piezas.jsx';
 import { useTransicion } from './Transicion.jsx';
@@ -72,9 +72,11 @@ function Panel({ seccion, alCerrar }) {
             </div>
           ))}
         </dl>
-        <a className="contacto__documentacion" href={HREF_DOCUMENTACION}>
-          Documentación
-        </a>
+        <nav className="contacto__enlaces" aria-label="Sobre el proyecto">
+          <a className="contacto__documentacion" href={HREF_DOCUMENTACION}>Documentación</a>
+          <a className="contacto__documentacion" href={HREF_COLORES}>Identidad visual</a>
+          <a className="contacto__documentacion" href={HREF_STORYBOARD}>Storyboard</a>
+        </nav>
         <p className="contacto__firma">
           <Remolino tam={34} />
           <span>{MARCA}</span>

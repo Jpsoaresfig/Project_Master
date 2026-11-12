@@ -1,5 +1,5 @@
 /* Tras `build:zip`: la web sale de `index.html` y el resto son copias o ayudas.
-   - documentacion.html: la documentación se abre por su archivo, sin servidor especial.
+   - documentacion.html, colors.html y storyboard.html: se abren por su archivo, sin servidor especial.
    - 404.html: los alojamientos estáticos lo sirven en cualquier ruta profunda.
    - LEEME.txt: cómo abrir la entrega. */
 import { readFile, writeFile } from 'node:fs/promises';
@@ -48,11 +48,15 @@ Sirve cualquier servidor de archivos estáticos, también dentro de una subcarpe
 ARCHIVOS
 index.html           Página principal
 documentacion.html   Documentación del proyecto
+colors.html          Identidad visual: colores, letras y estilo
+storyboard.html      Storyboard explicado pantalla a pantalla
 404.html             Copia de la web para rutas profundas
 assets/              Código, estilos, fuentes e imágenes
 `;
 
 await writeFile(join(salida, 'documentacion.html'), html);
+await writeFile(join(salida, 'colors.html'), html);
+await writeFile(join(salida, 'storyboard.html'), html);
 await writeFile(join(salida, '404.html'), html.replace('</head>', `${normalizar}\n  </head>`));
 await writeFile(join(salida, 'LEEME.txt'), LEEME);
-console.log('dist-zip listo: index.html, documentacion.html, 404.html y LEEME.txt');
+console.log('dist-zip listo: index.html, documentacion.html, colors.html, storyboard.html, 404.html y LEEME.txt');

@@ -44,7 +44,7 @@ Q1 de la guía: la web es **un anuncio interactivo** cuya finalidad es **publici
 | `/de-vuelta-a-casa` | Pantalla final |
 | `/documentation` | Documentación del proyecto. También `/documentacion` y `/documentacion.html` |
 
-**La documentación tiene un único enlace público, discreto, dentro del panel de Contacto.** Lo decidió el usuario para cumplir el enunciado de la práctica 4. No aparece en ningún otro sitio. Los bocetos del storyboard viven dentro de la documentación, no en el menú.
+**La documentación, la identidad visual (`/colors`) y el storyboard (`/storyboard`) solo se enlazan, de forma discreta, desde el panel de Contacto.** Lo decidió el usuario para cumplir el enunciado de la práctica 4. No aparece en ningún otro sitio. Los bocetos del storyboard viven dentro de la documentación, no en el menú.
 
 La Web F es una capa que se abre al pulsar el eslogan en cualquier pantalla, se cierra con botón y Esc.
 

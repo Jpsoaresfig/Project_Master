@@ -185,6 +185,8 @@ const META = {
 const ALIAS = {
   '/index.html': '/',
   '/colores': '/colors',
+  '/colors.html': '/colors',
+  '/storyboard.html': '/storyboard',
   '/documentacion': '/documentation',
   '/documentacion.html': '/documentation',
 };

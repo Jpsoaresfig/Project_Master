@@ -128,7 +128,7 @@ No hay franja. Son **pestañas de cuaderno** que cuelgan del borde superior (`--
 - Derecha: «Contacto», en estilo etiqueta, que abre el panel común (G, H y el enlace a la documentación); con menos de 460 px de ancho es un sobre de 44 px con `aria-label`. A su lado, el eslogan en Fraunces cursiva, como botón que abre la Web F.
 - Fijas: no cambian de sitio, aunque Ubud invierta la pantalla.
 
-Se quitan «Destinos» (lo cubre la ruta) y «Storyboard». La documentación tiene un único enlace, discreto, dentro del panel de Contacto; ni en la cabecera, ni en la ruta, ni en el folio. Contacto está en la cabecera de todas las pantallas públicas y, además, en el folio de Inicio.
+Se quitan «Destinos» (lo cubre la ruta) y «Storyboard». La documentación, la identidad visual y el storyboard solo se enlazan, de forma discreta, desde el panel de Contacto; ni en la cabecera, ni en la ruta, ni en el folio. Contacto está en la cabecera de todas las pantallas públicas y, además, en el folio de Inicio.
 
 Movimiento: bajan 12 px al entrar (`--d-medio`, `--m-salida`).
 

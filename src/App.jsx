@@ -96,7 +96,9 @@ export default function App() {
       <Route path="/documentacion.html" element={<PaginaDocumentacion />} />
       <Route path="/colors" element={<PaginaColores />} />
       <Route path="/colores" element={<PaginaColores />} />
+      <Route path="/colors.html" element={<PaginaColores />} />
       <Route path="/storyboard" element={<PaginaStoryboard />} />
+      <Route path="/storyboard.html" element={<PaginaStoryboard />} />
     </Routes>
   );
 }
