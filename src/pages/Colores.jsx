@@ -1,13 +1,36 @@
-/* Paleta de colores y por qué se eligió cada uno. Fuera del Layout, como la documentación:
-   rige :root, sin tema. Textos en content/colores.js. Las muestras de los temas usan
-   data-theme sobre su propio bloque, así leen los tokens reales de styles/tokens.css. */
+/* Identidad visual completa en /colors: idea, colores, tipografía, ilustraciones, texturas,
+   formas, composición y movimiento, con el porqué de cada decisión. Fuera del Layout, como la
+   documentación: rige :root, sin tema. Textos en content/colores.js. Las muestras de los temas
+   usan data-theme sobre su propio bloque, así leen los tokens reales de styles/tokens.css. */
 import { useEffect, useMemo, useState } from 'react';
-import { Boton, Remolino } from '../components/index.js';
+import { Boton, Frasco, Ilu, Remolino, SelectorTamano, Sello } from '../components/index.js';
+import { useViaje } from '../state.jsx';
 import { MARCA } from '../data.js';
-import { APOYO, PRINCIPALES, REGLAS, TEMAS } from '../content/colores.js';
+import {
+  APOYO, CLIMAS_TIPO, DETALLES_TIPO, FAMILIAS, IDEA, ILUSTRACIONES, MOVIMIENTOS, PILARES,
+  PRINCIPALES, RASGOS, REGLAS, ROLES_TIPO, TEMAS, TEXTURAS,
+} from '../content/colores.js';
+import cacahuete from '../assets/ilustraciones/cacahuete.svg?raw';
+import pitaya from '../assets/ilustraciones/pitaya.svg?raw';
+import hoja from '../assets/ilustraciones/hoja.svg?raw';
+import florNopal from '../assets/ilustraciones/flor-nopal.svg?raw';
+import brujula from '../assets/ilustraciones/brujula.svg?raw';
 import '../styles/colores.css';
 
+const SVG = { cacahuete, pitaya, hoja, 'flor-nopal': florNopal, brujula };
 const TODOS = [...PRINCIPALES, ...APOYO];
+
+const SECCIONES = [
+  ['idea', 'La idea'],
+  ['colores', 'Colores'],
+  ['tipografia', 'Tipografía'],
+  ['ilustracion', 'Ilustración'],
+  ['texturas', 'Texturas'],
+  ['formas', 'Formas'],
+  ['composicion', 'Composición'],
+  ['movimiento', 'Movimiento'],
+  ['reglas', 'Reglas'],
+];
 
 function aRgb(hex) {
   const n = Number.parseInt(hex.slice(1), 16);
@@ -109,7 +132,7 @@ function Detalle({ color }) {
         <span className="col-detalle__aa">Aa</span>
         <span className="etiqueta">{color.grupo}</span>
       </div>
-      <h3 className="col-detalle__nombre">{color.nombre}</h3>
+      <h4 className="col-detalle__nombre">{color.nombre}</h4>
       <p className="col-detalle__datos">
         <Copiar hex={color.hex} /> <code>{color.token}</code> <span>Tono {tono(color.hex)}°</span>
       </p>
@@ -172,8 +195,58 @@ function Comprobador() {
   );
 }
 
+/** Muestra del clima tipográfico de un tema. En Atacama, un control hace de fogata. */
+function ClimaTipo({ clima }) {
+  const [fuego, setFuego] = useState(0);
+  return (
+    <li className="col-clima">
+      <div
+        className="col-clima__muestra"
+        data-theme={clima.tema}
+        style={clima.fogata ? { '--intensidad': fuego / 100 } : undefined}
+      >
+        <p className="titulo col-clima__texto" aria-hidden="true">{clima.nombre}</p>
+      </div>
+      <p className="col-clima__ejes"><code>{clima.ejes}</code></p>
+      <p>{clima.porque}</p>
+      {clima.fogata && (
+        <label className="col-clima__fogata">
+          <span className="etiqueta">Aviva la fogata: {fuego} %</span>
+          <input type="range" min="0" max="100" value={fuego} onChange={(e) => setFuego(Number(e.target.value))} />
+        </label>
+      )}
+    </li>
+  );
+}
+
+function DemoMovimiento({ mov }) {
+  const [vuelta, setVuelta] = useState(0);
+  return (
+    <li className="col-mov">
+      <div className="col-mov__pista">
+        <span
+          key={vuelta}
+          className="col-mov__bola"
+          data-jugando={vuelta ? '' : undefined}
+          style={{ '--curva': `var(${mov.curva})` }}
+        />
+      </div>
+      <div className="col-mov__texto">
+        <p className="col-mov__nombre">{mov.nombre} <code>{mov.curva}</code> · {mov.duracion}</p>
+        <p>{mov.porque}</p>
+      </div>
+      <button type="button" className="col-boton" onClick={() => setVuelta((v) => v + 1)}>
+        Ver <span className="sr">{mov.nombre}</span>
+      </button>
+    </li>
+  );
+}
+
 export default function Colores() {
+  const { reducido } = useViaje();
   const [elegido, setElegido] = useState('pitaya');
+  const [tam, setTam] = useState(300);
+  const [golpe, setGolpe] = useState(0);
   const color = useMemo(() => PRINCIPALES.find((c) => c.id === elegido), [elegido]);
 
   return (
@@ -188,19 +261,46 @@ export default function Colores() {
 
       <main className="col__cuerpo">
         <section className="col__intro" aria-labelledby="col-titulo">
-          <p className="etiqueta">Sistema visual</p>
-          <h1 id="col-titulo" className="col__titulo">Los colores del viaje</h1>
+          <p className="etiqueta">Identidad visual</p>
+          <h1 id="col-titulo" className="col__titulo">La estética del viaje</h1>
           <p className="col__lead">
-            Una <strong>base cálida y apagada</strong>, común a toda la web, y un <strong>acento saturado por destino</strong>.
-            La base mantiene la unidad de marca; los acentos hacen que cada página parezca otro lugar sin parecer otra marca.
+            Todo lo que da su aspecto a Cuchavia, y el porqué de cada decisión: colores, letras, ilustraciones,
+            texturas, formas, composición y movimiento.
           </p>
           <div className="col__franja" aria-hidden="true">
             {PRINCIPALES.map((c) => <span key={c.id} style={{ background: c.hex }} />)}
           </div>
+          <nav className="col-indice" aria-label="Secciones">
+            {SECCIONES.map(([id, nombre], i) => (
+              <a key={id} href={`#col-${id}`}><span>{String(i + 1).padStart(2, '0')}</span> {nombre}</a>
+            ))}
+          </nav>
         </section>
 
-        <section aria-labelledby="col-rueda">
-          <h2 id="col-rueda">La lógica en la rueda cromática</h2>
+        {/* ---------- 1. Idea ---------- */}
+        <section aria-labelledby="col-idea">
+          <h2 id="col-idea"><span className="col-num">01</span> La idea</h2>
+          <p className="col-cita">{IDEA}</p>
+          <h3>Cuatro pilares visuales</h3>
+          <ul className="col-rejilla col-rejilla--4">
+            {PILARES.map((p) => <li key={p.titulo}><h4>{p.titulo}</h4><p>{p.texto}</p></li>)}
+          </ul>
+          <h3>Cuatro rasgos propios</h3>
+          <p className="col-texto">Lo que hace que la web parezca una sola marca y no una plantilla.</p>
+          <ul className="col-rejilla col-rejilla--4">
+            {RASGOS.map((p) => <li key={p.titulo}><h4>{p.titulo}</h4><p>{p.texto}</p></li>)}
+          </ul>
+        </section>
+
+        {/* ---------- 2. Colores ---------- */}
+        <section aria-labelledby="col-colores">
+          <h2 id="col-colores"><span className="col-num">02</span> Colores</h2>
+          <p className="col-texto">
+            Una <strong>base cálida y apagada</strong>, común a toda la web, y un <strong>acento saturado por destino</strong>.
+            La base mantiene la unidad de marca; los acentos hacen que cada página parezca otro lugar sin parecer otra marca.
+          </p>
+
+          <h3>La lógica en la rueda cromática</h3>
           <div className="col-rueda-bloque">
             <div>
               <Rueda elegido={elegido} alElegir={setElegido} />
@@ -222,10 +322,8 @@ export default function Colores() {
               </p>
             </div>
           </div>
-        </section>
 
-        <section aria-labelledby="col-paleta">
-          <h2 id="col-paleta">Paleta principal</h2>
+          <h3>Paleta principal</h3>
           <p className="col-texto">Son los colores de la presentación del producto. Viven en <code>styles/tokens.css</code> y no se modifican.</p>
           <div className="col-paleta">
             <ul className="col-muestras">
@@ -246,10 +344,8 @@ export default function Colores() {
             </ul>
             <Detalle color={color} />
           </div>
-        </section>
 
-        <section aria-labelledby="col-temas">
-          <h2 id="col-temas">Un clima por destino</h2>
+          <h3>Un clima por destino</h3>
           <p className="col-texto">
             Cada pantalla fija <code>data-theme</code> en la página y reasigna los mismos roles: fondo, ficha, texto, acento y
             remolino. Estas muestras usan los tokens reales de la web.
@@ -269,14 +365,8 @@ export default function Colores() {
               </li>
             ))}
           </ul>
-          <p className="col-texto">
-            El remolino de la transición entre páginas también cambia: sus dos hebras toman los colores del destino al que vas,
-            y adelantan su clima antes de que aparezca.
-          </p>
-        </section>
 
-        <section aria-labelledby="col-apoyo">
-          <h2 id="col-apoyo">Colores de apoyo</h2>
+          <h3>Colores de apoyo</h3>
           <p className="col-texto">Salen de la paleta principal para resolver casos concretos, casi siempre de legibilidad.</p>
           <ul className="col-apoyo">
             {APOYO.map((c) => (
@@ -289,10 +379,8 @@ export default function Colores() {
               </li>
             ))}
           </ul>
-        </section>
 
-        <section aria-labelledby="col-contraste">
-          <h2 id="col-contraste">Comprobador de contraste</h2>
+          <h3>Comprobador de contraste</h3>
           <p className="col-texto">
             Elige un texto y un fondo de la paleta. El cálculo es el de las pautas WCAG: así se decidió qué colores pueden ir
             como texto y cuáles solo como acento.
@@ -300,9 +388,224 @@ export default function Colores() {
           <Comprobador />
         </section>
 
+        {/* ---------- 3. Tipografía ---------- */}
+        <section aria-labelledby="col-tipografia">
+          <h2 id="col-tipografia"><span className="col-num">03</span> Tipografía</h2>
+          <p className="col-texto">
+            Dos familias variables: una serifa con personalidad para la voz de la marca y una sans serif neutra para la
+            información. Una cuenta el viaje; la otra lo explica.
+          </p>
+          <div className="col-familias">
+            {FAMILIAS.map((f) => (
+              <article key={f.id} className={`col-fam ${f.clase}`}>
+                <p className="col-fam__aa" aria-hidden="true">Aa</p>
+                <h3 className="col-fam__nombre">{f.nombre}</h3>
+                <p className="etiqueta col-fam__tipo">{f.tipo}</p>
+                <p className="col-fam__alfabeto" aria-hidden="true">
+                  ABCDEFGHIJKLMNÑOPQRSTUVWXYZ<br />abcdefghijklmnñopqrstuvwxyz<br />0123456789 ¿?¡! «» · ′
+                </p>
+                <p className="col-fam__pesos" aria-hidden="true">
+                  <span style={{ fontWeight: f.id === 'fraunces' ? 200 : 400 }}>Ligera</span>
+                  <span style={{ fontWeight: f.id === 'fraunces' ? 420 : 500 }}>Regular</span>
+                  <span style={{ fontWeight: f.id === 'fraunces' ? 700 : 700 }}>Negrita</span>
+                  {f.id === 'fraunces' && <span style={{ fontStyle: 'italic' }}>Cursiva</span>}
+                  {f.id === 'instrument' && <span style={{ fontStretch: '78%', fontWeight: 600 }}>ESTRECHA</span>}
+                </p>
+                <p><strong>Uso.</strong> {f.uso}</p>
+                <ul>{f.porque.map((t) => <li key={t}>{t}</li>)}</ul>
+              </article>
+            ))}
+          </div>
+
+          <h3>Cada letra, su papel</h3>
+          <ul className="col-roles">
+            {ROLES_TIPO.map((r) => (
+              <li key={r.rol}>
+                <div>
+                  <p className="col-roles__rol">{r.rol}</p>
+                  <p className="col-roles__letra">{r.letra}</p>
+                </div>
+                <p className={`col-roles__muestra ${r.clase}`}>{r.muestra}</p>
+              </li>
+            ))}
+          </ul>
+
+          <h3>El clima tipográfico: las letras viajan</h3>
+          <p className="col-texto">
+            Fraunces tiene ejes que cambian su peso, su suavidad (SOFT) y lo torcido de algunas letras (WONK). Cada destino
+            los ajusta a su ambiente, y al cambiar de pantalla se interpolan durante el remolino. Estas muestras usan los
+            valores reales de cada tema.
+          </p>
+          <ul className="col-climas">
+            {CLIMAS_TIPO.map((c) => <ClimaTipo key={c.tema} clima={c} />)}
+          </ul>
+
+          <h3>Detalles</h3>
+          <ul className="col-lista">
+            {DETALLES_TIPO.map((t) => <li key={t}>{t}</li>)}
+          </ul>
+        </section>
+
+        {/* ---------- 4. Ilustración ---------- */}
+        <section aria-labelledby="col-ilustracion">
+          <h2 id="col-ilustracion"><span className="col-num">04</span> Ilustración</h2>
+          <p className="col-texto">
+            Grabados botánicos de cuaderno de viaje, en SVG. Se insertan en línea para que tomen la tinta y la mancha de
+            cada destino. La <strong>mancha desajustada</strong>, un relleno plano desplazado unos píxeles respecto al
+            trazo, imita una impresión a dos tintas mal registrada: es el gesto gráfico propio de la marca, y no se anima.
+          </p>
+          <ul className="col-ilus">
+            {ILUSTRACIONES.map((i) => (
+              <li key={i.id}>
+                <div className="col-ilus__lienzo" data-theme={i.tema}>
+                  <Ilu src={SVG[i.id]} className="col-ilus__dibujo" />
+                </div>
+                <p className="col-ilus__nombre">{i.nombre}</p>
+                <p className="col-ilus__uso">{i.uso}</p>
+              </li>
+            ))}
+          </ul>
+
+          <h3>Sellos y remolino</h3>
+          <div className="col-firma">
+            <div className="col-firma__pieza">
+              <div className="col-firma__lienzo" data-theme="vip">
+                <Sello key={golpe} arriba="Ubud" abajo="Bali" centro="2" tam={170} rot={-4} cae={golpe > 0 && !reducido} />
+              </div>
+              <p>
+                <strong>Sello de viaje.</strong> Un matasellos con el destino en los arcos y la etapa en el centro, girado
+                unos grados. Marca lo visitado y cae con un golpe seco, sin rebote.
+              </p>
+              <button type="button" className="col-boton" onClick={() => setGolpe((g) => g + 1)}>Estampar el sello</button>
+            </div>
+            <div className="col-firma__pieza">
+              <div className="col-firma__lienzo col-firma__lienzo--remolino" data-theme="ubud">
+                <Remolino key={`r${golpe}`} tam={140} dibujar={!reducido} duracion={1.2} />
+              </div>
+              <p>
+                <strong>El remolino.</strong> Dos hebras en espiral con los colores del destino. Es la firma de la marca: el
+                logotipo, la transición entre páginas y el premio del minijuego. Es lo único curvo de toda la web.
+              </p>
+            </div>
+          </div>
+
+          <h3>Los frascos</h3>
+          <div className="col-frascos">
+            <div className="col-frascos__balda">
+              <Frasco sabor="casa" alto="min(11rem, 26vw)" />
+              <Frasco sabor="ubud" alto="min(11rem, 26vw)" />
+              <Frasco sabor="atacama" alto="min(11rem, 26vw)" />
+            </div>
+            <p className="col-texto">
+              Recortes de fotografía, no ilustración: el producto debe parecer real. Los tres se dibujan con el mismo
+              componente, medido sobre su transparencia, para que se vean del mismo tamaño y sobre la misma línea, con la
+              fruta asomando. La etiqueta se retocó para que diga «Crema», como toda la web.
+            </p>
+          </div>
+        </section>
+
+        {/* ---------- 5. Texturas ---------- */}
+        <section aria-labelledby="col-texturas">
+          <h2 id="col-texturas"><span className="col-num">05</span> Texturas</h2>
+          <p className="col-texto">
+            El segundo pilar es la luz y las texturas naturales. Tres texturas dan tacto a las superficies; en móvil se
+            sirven como imágenes ya pintadas para no frenar la página.
+          </p>
+          <ul className="col-texturas">
+            {TEXTURAS.map((t) => (
+              <li key={t.id}>
+                <div className={`col-textura col-textura--${t.id}`} aria-hidden="true" />
+                <p className="col-ilus__nombre">{t.nombre} <code>{t.token}</code></p>
+                <p>{t.porque}</p>
+                <p className="col-ilus__uso">{t.uso}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* ---------- 6. Formas ---------- */}
+        <section aria-labelledby="col-formas">
+          <h2 id="col-formas"><span className="col-num">06</span> Formas y componentes</h2>
+          <p className="col-texto">
+            Todo es recto, con filete fino y sombra de papel, como piezas impresas recortadas. Así el remolino, lo único
+            curvo, destaca siempre. Estos son los componentes reales de la web.
+          </p>
+          <ul className="col-rejilla col-rejilla--2 col-piezas">
+            <li>
+              <div className="col-piezas__muestra">
+                <Boton onClick={() => {}}>Siguiente destino</Boton>
+              </div>
+              <h4>Billete</h4>
+              <p>La acción principal. Un rectángulo con muescas en los lados, como un billete de tren, y una flecha que avanza al pasar el cursor.</p>
+            </li>
+            <li>
+              <div className="col-piezas__muestra">
+                <Boton to="/" variante="enlace">Elegir otro destino</Boton>
+              </div>
+              <h4>Enlace</h4>
+              <p>La acción secundaria. Texto subrayado que se engrosa al pasar el cursor: no compite con el billete.</p>
+            </li>
+            <li>
+              <div className="col-piezas__muestra">
+                <SelectorTamano valor={tam} alCambiar={setTam} />
+              </div>
+              <h4>Tamaños</h4>
+              <p>Dos casillas rectas en Fraunces. La elegida se rellena, como una casilla marcada en un formulario de papel.</p>
+            </li>
+            <li>
+              <div className="col-piezas__muestra">
+                <span className="col-piezas__foco">Foco de teclado</span>
+              </div>
+              <h4>Foco de doble anillo</h4>
+              <p>Un contorno y un halo de dos colores: se ve igual sobre papel, sobre foto y sobre pitaya. Solo aparece al navegar con teclado.</p>
+            </li>
+          </ul>
+        </section>
+
+        {/* ---------- 7. Composición ---------- */}
+        <section aria-labelledby="col-composicion">
+          <h2 id="col-composicion"><span className="col-num">07</span> Composición</h2>
+          <div className="col-rueda-bloque">
+            <div className="col-dosterc" aria-hidden="true">
+              <div className="col-dosterc__escena"><span>Escenario · 2/3</span></div>
+              <div className="col-dosterc__folio"><span>Folio · 1/3</span></div>
+            </div>
+            <div className="col-texto">
+              <p>
+                <strong>La regla de los 2/3.</strong> Dos tercios de la pantalla para la imagen y un tercio para el texto y
+                los controles, en una rejilla de 12 columnas: 8 de escenario y 4 de folio. Es un anuncio: manda la imagen.
+              </p>
+              <p>
+                <strong>Nunca centrado.</strong> El elemento principal se coloca en un punto fuerte del escenario, en el
+                cruce de sus tercios, lo que da tensión y aire a la composición.
+              </p>
+              <p>
+                <strong>El folio es una hoja.</strong> No es una columna de texto: es el papel del cuaderno, y cambia de
+                material en cada destino. En Ubud se pone a la izquierda para que la mirada de la foto lleve al texto.
+              </p>
+              <p>
+                <strong>En el móvil</strong> la imagen va arriba y el folio debajo, en una sola columna, con la misma jerarquía.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------- 8. Movimiento ---------- */}
+        <section aria-labelledby="col-movimiento">
+          <h2 id="col-movimiento"><span className="col-num">08</span> Movimiento</h2>
+          <p className="col-texto">
+            Cada gesto tiene su curva, y todas cuentan algo del producto: remover, soltar, estampar. Pulsa «Ver» para
+            comparar. {reducido && <strong>Tienes activado «Reducir movimiento»: las demos van sin animación.</strong>}
+          </p>
+          <ul className="col-movs">
+            {MOVIMIENTOS.map((m) => <DemoMovimiento key={m.id} mov={m} />)}
+          </ul>
+        </section>
+
+        {/* ---------- 9. Reglas ---------- */}
         <section aria-labelledby="col-reglas">
-          <h2 id="col-reglas">Reglas de uso</h2>
-          <ul className="col-reglas">
+          <h2 id="col-reglas"><span className="col-num">09</span> Reglas de uso</h2>
+          <ul className="col-lista">
             {REGLAS.map((r) => <li key={r}>{r}</li>)}
           </ul>
         </section>

@@ -173,8 +173,8 @@ const META = {
   },
   '/colors': {
     tema: null,
-    titulo: `Colores · ${CONCEPTO}`,
-    descripcion: 'La paleta de Cuchavia: qué color usa cada destino y por qué se eligió.',
+    titulo: `Identidad visual · ${CONCEPTO}`,
+    descripcion: 'La identidad visual de Cuchavia: colores, tipografía, ilustración, texturas, formas y movimiento, y el porqué de cada decisión.',
   },
   '/storyboard': {
     tema: null,
